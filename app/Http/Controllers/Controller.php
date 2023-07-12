@@ -9,5 +9,11 @@ use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
+    protected $lang = 'en';
+
+    public function __construct()
+    {
+        $this->lang = request()->header('lang')?request()->header('lang') : 'en';
+    }
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 }

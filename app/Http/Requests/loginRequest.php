@@ -5,13 +5,12 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Validation\Rule;
+use App\Models\User;
 use App\Models\System\System;
 
-
-class verifyRequest extends FormRequest
+class loginRequest extends FormRequest
 {
-
-    protected $stopOnFirstFailure = false;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -30,28 +29,31 @@ class verifyRequest extends FormRequest
     public function rules()
     {
         return [
-            'otp_code' => 'required|regex:/^[0-9]{5}$/',
-            'secret' => 'required'
+            'mobile' => [
+                'required','regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/',
+                "exists:users,mobile"
+                
+            ]
+            
         ];
     }
-
 
     public function messages()
     {
         return [
-            'otp_code.required' => ['ar' => 'الكود مطلوب' , 'en' => 'Code Is Required'][$this->lang],
-            'otp_code.regex' => ['ar' => 'الكود لابد ان يكون ارقام مكون من خمس ارقام' , 'en' => 'Code Must Be Numbers only and Consist Of 5 numbers'][$this->lang],
+            'mobile.required' =>  ['ar' => 'رقم الموبايل مطلوب للتسجيل' , 'en' => 'Phone Number is required For Register'][$this->lang],
+            'mobile.regex' =>    ['ar' => 'رقم الموبايل غير صحيح' , 'en' => 'Phone number is incorrect'][$this->lang],
+            'mobile.exists' => ['ar' => 'رقم الموبايل غير مسجل في قاعدة البيانات' , 'en' => 'Phone number Not Exists in our Database'][$this->lang]
+           
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        // $message = ($this->lang == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;        
+        // $message = ($this->lang == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;
         $message = array_values($validator->errors()->toArray())[0][0];
         $response = success([] , System::HHTP_Unprocessable_Content , $message );
 
         throw new HttpResponseException($response);
     }
-    
 }
- 

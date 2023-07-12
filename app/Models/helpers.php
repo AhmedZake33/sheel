@@ -1,17 +1,10 @@
 <?php
 
-use App\Models\Evaluation\EvaluationApprovals;
-use App\Models\Evaluation\EvaluationStatus;
-use App\Models\Questionnaire\QuestionnaireAnswer;
-use App\Models\Submission;
-use App\Models\SubmissionNotes;
-use App\Models\Task;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Crypt;
 use Spatie\Permission\Models\Permission;
 use App\Models\User;
-use App\Models\Alert;
 use App\Notification;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -625,7 +618,10 @@ if (!function_exists('autoSetup')) {
 
 if (! function_exists('success')) {
     function success($data = null, $status = null , $message = null) {
-        $reponse = [ 'message' => $message ,'status'=>$status, "data"=>$data];
+        $reponse = [ 'message' => $message ,'status'=>$status];
+        if($data){
+            $reponse['data'] = $data;
+        }
         return response()->json($reponse , $status);
     }
 }
@@ -634,7 +630,7 @@ if (! function_exists('error')) {
     
     function error($code, $message = '', $errors = null) {
 
-        $reponse = ['status'=>'fail', 'code'=>$code, 'message'=>$message, 'errors'=>$errors];
+        $reponse = ['message'=>$message , 'code'=>$code, 'errors'=>$errors];
         return response()->json($reponse);        
     }
 }

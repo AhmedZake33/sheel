@@ -19,8 +19,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('test',function(){
+    return 'test';
+});
+
+// user request 
 Route::post('register','UsersController@register');
 Route::post('login','UsersController@login');
-Route::post('verify/{secret}','UsersController@verify');
+Route::get('verifyEmail/{secret}/{slug}','UsersController@verifyEmail');
 Route::post('verifyCode','UsersController@verifyCode');
+Route::post('resendCode','UsersController@resendCode');
+
+// request 
+Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
+   Route::post('create','RequestsController@create');
+   Route::get('nearestLocations','RequestsController@nearestLocations');
+   Route::get('nearestLocation','RequestsController@nearestLocation');
+   Route::get('show','RequestsController@show');
+   Route::post('cancel','RequestsController@cancel');
+});
+
+
 

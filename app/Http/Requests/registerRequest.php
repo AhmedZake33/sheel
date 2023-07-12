@@ -16,8 +16,7 @@ class registerRequest extends FormRequest
      *
      * @return bool
      */
-    protected $stopOnFirstFailure = false;
-
+    protected $stopOnFirstFailure = true;
 
     public function authorize()
     {
@@ -45,21 +44,18 @@ class registerRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' =>  ['ar' => 'الاسم مطلوب للتسجيل' , 'en' => 'Name is required For Register'],
-            'name.regex' =>    ['ar' => 'الاسم لابد ان يحتوي علي حروف' , 'en' => 'The name must contain letters'],
-            'email.required' =>  ['ar' => 'البريد الالكتروني مطلوب للتسجيل' , 'en' => 'ُE-mail is required For Register'],
-            'email.unique' =>  ['ar' => 'البريد الالكتروني مطلوب مستخدم من قبل' , 'en' => 'ُE-mail is used before'],
+            'name.required' =>  ['ar' => 'الاسم مطلوب للتسجيل' , 'en' => 'Name is required For Register'][$this->lang],
+            'name.regex' =>    ['ar' => 'الاسم لابد ان يحتوي علي حروف' , 'en' => 'The name must contain letters'][$this->lang],
+            'email.required' =>  ['ar' => 'البريد الالكتروني مطلوب للتسجيل' , 'en' => 'ُE-mail is required For Register'][$this->lang],
+            'email.unique' =>  ['ar' => 'البريد الالكتروني مطلوب مستخدم من قبل' , 'en' => 'ُE-mail is used before'][$this->lang],
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        $errors = $validator->errors();
-
-        $response = response()->json([
-            'message' => 'Invalid data send',
-            'details' => $errors,
-        ], System::HHTP_Unprocessable_Content);
+        // $message = ($this->lang == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;
+        $message = array_values($validator->errors()->toArray())[0][0];
+        $response = success(null , System::HHTP_Unprocessable_Content , $message );
 
         throw new HttpResponseException($response);
     }

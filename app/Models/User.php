@@ -13,6 +13,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    const STATUS_INCOMPLETE = 2;
+    const STATUS_ACTIVE = 0;
+    const STATUS_REMOVED = 1;
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -25,7 +30,9 @@ class User extends Authenticatable
         'otp_code',
         'otp_time',
         'mobile',
-        'secret'
+        'secret',
+        'temp_mobile',
+        'temp_email'
     ];
 
     /**
@@ -43,9 +50,11 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+
+    public function provider()
+    {
+        return $this->belongsTo(Provider::class , 'id','user_id');
+    }
 
     
     public function data($type = System::DATA_BRIEF)
@@ -63,8 +72,6 @@ class User extends Authenticatable
             $data->mobile = $this->mobile;
             $data->secret = $this->secret;
             // $data->token = $this->createToken();
-            
-
         }else if ($type == System::DATA_LIST){
 
         }
@@ -72,11 +79,36 @@ class User extends Authenticatable
         return $data;
     }
 
-    // public function createToken()
-    // {
-    //     $user = User::find(4);
-    //     $token = $user->createToken('My Token')->accessToken;
-    //     return '$token->token';
-    // }
+   public static function createOtp($user,$slug = false)
+   {
+        if($slug){
+            $user->slug = rand(10000,99999);
+        }
+        $otp = rand(10000,99999);
+        $user->otp_code = $otp;
+        $user->otp_time = now();
+        $user->save();
+   }
+
+   public function verify($type = 'email')
+   {
+    if($type == 'email'){
+        // verify email
+        $this->slug = null;
+        $this->email_verification = User::STATUS_ACTIVE;
+        $this->save();
+    }else if($type == 'mobile'){
+        // verify mobile
+        $this->otp_code = null;
+        $this->otp_time = null;
+        $this->status = User::STATUS_ACTIVE;
+        $this->save();
+    }
+   }
+
+   public function remove($type = false)
+   {
+        
+   }
 
 }
