@@ -66,12 +66,16 @@ class User extends Authenticatable
             $data->email = $this->email;
             $data->mobile = $this->mobile;
             $data->secret = $this->secret;
+            // just for test
+            $data->otp_code = $this->otp_code;
             
         }else if ($type == System::DATA_DETAILS){
             $data->name = $this->name;
             $data->email = $this->email;
             $data->mobile = $this->mobile;
             $data->secret = $this->secret;
+            // just for test
+            $data->otp_code = $this->otp_code;
             // $data->token = $this->createToken();
         }else if ($type == System::DATA_LIST){
 
