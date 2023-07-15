@@ -8,14 +8,18 @@ use App\Http\Requests\requestCreateRequest;
 use App\Models\System\System;
 use App\Models\Request as RequestModel;
 use App\Services\LocationService;
+use App\Services\ProviderRequestService;
+
 
 class RequestsController extends Controller
 {
     protected $locationService = null;
+    protected $providerRequestService = null;
 
-    public function __construct(LocationService $locationService)
+    public function __construct(LocationService $locationService, ProviderRequestService $providerRequestService)
     {
         $this->locationService = $locationService;
+        $this->providerRequestService = $providerRequestService;
     }
 
     public function create(requestCreateRequest $request)
@@ -61,22 +65,28 @@ class RequestsController extends Controller
 
         // get lowest distance 
         $nearestLocation = $this->locationService->getNearestLocation($requestModel->lat , $requestModel->lng , $nearestLocations);
-        return $nearestLocation;
-        $data = (object)[];
-        $user = (object)[];
-        $user->id = 2;
-        $user->name = 'zaki';
+        // assign rquest to provider 
+        $this->providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
 
-        $data->id = 1;
-        $data->lat = '123';
-        $data->lng = '123';
-        $data->user = $user;
-        
-        return success($data,System::HTTP_OK,'SUCCESS');
+        // notification to provider 
+
+        return success($nearestLocation , System::HTTP_OK,'SUCCESS');
+        // $data = (object)[];
+        // $user = (object)[];
+        // $user->id = 2;
+        // $user->name = 'zaki';
+
+        // $data->id = 1;
+        // $data->lat = '123';
+        // $data->lng = '123';
+        // $data->user = $user;
+
+        // return success($data,System::HTTP_OK,'SUCCESS');
     }
 
     public function cancel(Request $request)
     {
+        // when cancel run nearest location without user who cancel request
         return success([],System::HTTP_OK,'SUCCESS CANCEL REQUEST');
     }
 
