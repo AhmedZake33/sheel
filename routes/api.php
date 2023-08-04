@@ -15,6 +15,10 @@ use App\Http\Controllers\api\UsersController;
 |
 */
 
+Route::get('test',function(){
+    return 'test';
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
