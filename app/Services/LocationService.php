@@ -8,7 +8,7 @@ class LocationService
 {
     public function getNearestLocations($lat , $lng)
     {
-        $distance = env('distance');
+        $distance = env('distance'); 
         $minLat = $lat - rad2deg($distance / 6371);
        
         $maxLat = $lat + rad2deg($distance / 6371);
