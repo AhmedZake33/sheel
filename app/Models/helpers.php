@@ -16,21 +16,6 @@ use NcJoes\OfficeConverter\OfficeConverter;
 
 
 
-if (!function_exists('checkLanguage')) {
-    function checkLanguage($val)
-    {
-        if($val != null){
-            if($val == 'ar')
-            {
-                return 'ar';
-            }else{
-                return 'en';
-            }
-        }else{
-            return 'en';
-        }
-    }
-}
 
 
 if (!function_exists('d')) {
@@ -90,53 +75,12 @@ if (!function_exists('digits')) {
     }
 }
 
-if (!function_exists('getQuestionAnswer')) {
-    function getQuestionAnswer($answer_id)
-    {
-        switch ($answer_id) {
-            case 1:
-                return 'المستوى الاول';
-            case 2:
-                return 'المستوى الثانى';
-            case 3:
-                return 'المستوى الثالث';
-            case 4:
-                return 'المستوى الرابع';
-            default:
-                return '';
-
-        }
-    }
-}
-
-if (!function_exists('getToolAnswer')) {
-    function getToolAnswer($value)
-    {
-        switch ($value) {
-            case 1:
-                return 'ينطبق';
-            case 2:
-                return 'لا ينطبق';
-            default:
-                return '';
-
-        }
-    }
-}
-
 if (!function_exists('wm')) {
     function wm($in)
     {
         echo "<div style='background-color:orange; color:black;padding:5px;margin:2px;'>";
         print_r($in);
         echo "</div>";
-    }
-}
-
-if (!function_exists('dbg')) {
-    function dbg($value, $title = "DEBUG")
-    {
-        \Log::info("$title:", [$value]);
     }
 }
 
@@ -626,12 +570,16 @@ if (! function_exists('success')) {
     }
 }
 
-if (! function_exists('error')) {
-    
-    function error($code, $message = '', $errors = null) {
 
-        $reponse = ['message'=>$message , 'code'=>$code, 'errors'=>$errors];
-        return response()->json($reponse);        
+if (!function_exists('error')) {
+    function error($error, $type, $message = null)
+    {
+        $data = [];
+        $data['error'] = $error;
+        $data['type'] = $type;
+        if (is_numeric($error)) $data['code'] = $error;
+        if ($message) $data['message'] = $message;
+        return response()->json($data, $type);
     }
 }
 

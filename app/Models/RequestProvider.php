@@ -14,6 +14,10 @@ class RequestProvider extends Model
         'status'
     ];
 
+    const STATUS_PENDING = 2;
+    const STATUS_ACCEPTED = 1;
+    const STATUS_REFUSED = 0;
+
     // status 
     // 2 pending 
     // 1 accept 

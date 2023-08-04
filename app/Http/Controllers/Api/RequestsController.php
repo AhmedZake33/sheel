@@ -9,6 +9,10 @@ use App\Models\System\System;
 use App\Models\Request as RequestModel;
 use App\Services\LocationService;
 use App\Services\ProviderRequestService;
+use App\Models\Provider;
+use App\Models\RequestProvider;
+use App\Models\Notification;
+
 
 
 class RequestsController extends Controller
@@ -24,26 +28,45 @@ class RequestsController extends Controller
 
     public function create(requestCreateRequest $request)
     {
-        
-        // dd($request->validated());
         $user =  auth()->user();
         $data = $request->validated();
         $data['user_id'] = $user->id;
-        // return (Auth::guard('api')->check());
-        $requestData = RequestModel::create($data);
-        // $data = (object)[];
-        // $data->id = 1;
-        // $data->lat = '123';
-        // $data->lng = '123';
-        // $data->photo = "http://downloadimage";
+        $requestModel = RequestModel::create($data);
 
-        return success($requestData->data(),System::HTTP_OK,'SUCCESS CREATE REQUEST');
+        if(count($data['file']) > 0){
+            // create archive 
+            foreach($data['file'] as $file){
+                $requestModel->archive->addFile($file);
+            }
+            
+        }
+
+        // service to get nearest locations
+        $nearestLocations =  $this->locationService->getNearestLocations($requestModel);
+        // service to get nearest location  
+        if($nearestLocations){
+            $nearestLocation = $this->locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
+
+            // assign to provider 
+            if($nearestLocation){
+                $this->providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
+
+                // notification to provider
+                $title = ['ar' => 'arabic' , 'en' => 'english'];
+                Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
+            }
+            
+        }
+        
+
+        // now i have request : 
+        return success($requestModel->data(),System::HTTP_OK,'SUCCESS CREATE REQUEST');
     }
 
     public function nearestLocations(Request $request)
     {
         $requestModel = RequestModel::findOrFail($request['request']);
-        return $this->locationService->getNearestLocations($requestModel->lat , $requestModel->lng);
+        return $this->locationService->getNearestLocations($requestModel);
         $data = (object)[];
         $user = (object)[];
         $user->id = 2;
@@ -61,12 +84,11 @@ class RequestsController extends Controller
     {
         $requestModel = RequestModel::findOrFail($request['request']);
         // first get nearest locations
-        $nearestLocations = $this->locationService->getNearestLocations($requestModel->lat , $requestModel->lng);
-
+        $nearestLocations = $this->locationService->getNearestLocations($requestModel);
         // get lowest distance 
-        $nearestLocation = $this->locationService->getNearestLocation($requestModel->lat , $requestModel->lng , $nearestLocations);
+        $nearestLocation = $this->locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
         // assign rquest to provider 
-        $this->providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
+        // $this->providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
 
         // notification to provider 
 
@@ -86,18 +108,76 @@ class RequestsController extends Controller
 
     public function cancel(Request $request)
     {
-        // when cancel run nearest location without user who cancel request
-        return success([],System::HTTP_OK,'SUCCESS CANCEL REQUEST');
+        // check if auth user is provider in this request 
+        $requestModel = RequestModel::find($request->request_id);
+        $user = auth()->user();
+        $provider = Provider::where('user_id',$user->id)->first();
+        if($provider){
+            // get request provider 
+            $requestProvider = RequestProvider::where('request_id',$requestModel->id)->where('provider_id',$provider->id)->where('status',RequestProvider::STATUS_PENDING)->first();
+            if($requestProvider){
+                
+                $requestProvider->update(['status' => RequestProvider::STATUS_REFUSED]);
+
+                // seen notification 
+                $notification = Notification::where(['user_id' => auth()->user()->id , 'request_id' => $requestModel->id , 'seen' => Notification::UNSEEN])->first();
+                Notification::seen($notification);
+
+                // get nearest locations
+                $nearestLocations =  $this->locationService->getNearestLocations($requestModel , $user->id);
+               
+                // get nearest location 
+                if($nearestLocations){
+                    $nearestLocation = $this->locationService->getNearestLocation($requestModel->lat , $requestModel->lng , $nearestLocations);
+        
+                    // assign to provider 
+                    if($nearestLocation){
+                        $this->providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
+
+                        // notification to new provider
+                        $title = ['ar' => 'arabic' , 'en' => 'english'];
+                        Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
+                    }
+                }
+                return success([],System::HTTP_OK,'SUCCESS CANCEL REQUEST');
+            }
+        }
+        return success([],System::HTTP_UNAUTHORIZED,'Not Authorized');
+       
+        
+    }
+
+    public function accept(Request $request)
+    {
+        $requestModel = RequestModel::find($request->request_id);
+        $user = auth()->user();
+        $provider = Provider::where('user_id',$user->id)->first();
+        if($provider){
+            // get request provider 
+            $requestProvider = RequestProvider::where('request_id',$requestModel->id)->where('provider_id',$provider->id)->where('status',RequestProvider::STATUS_PENDING)->first();
+            if($requestProvider){
+                $requestProvider->update(['status' => RequestProvider::STATUS_ACCEPTED]);
+
+                // seen notification
+                $notification = Notification::where(['user_id' => auth()->user()->id , 'request_id' => $requestModel->id , 'seen' => Notification::UNSEEN])->first();
+                Notification::seen($notification);
+                
+                // notification to request user that provider is comming
+                $title = ['ar' => 'provider is comming' , 'en' => 'provider is comming'];
+                Notification::createNotification($requestModel->user_id , $requestModel->id , $title);
+                    
+            }else{
+                return success([] ,System::HTTP_UNAUTHORIZED , 'Not Authorized');
+            }
+
+        }
+        return success([],System::HTTP_OK,'SUCCESS Accept REQUEST');
     }
 
     public function show(Request $request)
     {
-        $data = (object)[];
-        $data->id = 1;
-        $data->lat = '123';
-        $data->lng = '123';
-        $data->photo = "http://downloadimage";
+       $request = RequestModel::findOrFail($request->request_id);
 
-        return success($data,System::HTTP_OK,'SUCCESS');
+        return success($request->data(),System::HTTP_OK,'SUCCESS');
     }
 }

@@ -11,12 +11,14 @@ use App\Models\System\System;
 class verifyRequest extends FormRequest
 {
 
-    protected $stopOnFirstFailure = false;
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
+
+    protected $stopOnFirstFailure = true;
+
     public function authorize()
     {
         return true;

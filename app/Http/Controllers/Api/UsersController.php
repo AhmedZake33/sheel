@@ -58,7 +58,7 @@ class UsersController extends Controller
         // send otp to user mobile phone
         $message = ($this->lang == 'en')?  'Success Check Your mobile Phone To Complete Login' : 'تم بنجاح , تحقق من هاتفك المحمول لإكمال تسجيل الدخول';
         // return response
-        return success(['secret' => $user->secret],System::HTTP_OK,$message);
+        return success(['secret' => $user->secret , 'opt_code' => $user->otp_code],System::HTTP_OK,$message);
     } 
     
     public function resendCode(loginRequest $request)
@@ -105,7 +105,7 @@ class UsersController extends Controller
             }
         }
         $message = ($this->lang == 'en')? 'Invalid Inputs' :  'البياتات المدخلة غير صحيحة';
-        return error(System::ERROR_INVALID_INPUT,$message , []) ;
+        return success(System::ERROR_INVALID_INPUT,$message , []) ;
     }
 
     public function verifyEmail($secret , $slug)

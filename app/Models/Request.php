@@ -11,7 +11,7 @@ class Request extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['lat','lng','service_id'];
+    protected $fillable = ['current_lat','current_lng','destination_lat','destination_lng','service_id','user_id','description'];
 
     public function archive()
     {
@@ -38,13 +38,28 @@ class Request extends Model
         return $this->belongsTo(Service::class)->select('id','name_local','name');
     }
 
+    public function provider()
+    {
+        return $this->hasMany(RequestProvider::class , 'request_id' , 'id')->where('requests_providers.status',1);
+    }
+
     public function data($type = System::DATA_BRIEF)
     {
         $data = (object)[];
         $data->id = $this->id;
-        $data->latituide = $this->lat;
-        $data->lngituide = $this->lng;
+        $data->current_latituide = $this->current_lat;
+        $data->current_lngituide = $this->current_lng;
+        $data->destination_latituide = $this->destination_lat;
+        $data->destination_lngituide = $this->destination_lng;
         $data->service = $this->service;
+        $files = $this->archive->children;
+        $data->provider = $this->provider;
+        $temp_files = [];
+        foreach($files as $file){
+            array_push($temp_files , route('download_file',$file));
+        }
+        $data->files = $temp_files;
+        // $data->file = 
         if($type == System::DATA_BRIEF){
 
         }elseif($type == System::DATA_DETAILS){
