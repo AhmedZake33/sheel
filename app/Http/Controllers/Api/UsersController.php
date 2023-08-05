@@ -76,7 +76,7 @@ class UsersController extends Controller
 
         $message = ($this->lang == 'en')?  'Success resend Code Again':'تم إرسال الكود بنجاح مرة اخري' ;
        // return response
-       return success([],System::HTTP_OK,$message);
+       return success(['otp_code' => $user->otp_code],System::HTTP_OK,$message);
     }
 
     public function verifyCode(verifyRequest $request)
@@ -90,10 +90,6 @@ class UsersController extends Controller
             if($user){
                 $mobile = 'mobile';
                 $user->verify($mobile);
-                // if($user->status != User::STATUS_ACTIVE){
-                //     $message = ($this->lang == 'en')?  'success mobile Verification please Complete Email Verification':'تم بنجاح التحقق من الهاتف المحمول ، يرجى إكمال التحقق من البريد الإلكتروني' ;
-                //     return success([],System::HTTP_OK , $message);
-                // }
                 $data = $user->data(System::DATA_DETAILS);
                 $token = $user->createToken('My Token')->accessToken;
                 $data->token = $token;
