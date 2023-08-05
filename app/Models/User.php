@@ -31,9 +31,7 @@ class User extends Authenticatable
         'otp_code',
         'otp_time',
         'mobile',
-        'secret',
-        'temp_mobile',
-        'temp_email'
+        'secret'
     ];
 
     /**

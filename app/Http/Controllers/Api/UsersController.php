@@ -67,7 +67,7 @@ class UsersController extends Controller
        $mobile =  $request->validated()['mobile'];
 
        // try find user by phone 
-       $user = User::where('mobile',$mobile)->orWhere('temp_mobile',$mobile)->first();
+       $user = User::where('mobile',$mobile)->first();
        
        // create otp code
        User::createOtp($user);
