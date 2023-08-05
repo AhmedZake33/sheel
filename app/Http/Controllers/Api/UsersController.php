@@ -76,7 +76,7 @@ class UsersController extends Controller
 
         $message = ($this->lang == 'en')?  'Success resend Code Again':'تم إرسال الكود بنجاح مرة اخري' ;
        // return response
-       return success(['otp_code' => $user->otp_code],System::HTTP_OK,$message);
+       return success(['otp_code' => $user->otp_code , 'secret' => $user->secret],System::HTTP_OK,$message);
     }
 
     public function verifyCode(verifyRequest $request)
