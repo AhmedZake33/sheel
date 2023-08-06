@@ -37,7 +37,9 @@ class registerRequest extends FormRequest
                     return $q->where('status',0);
                 })
             ],
-            'mobile' => 'required|unique:users,mobile|regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/'
+            'mobile' => ['required','regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/' , Rule::unique('users')->where(function($q){
+                return $q->where('status' , 0);
+            })]
         ];
     }
 

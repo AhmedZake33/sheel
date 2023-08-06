@@ -12,17 +12,37 @@ use App\Http\Requests\registerRequest;
 use App\Http\Requests\verifyRequest;
 use App\Http\Requests\loginRequest;
 use App\Models\System\System;
+use App\Services\UserService;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class UsersController extends Controller
 {
+    protected $service;
+
+    public function __construct(UserService $service)
+    {
+        $this->service = $service;
+    }
 
     public function register(registerRequest $request)
     {
      
         // validate the data 
         $validated = $request->validated();
+        $message = ($this->lang == 'en')? "Successfully Please Check Your Mobile Phone To Complete Registeration" : "تم بنجاح , يرجى التحقق من هاتفك المحمول لإكمال التسجيل";
+        
+        // return $validated['email'];
+        // check if not complete registeration cycle 
+        $user = User::where('email', $validated['email'])->where('mobile',$validated['mobile'])->where('status',2)->first();
+        if($user){
+            return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
+        }
+
+        if($this->service->checkFound($validated)){
+            $message = ($this->lang == 'en') ? 'User Already found Please Login' : '  المستخدم موجود بالفعل برجاء تسجيل الدخول' ;
+            return success([],System::HHTP_Unprocessable_Content,$message);
+        }
        
          // register user and create otp 
         $user = User::create($validated);
@@ -33,7 +53,6 @@ class UsersController extends Controller
 
         // send otp to user mobile phone and verify by email 
 
-        $message = ($this->lang == 'en')? "Successfully Please Check Your Mobile Phone To Complete Registeration" : "تم بنجاح , يرجى التحقق من هاتفك المحمول لإكمال التسجيل";
         // return response
         return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
     }   
@@ -126,5 +145,10 @@ class UsersController extends Controller
         return success([],System::HHTP_Unprocessable_Content , $message);
 
 
+    }
+
+    public function profile()
+    {
+        return success($this->service->profile() , System::HTTP_OK , 'success');
     }
 }

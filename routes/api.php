@@ -43,5 +43,9 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
    Route::post('cancel','RequestsController@cancel');
 });
 
+Route::group(['middleware' => 'auth:api'] , function(){
+    Route::get('profile','UsersController@profile');
+});
+
 
 
