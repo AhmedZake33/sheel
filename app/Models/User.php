@@ -66,6 +66,7 @@ class User extends Authenticatable
             $data->secret = $this->secret;
             // just for test
             $data->otp_code = $this->otp_code;
+            $data->slug = $this->slug;
             
         }else if ($type == System::DATA_DETAILS){
             $data->name = $this->name;
@@ -88,7 +89,7 @@ class User extends Authenticatable
             $user->slug = rand(10000,99999);
         }
         $otp = rand(10000,99999);
-        $user->otp_code = $otp;
+        $user->otp_code = 00000;
         $user->otp_time = now();
         $user->save();
    }

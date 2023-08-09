@@ -51,6 +51,6 @@ class UsersController extends Controller
 
     public function profile()
     {
-        return success($this->service->profile() , System::HTTP_OK , 'success');
+        return $this->service->profile();
     }
 }

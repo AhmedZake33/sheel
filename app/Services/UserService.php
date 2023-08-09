@@ -69,7 +69,7 @@ class UserService extends Base
         $data->email = $user->email;
         $data->secret = $user->secret;
 
-        return $data;
+        return success($data , System::HTTP_OK , 'success');
 
     }
 
