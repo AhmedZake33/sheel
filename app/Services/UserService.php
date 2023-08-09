@@ -68,6 +68,9 @@ class UserService extends Base
         $data->mobile = $user->mobile;
         $data->email = $user->email;
         $data->secret = $user->secret;
+        $data->email_verification = $user->email_verification;
+        $data->status = $user->status;
+
 
         return success($data , System::HTTP_OK , 'success');
 

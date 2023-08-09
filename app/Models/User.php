@@ -75,6 +75,7 @@ class User extends Authenticatable
             $data->secret = $this->secret;
             // just for test
             $data->otp_code = $this->otp_code;
+            $data->slug = $this->slug;
             // $data->token = $this->createToken();
         }else if ($type == System::DATA_LIST){
 
