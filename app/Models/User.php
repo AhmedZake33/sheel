@@ -89,7 +89,7 @@ class User extends Authenticatable
             $user->slug = rand(10000,99999);
         }
         $otp = rand(00000,00000);
-        $user->otp_code = $otp;
+        $user->otp_code = '00000';
         $user->otp_time = now();
         $user->save();
    }
