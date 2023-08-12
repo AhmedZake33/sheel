@@ -21,6 +21,7 @@ class UserService extends Base
 
         if($this->checkIncomplelteUserFound($validated)){
             $user = $this->checkIncomplelteUserFound($validated);
+            User::createOtp($user);
             return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
         }
 
@@ -31,9 +32,8 @@ class UserService extends Base
        
          // register user and create otp 
         $user = $this->createUser($validated);
-
-
-        // send otp to user mobile phone and verify by email 
+ 
+        $user->remove();
 
         // return response
         return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
@@ -118,11 +118,9 @@ class UserService extends Base
        // create otp code
        User::createOtp($user);
 
-       // send otp to user mobile phone
-
         $message = ($this->lang == 'en')?  'Success resend Code Again':'تم إرسال الكود بنجاح مرة اخري' ;
        // return response
-       return success(['otp_code' => $user->otp_code , 'secret' => $user->secret],System::HTTP_OK,$message);
+       return success(['secret' => $user->secret],System::HTTP_OK,$message);
     }
 
     public function verifyCode($request)
@@ -145,7 +143,7 @@ class UserService extends Base
                 $message = ($this->lang == 'en')? 'successfully completed ' : 'مكتملة بنجاح' ;
                 return success($data,System::HTTP_OK ,$message);
             }else{
-                $message = ($this->lang == 'en')? 'Code Is Invalid':'الكود خاطئ';
+                $message = ($this->lang == 'en')? 'Data Is invalid':'الكود خاطئ';
                 return success([],System::HHTP_Unprocessable_Content , $message);
             }
         }
@@ -162,7 +160,6 @@ class UserService extends Base
             if($user){
                 $email = 'email';
                 $user->verify($email);
-                $user->remove();
                 $message = ($this->lang == 'en') ? 'Successfully Verify Email' : 'تم التحقق من البريد الالكتروني بنجاح';
                 return success([],System::HTTP_OK , $message);
             }

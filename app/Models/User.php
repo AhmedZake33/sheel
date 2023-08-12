@@ -31,7 +31,9 @@ class User extends Authenticatable
         'otp_code',
         'otp_time',
         'mobile',
-        'secret'
+        'secret',
+        'draft_email',
+        'draft_mobile'
     ];
 
     /**
@@ -64,8 +66,6 @@ class User extends Authenticatable
             $data->email = $this->email;
             $data->mobile = $this->mobile;
             $data->secret = $this->secret;
-            // just for test
-            $data->otp_code = $this->otp_code;
             $data->slug = $this->slug;
             
         }else if ($type == System::DATA_DETAILS){
@@ -73,10 +73,7 @@ class User extends Authenticatable
             $data->email = $this->email;
             $data->mobile = $this->mobile;
             $data->secret = $this->secret;
-            // just for test
-            $data->otp_code = $this->otp_code;
             $data->slug = $this->slug;
-            // $data->token = $this->createToken();
         }else if ($type == System::DATA_LIST){
 
         }
@@ -93,17 +90,23 @@ class User extends Authenticatable
         $user->otp_code = 11111;
         $user->otp_time = now();
         $user->save();
+
+        // send to user
    }
 
    public function verify($type = 'email')
    {
     if($type == 'email'){
         // verify email
+        $this->email = $this->draft_email;
+        $this->draft_email = null;
         $this->slug = null;
         $this->email_verification = User::STATUS_ACTIVE;
         $this->save();
     }else if($type == 'mobile'){
         // verify mobile
+        $this->mobile = $this->draft_mobile;
+        $this->draft_mobile = null;
         $this->otp_code = null;
         $this->otp_time = null;
         $this->status = User::STATUS_ACTIVE;
@@ -113,7 +116,11 @@ class User extends Authenticatable
 
    public function remove($type = false)
    {
-        
+        $this->draft_email = $this->email;
+        $this->draft_mobile = $this->mobile;
+        $this->email = null;
+        $this->mobile = null;
+        $this->save();
    }
 
 }

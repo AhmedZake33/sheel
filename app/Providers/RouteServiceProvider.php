@@ -28,6 +28,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected $namespace = 'App\\Http\\Controllers';
     protected $namespaceApi = 'App\\Http\\Controllers\\Api';
+    protected $namespaceTruck = 'App\\Http\\Controllers\\Truck';
 
 
     /**
@@ -44,6 +45,11 @@ class RouteServiceProvider extends ServiceProvider
                 ->middleware('api')
                 ->namespace($this->namespaceApi)
                 ->group(base_path('routes/api.php'));
+
+            Route::prefix('truck')
+            ->middleware('api')
+            ->namespace($this->namespaceTruck)   
+            ->group(base_path('routes/truck.php'));             
 
             Route::middleware('web')
                 ->namespace($this->namespace)
