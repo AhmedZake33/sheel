@@ -63,17 +63,13 @@ class User extends Authenticatable
         $data = (object)[];
         if($type == System::DATA_BRIEF){
             $data->name = $this->name;
-            $data->email = $this->email;
-            $data->mobile = $this->mobile;
             $data->secret = $this->secret;
-            $data->slug = $this->slug;
             
         }else if ($type == System::DATA_DETAILS){
             $data->name = $this->name;
             $data->email = $this->email;
             $data->mobile = $this->mobile;
             $data->secret = $this->secret;
-            $data->slug = $this->slug;
         }else if ($type == System::DATA_LIST){
 
         }
