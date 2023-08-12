@@ -64,6 +64,7 @@ class User extends Authenticatable
         if($type == System::DATA_BRIEF){
             $data->name = $this->name;
             $data->secret = $this->secret;
+            $data->slug = $this->slug;
             
         }else if ($type == System::DATA_DETAILS){
             $data->name = $this->name;
