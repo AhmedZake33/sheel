@@ -16,7 +16,7 @@ class LocationService
         $minLng = $requestModel->current_lng - rad2deg(asin($distance / (6371 * cos(deg2rad($requestModel->current_lat)))));
         $maxLng = $requestModel->current_lng + rad2deg(asin($distance / (6371 * cos(deg2rad($requestModel->current_lat)))));
 
-        $locations = Provider::with('user:id,name,email,mobile')->whereBetween('lat', [$minLat, $maxLat])
+        $locations = Provider::with('user:id,name,email,mobile')->where('service_id',$requestModel->service_id)->whereBetween('lat', [$minLat, $maxLat])
         ->whereBetween('lng', [$minLng, $maxLng])->where('user_id','!=',$requestModel->user_id);
 
         if($user_id != null){

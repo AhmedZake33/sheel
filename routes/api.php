@@ -47,5 +47,8 @@ Route::group(['middleware' => 'auth:api'] , function(){
     Route::get('profile','UsersController@profile');
 });
 
+Route::get('download/{archive}','ArchiveController@download')->middleware('auth:api')->name('download_file');
+
+
 
 

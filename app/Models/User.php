@@ -17,6 +17,14 @@ class User extends Authenticatable
     const STATUS_ACTIVE = 0;
     const STATUS_REMOVED = 1;
 
+    // emairate_id_front
+    // emairate_id_back
+    // drive_photo 
+    // RTA_card_front
+    // RTA_card_back
+    // vehicle_registration_form 
+
+
 
     /**
      * The attributes that are mass assignable.
@@ -51,6 +59,25 @@ class User extends Authenticatable
      *
      * @var array<string, string>
      */
+
+     public function archive()
+    {
+        if (empty($this->archive_id)) {
+            $this->createArchive();
+        }
+        return $this->belongsTo(Archive::class, 'archive_id', 'id');
+    }
+
+    public function createArchive()
+    {
+        if($this->archive_id){
+            return $this->archive_id;
+        }
+        $archive = Archive::getWithName("users/$this->id", "($this->id)");
+        $this->archive_id = $archive->id;
+        $this->save();
+        return $this->archive_id;
+    }
 
     public function provider()
     {
@@ -111,7 +138,7 @@ class User extends Authenticatable
     }
    }
 
-   public function remove($type = false)
+   public function draft($type = false)
    {
         $this->draft_email = $this->email;
         $this->draft_mobile = $this->mobile;

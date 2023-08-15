@@ -8,7 +8,7 @@ Route::get('test',function(){
     return 'test from truck api';
 });
 
-Route::post('register','UsersController@regsiterTruck');
+Route::post('register','UsersController@regsiterProvider');
 
 
 

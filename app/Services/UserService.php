@@ -33,7 +33,7 @@ class UserService extends Base
          // register user and create otp 
         $user = $this->createUser($validated);
  
-        $user->remove();
+        $user->draft();
 
         // return response
         return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
@@ -70,7 +70,6 @@ class UserService extends Base
         $data->secret = $user->secret;
         $data->email_verification = $user->email_verification;
         $data->status = $user->status;
-
 
         return success($data , System::HTTP_OK , 'success');
 
