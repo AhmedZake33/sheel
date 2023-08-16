@@ -122,19 +122,25 @@ class User extends Authenticatable
    {
     if($type == 'email'){
         // verify email
-        $this->email = $this->draft_email;
-        $this->draft_email = null;
-        $this->slug = null;
-        $this->email_verification = User::STATUS_ACTIVE;
-        $this->save();
+        if($this->email == null){
+            $this->email = $this->draft_email;
+            $this->draft_email = null;
+            $this->slug = null;
+            $this->email_verification = User::STATUS_ACTIVE;
+            $this->save();
+        }
+        
     }else if($type == 'mobile'){
         // verify mobile
-        $this->mobile = $this->draft_mobile;
-        $this->draft_mobile = null;
-        $this->otp_code = null;
-        $this->otp_time = null;
-        $this->status = User::STATUS_ACTIVE;
-        $this->save();
+        if($this->mobile == null){
+            $this->mobile = $this->draft_mobile;
+            $this->draft_mobile = null;
+            $this->otp_code = null;
+            $this->otp_time = null;
+            $this->status = User::STATUS_ACTIVE;
+            $this->save();
+        }
+       
     }
    }
 

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Provider;
 use App\Models\User;
+use Illuminate\Support\Str;
 use App\Models\System\System;
 
 class ProviderService extends Base
@@ -11,8 +12,9 @@ class ProviderService extends Base
     public function createProvider($request)
     {
          // after validate all data filter data only 
-
-         $user = User::create($request->except(['emairate_id_front','emairate_id_back','drive_photo','RTA_card_front','RTA_card_back','vehicle_registration_form']));
+        $user = User::create($request->except(['emairate_id_front','emairate_id_back','drive_photo','RTA_card_front','RTA_card_back','vehicle_registration_form']));
+        $user->secret = Str::random(50);
+        $user->save();
          // add files
          $user->archive->addDocumentWithShortName($request->emairate_id_front , null , 'emairate_id_front' , 'emairate_id_front');
          $user->archive->addDocumentWithShortName($request->emairate_id_back , null , 'emairate_id_back' , 'emairate_id_back');
@@ -29,9 +31,11 @@ class ProviderService extends Base
         $provider->user_id = $user->id;
         $provider->service_id = $request->service_id;
         $provider->save();
-
+        // create opt 
+        User::createOtp($user ,true);
+        
         $message =  ($this->lang == 'ar')? 'تم التسجيل بنجاح'  : "Register Complete Successfully";
-        return success([],System::HTTP_OK,$message);
+        return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
     }
 
     public function acceptProvider(Provider $provider)
@@ -40,8 +44,6 @@ class ProviderService extends Base
         $user_id = $provider->user_id;
         $user = User::find($user_id);
         $user->verify('mobile');
-        
-        User::createOtp();
         
     }
 }
