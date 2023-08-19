@@ -6,6 +6,7 @@ use App\Models\Provider;
 use App\Models\User;
 use Illuminate\Support\Str;
 use App\Models\System\System;
+use Carbon\Carbon;
 
 class ProviderService extends Base
 {
@@ -36,6 +37,40 @@ class ProviderService extends Base
         
         $message =  ($this->lang == 'ar')? 'تم التسجيل بنجاح'  : "Register Complete Successfully";
         return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
+    }
+
+    public function verifyCode($request)
+    {
+        $validated = $request->validated();
+        $message = null;
+        $otp_code = $validated['otp_code'];
+        $secret = $validated['secret'];
+        if($secret && $otp_code){
+            // current time 
+            $desiredTime = Carbon::now()->addMinutes(-5);
+            $user = User::where('secret',$secret)->where('otp_code',$otp_code)->where('otp_time', '>=',$desiredTime)->first();
+            //  dd(Carbon::now()->addMinutes(5)->diffInMinutes(carbon::parse('2023-08-07 21:07:49')));
+            if($user){
+                if($user->status == User::STATUS_ACTIVE){
+                    // create token and become provider in system
+                    $data = $user->data(System::DATA_DETAILS);
+                    $token = $user->createToken('My Token')->accessToken;
+                    $data->token = $token;
+                    $user->verify('mobile');
+                    $message = ($this->lang == 'en')? 'successfully completed ' : ' مكتملة بنجاح ' ;
+                    return success($data,System::HTTP_OK ,$message);   
+
+                }
+                $user->verify('mobile' , User::STATUS_PENDING_PROVIDER);
+                $message = ($this->lang == 'en')? 'successfully completed Please wait to Activate Your Account' : ' مكتملة بنجاح برجاء الانتظار حتي تفعيل الحساب' ;
+                return success([],System::HTTP_OK ,$message);
+            }else{
+                $message = ($this->lang == 'en')? 'Data Is invalid':'الكود خاطئ';
+                return success([],System::HHTP_Unprocessable_Content , $message);
+            }
+        }
+        $message = ($this->lang == 'en')? 'Invalid Inputs' :  'البياتات المدخلة غير صحيحة';
+        return success(System::ERROR_INVALID_INPUT,$message , []) ;
     }
 
     public function acceptProvider(Provider $provider)

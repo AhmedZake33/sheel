@@ -16,6 +16,7 @@ class User extends Authenticatable
     const STATUS_INCOMPLETE = 2;
     const STATUS_ACTIVE = 0;
     const STATUS_REMOVED = 1;
+    const STATUS_PENDING_PROVIDER = 3;
 
     // emairate_id_front
     // emairate_id_back
@@ -118,7 +119,7 @@ class User extends Authenticatable
         // send to user
    }
 
-   public function verify($type = 'email')
+   public function verify($type = 'email' , $status = null)
    {
     if($type == 'email'){
         // verify email
@@ -127,6 +128,10 @@ class User extends Authenticatable
             $this->draft_email = null;
             $this->slug = null;
             $this->email_verification = User::STATUS_ACTIVE;
+            $this->save();
+        }else{
+            $this->draft_email = null;
+            $this->slug = null;
             $this->save();
         }
         
@@ -138,6 +143,15 @@ class User extends Authenticatable
             $this->otp_code = null;
             $this->otp_time = null;
             $this->status = User::STATUS_ACTIVE;
+            $this->save();
+        }else{
+            $this->otp_code = null;
+            $this->otp_time = null;
+            $this->save();
+        }
+
+        if($status){
+            $this->status = User::STATUS_PENDING_PROVIDER;
             $this->save();
         }
        

@@ -95,6 +95,9 @@ class UserService extends Base
         // create otp code
         if($user && $user->status == User::STATUS_ACTIVE){
             User::createOtp($user);
+        }elseif($user && $user->status == User::STATUS_PENDING_PROVIDER){
+            $message = ($this->lang == 'en') ? 'Please Wait to review Your Data' : ' برجاء الانتظار لمراجعة البيانات';
+            return success([],System::HHTP_Unprocessable_Content,$message);
         }else{
             $message = ($this->lang == 'en') ? 'Please Complete Verification' : '  برجاء اكمال التحقق من البيانات  ';
             return success([],System::HHTP_Unprocessable_Content,$message);
@@ -114,6 +117,7 @@ class UserService extends Base
        // try find user by phone 
        $user = User::where('mobile',$mobile)->orWhere('draft_mobile',$mobile)->first();
         
+       // if not found user in DB
        if(!$user){
         $message = ($this->lang == 'en')?  'Phone number is incorrect':'رقم الموبايل غير صحيح' ;
         return success([],System::HHTP_Unprocessable_Content,$message);
