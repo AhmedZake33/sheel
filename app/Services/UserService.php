@@ -112,8 +112,12 @@ class UserService extends Base
        $mobile =  $request->validated()['mobile'];
 
        // try find user by phone 
-       $user = User::where('mobile',$mobile)->first();
-       
+       $user = User::where('mobile',$mobile)->orWhere('draft_mobile',$mobile)->first();
+        
+       if(!$user){
+        $message = ($this->lang == 'en')?  'Phone number is incorrect':'رقم الموبايل غير صحيح' ;
+        return success([],System::HHTP_Unprocessable_Content,$message);
+       }
        // create otp code
        User::createOtp($user);
 

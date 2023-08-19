@@ -11,6 +11,7 @@ use Auth;
 use App\Http\Requests\registerRequest;
 use App\Http\Requests\verifyRequest;
 use App\Http\Requests\loginRequest;
+use App\Http\Requests\ResendCodeRequest;
 use App\Models\System\System;
 use App\Services\UserService;
 use Carbon\Carbon;
@@ -34,7 +35,7 @@ class UsersController extends Controller
         return $this->service->login($request);
     } 
     
-    public function resendCode(loginRequest $request)
+    public function resendCode(ResendCodeRequest $request)
     {
        return $this->service->resendCode($request);
     }
