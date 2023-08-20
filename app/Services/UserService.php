@@ -150,7 +150,7 @@ class UserService extends Base
                 $message = ($this->lang == 'en')? 'successfully completed ' : 'مكتملة بنجاح' ;
                 return success($data,System::HTTP_OK ,$message);
             }else{
-                $message = ($this->lang == 'en')? 'Data Is invalid':'الكود خاطئ';
+                $message = ($this->lang == 'en')? 'Otp Is Expired Or Incorrect':'كود التفعيل منتهي او خاطئ';
                 return success([],System::HHTP_Unprocessable_Content , $message);
             }
         }
