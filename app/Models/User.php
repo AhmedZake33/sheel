@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\System\System;
+use App\Models\payment\Card;
 
 class User extends Authenticatable
 {
@@ -83,6 +84,11 @@ class User extends Authenticatable
     public function provider()
     {
         return $this->belongsTo(Provider::class , 'id','user_id');
+    }
+
+    public function cards()
+    {
+        return $this->hasMany(Card::class);
     }
 
     

@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\Payments\CardsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\UsersController;
+use App\Http\Controllers\Api\payments\PaymentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,17 +17,11 @@ use App\Http\Controllers\api\UsersController;
 |
 */
 
-Route::get('test',function(){
-    return 'test';
-});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('test',function(){
-    return 'test';
-});
 
 // user request 
 Route::post('register','UsersController@register');
@@ -40,7 +36,19 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
    Route::get('nearestLocations','RequestsController@nearestLocations');
    Route::get('nearestLocation','RequestsController@nearestLocation');
    Route::get('show','RequestsController@show');
+   Route::post('accept','RequestsController@accept');
    Route::post('cancel','RequestsController@cancel');
+});
+
+// payments
+Route::group(['prefix' => 'payments' , 'middleware' => 'auth:api'] , function(){
+    Route::post('add/card',[CardsController::class,'addCard']);
+    Route::post('edit/card/{card}',[CardsController::class,'editCard']);
+});
+
+// notification
+Route::group(['middleware' => 'auth:api' , 'prefix' => 'notifications'] , function(){
+    Route::post('','NotificationsController@index');
 });
 
 Route::group(['middleware' => 'auth:api'] , function(){
@@ -48,7 +56,3 @@ Route::group(['middleware' => 'auth:api'] , function(){
 });
 
 Route::get('download/{archive}','ArchiveController@download')->middleware('auth:api')->name('download_file');
-
-
-
-

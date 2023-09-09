@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Scopes\ActiveScope;
 class Notification extends Model
 {
-    protected $fillable = ['user_id','request_id','title','seen'];
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ActiveScope);
+    }
+
+    protected $fillable = ['user_id','request_id','title','seen','removed'];
     use HasFactory;
 
     const SEEN = 0;

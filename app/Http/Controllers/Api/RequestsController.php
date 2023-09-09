@@ -12,7 +12,7 @@ use App\Services\ProviderRequestService;
 use App\Models\Provider;
 use App\Models\RequestProvider;
 use App\Models\Notification;
-
+use DB;
 
 
 class RequestsController extends Controller
@@ -111,20 +111,29 @@ class RequestsController extends Controller
         // check if auth user is provider in this request 
         $requestModel = RequestModel::find($request->request_id);
         $user = auth()->user();
+        if($requestModel->user_id == $user->id){
+            // user can cancel his request 
+            $requestModel->update(['status' => RequestModel::STATUS_CANCEL]);
+            DB::table('requests_providers')->where('request_id',$requestModel->id)->update(['status' => RequestProvider::STATUS_CANCELED]);
+            DB::table('notifications')->where('request_id',$requestModel->id)->update(['removed' => 1]);
+            return success([],System::HTTP_OK,'SUCCESS CANCEL Your Request');
+        }
         $provider = Provider::where('user_id',$user->id)->first();
-        if($provider){
+        if($provider && $requestModel->status == RequestModel::STATUS_NEW){
             // get request provider 
             $requestProvider = RequestProvider::where('request_id',$requestModel->id)->where('provider_id',$provider->id)->where('status',RequestProvider::STATUS_PENDING)->first();
             if($requestProvider){
-                
                 $requestProvider->update(['status' => RequestProvider::STATUS_REFUSED]);
-
+                $refusedProviders = $requestModel->refusedProviders();
+                if(!array_key_exists(auth()->user()->id , $refusedProviders)){
+                    array_push($refusedProviders , auth()->user()->id);
+                }
                 // seen notification 
                 $notification = Notification::where(['user_id' => auth()->user()->id , 'request_id' => $requestModel->id , 'seen' => Notification::UNSEEN])->first();
                 Notification::seen($notification);
 
                 // get nearest locations
-                $nearestLocations =  $this->locationService->getNearestLocations($requestModel , $user->id);
+                $nearestLocations =  $this->locationService->getNearestLocations($requestModel , $refusedProviders);
                
                 // get nearest location 
                 if($nearestLocations){
@@ -139,7 +148,7 @@ class RequestsController extends Controller
                         Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
                     }
                 }
-                return success([],System::HTTP_OK,'SUCCESS CANCEL REQUEST');
+                return success([],System::HTTP_OK,'SUCCESS CANCEL Request');
             }
         }
         return success([],System::HTTP_UNAUTHORIZED,'Not Authorized');
@@ -149,7 +158,7 @@ class RequestsController extends Controller
 
     public function accept(Request $request)
     {
-        $requestModel = RequestModel::find($request->request_id);
+        $requestModel = RequestModel::where('id',$request->request_id)->where('status',RequestModel::STATUS_NEW)->first();
         $user = auth()->user();
         $provider = Provider::where('user_id',$user->id)->first();
         if($provider){
@@ -158,6 +167,8 @@ class RequestsController extends Controller
             if($requestProvider){
                 $requestProvider->update(['status' => RequestProvider::STATUS_ACCEPTED]);
 
+                // update request 
+                $requestModel->update(['status' => RequestModel::STATUS_ACCEPTED]);                
                 // seen notification
                 $notification = Notification::where(['user_id' => auth()->user()->id , 'request_id' => $requestModel->id , 'seen' => Notification::UNSEEN])->first();
                 Notification::seen($notification);

@@ -10,9 +10,9 @@ class NotificationsController extends Controller
 {
     public function index(Request $request)
     {
-        // $notification = Notification::find(7);
+        $notifications = Notification::select('*')->count();
         // $title = (array)json_decode($notification->title);
-        // return response()->json($title);
+        return response()->json(($notifications));
     }
 
     public function seen(Request $request)

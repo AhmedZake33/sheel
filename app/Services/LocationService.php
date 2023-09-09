@@ -6,7 +6,7 @@ use App\Models\User;
 
 class LocationService 
 {
-    public function getNearestLocations($requestModel , $user_id = null)
+    public function getNearestLocations($requestModel , $providers = [])
     {
         // return $requestModel;
         $distance = env('distance'); 
@@ -16,13 +16,15 @@ class LocationService
         $minLng = $requestModel->current_lng - rad2deg(asin($distance / (6371 * cos(deg2rad($requestModel->current_lat)))));
         $maxLng = $requestModel->current_lng + rad2deg(asin($distance / (6371 * cos(deg2rad($requestModel->current_lat)))));
 
-        $locations = Provider::with('user:id,name,email,mobile')->where('service_id',$requestModel->service_id)->whereBetween('lat', [$minLat, $maxLat])
-        ->whereBetween('lng', [$minLng, $maxLng])->where('user_id','!=',$requestModel->user_id);
+        $locations = Provider::with('user:id,name,email,mobile')
+        ->where('service_id',$requestModel->service_id)
+        ->whereBetween('lat', [$minLat, $maxLat])
+        ->whereBetween('lng', [$minLng, $maxLng])
+        ->where('user_id','!=',$requestModel->user_id);
 
-        if($user_id != null){
-            $locations = $locations->where('user_id','!=',$user_id);
+        if(count($providers) > 0){
+            $locations = $locations->whereNotIn('user_id',$providers);
         }
-
         $locations = $locations->get()->transform(function($location) use ($requestModel){
             $location->distance = $this->calcDistance($requestModel->current_lat , $requestModel->current_lng , $location->lat , $location->lng);
             return $location;
