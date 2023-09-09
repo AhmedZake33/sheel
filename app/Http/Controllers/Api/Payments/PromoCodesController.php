@@ -12,7 +12,7 @@ class PromoCodesController extends Controller
 {
     public function check(Request $request)
     {
-        $promocode = PromoCode::where('code',$request->code)->firstOrFail();
+        $promocode = PromoCode::where('code',$request->code)->firstOrFail(); 
         $counts =  $promocode->payments->count();
         $now = Carbon::now()->toDateString();
         if($promocode->counts > $counts && $now < $promocode->expiration_date){
