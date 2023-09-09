@@ -6,7 +6,7 @@ use App\Models\Request as RequestModel;
 use App\Services\LocationService;
 use App\Models\Notification;
 use App\Models\System\System;
-use App\Models\payment\Payment;
+use App\Models\Payment\Payment;
 
 class RequestService extends Base 
 {

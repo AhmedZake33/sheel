@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\System\System;
-use App\Models\payment\Card;
+use App\Models\Payment\Card;
 
 class User extends Authenticatable
 {
