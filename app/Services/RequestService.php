@@ -28,7 +28,7 @@ class RequestService extends Base
 
         // create payment 
         $payment = new Payment();
-        $payment = $payment->createAndUpdate(['payment_provider_id' => $request->payment_provider_id , 'amount' => 100, 'user_id' => $requestModel->user_id , 'promo_code_id' => 1,'request_id' => $requestModel->id]);
+        $payment = $payment->createAndUpdate(['payment_provider_id' => $request->payment_provider_id , 'amount' => 100, 'user_id' => $requestModel->user_id , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id]);
         $requestModel->payment_id = $payment->id;
         $requestModel->save();
         
