@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Archive;
 use App\Models\System\System;
 use App\Services\LocationService;
+use App\Models\payment\Payment;
 
 class Request extends Model
 {
@@ -49,6 +50,11 @@ class Request extends Model
     public function provider()
     {
         return $this->hasMany(RequestProvider::class , 'request_id' , 'id')->where('requests_providers.status',1);
+    }
+
+    public function payment()
+    {
+        return $this->belongsto(Payment::class);
     }
 
     public function data($type = System::DATA_BRIEF)

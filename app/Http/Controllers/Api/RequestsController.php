@@ -13,54 +13,58 @@ use App\Models\Provider;
 use App\Models\RequestProvider;
 use App\Models\Notification;
 use DB;
+use App\Services\RequestService;
 
 
 class RequestsController extends Controller
 {
     protected $locationService = null;
     protected $providerRequestService = null;
+    protected $requestService = null;
 
-    public function __construct(LocationService $locationService, ProviderRequestService $providerRequestService)
+    public function __construct(LocationService $locationService, ProviderRequestService $providerRequestService , RequestService $requestService)
     {
         $this->locationService = $locationService;
         $this->providerRequestService = $providerRequestService;
+        $this->requestService = $requestService;
     }
 
     public function create(requestCreateRequest $request)
     {
-        $user =  auth()->user();
-        $data = $request->validated();
-        $data['user_id'] = $user->id;
-        $requestModel = RequestModel::create($data);
+        return $this->requestService->create($request);
+        // $user =  auth()->user();
+        // $data = $request->validated();
+        // $data['user_id'] = $user->id;
+        // $requestModel = RequestModel::create($data);
 
-        if(count($data['file']) > 0){
-            // create archive 
-            foreach($data['file'] as $file){
-                $requestModel->archive->addFile($file);
-            }
+        // if(count($data['file']) > 0){
+        //     // create archive 
+        //     foreach($data['file'] as $file){
+        //         $requestModel->archive->addFile($file);
+        //     }
             
-        }
+        // }
 
-        // service to get nearest locations
-        $nearestLocations =  $this->locationService->getNearestLocations($requestModel);
-        // service to get nearest location  
-        if($nearestLocations){
-            $nearestLocation = $this->locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
+        // // service to get nearest locations
+        // $nearestLocations =  $this->locationService->getNearestLocations($requestModel);
+        // // service to get nearest location  
+        // if($nearestLocations){
+        //     $nearestLocation = $this->locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
 
-            // assign to provider 
-            if($nearestLocation){
-                $this->providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
+        //     // assign to provider 
+        //     if($nearestLocation){
+        //         $this->providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
 
-                // notification to provider
-                $title = ['ar' => 'arabic' , 'en' => 'english'];
-                Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
-            }
+        //         // notification to provider
+        //         $title = ['ar' => 'arabic' , 'en' => 'english'];
+        //         Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
+        //     }
             
-        }
+        // }
         
 
-        // now i have request : 
-        return success($requestModel->data(),System::HTTP_OK,'SUCCESS CREATE REQUEST');
+        // // now i have request : 
+        // return success($requestModel->data(),System::HTTP_OK,'SUCCESS CREATE REQUEST');
     }
 
     public function nearestLocations(Request $request)

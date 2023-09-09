@@ -91,6 +91,11 @@ class User extends Authenticatable
         return $this->hasMany(Card::class);
     }
 
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
     
     public function data($type = System::DATA_BRIEF)
     {

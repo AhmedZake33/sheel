@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\Payments\CardsController;
+use App\Http\Controllers\Api\Payments\PromoCodesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\UsersController;
 use App\Http\Controllers\Api\payments\PaymentsController;
+use App\Models\Payment\PromoCode;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +46,8 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
 Route::group(['prefix' => 'payments' , 'middleware' => 'auth:api'] , function(){
     Route::post('add/card',[CardsController::class,'addCard']);
     Route::post('edit/card/{card}',[CardsController::class,'editCard']);
+
+    Route::post('check/promocode',[PromoCodesController::class , 'check']);
 });
 
 // notification
