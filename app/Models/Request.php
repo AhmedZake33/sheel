@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Archive;
 use App\Models\System\System;
 use App\Services\LocationService;
-use App\Models\payment\Payment;
+use App\Models\Payment\Payment;
 
 class Request extends Model
 {

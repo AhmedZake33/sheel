@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\payment\Payment;
+use App\Models\Payment\Payment;
 
 class PaymentService extends Base {
 
