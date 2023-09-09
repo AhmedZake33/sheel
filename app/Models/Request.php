@@ -66,6 +66,7 @@ class Request extends Model
         $data->current_lngituide = $this->current_lng;
         $data->destination_latituide = $this->destination_lat;
         $data->destination_lngituide = $this->destination_lng;
+        $data->payment = $this->payment;
         $data->service = $this->service;
         $files = $this->archive->children;
         $data->provider = $this->provider;
