@@ -9,6 +9,7 @@ use App\Models\System\System;
 class PromoCode extends Model
 {
     use HasFactory;
+    protected $table = 'promo_codes';
 
     public function payments()
     {
