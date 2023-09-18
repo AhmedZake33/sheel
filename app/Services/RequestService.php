@@ -12,11 +12,17 @@ class RequestService extends Base
 {
     public static function create($request)
     {
-
         $user =  auth()->user();
         $data = $request->validated();
         $data['user_id'] = $user->id;
-        $requestModel = RequestModel::create($data);
+        $requestModel = null;
+        if($request->request_id){
+            $requestModel = RequestModel::find($request->request_id);
+            $requestModel->fill($data);
+            // return response()->json('update');
+        }else{
+            $requestModel = RequestModel::create($data);
+        }
 
         if(count($data['file']) > 0){
             // create archive 
@@ -26,11 +32,14 @@ class RequestService extends Base
             
         }
 
-        // create payment 
-        $payment = new Payment();
-        $payment = $payment->createAndUpdate(['payment_provider_id' => $request->payment_provider_id , 'amount' => 100, 'user_id' => $requestModel->user_id , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id]);
-        $requestModel->payment_id = $payment->id;
-        $requestModel->save();
+        if($request->payment_provider_id){
+            // create payment 
+            $payment = new Payment();
+            $payment = $payment->createAndUpdate(['payment_provider_id' => $request->payment_provider_id , 'amount' => 100, 'user_id' => $requestModel->user_id , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id]);
+            $requestModel->payment_id = $payment->id;
+            $requestModel->save();
+        }
+        
         
         // service to get nearest locations
         $locationService = new LocationService();
