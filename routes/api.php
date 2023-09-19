@@ -48,6 +48,9 @@ Route::group(['prefix' => 'payments' , 'middleware' => 'auth:api'] , function(){
     Route::post('edit/card/{card}',[CardsController::class,'editCard']);
 
     Route::post('check/promocode',[PromoCodesController::class , 'check']);
+    
+    // tap payment
+    Route::get('buy/{id}',[PaymentsController::class , 'buy'])->name('buy');
 });
 
 // notification

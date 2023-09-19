@@ -76,13 +76,15 @@ class Request extends Model
         foreach($files as $file){
             array_push($temp_files , route('download_file',$file));
         }
+        $data->buy = $this->payment ? route('buy',$this->id) : null;  
         $data->files = $temp_files;
         // $data->file = 
         if($type == System::DATA_BRIEF){
 
         }elseif($type == System::DATA_DETAILS){
             $data->created_at = $this->created_at;
-            $data->updated_at = $this->updated_at;   
+            $data->updated_at = $this->updated_at; 
+            
         }
 
         return $data;

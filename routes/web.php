@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Payments\PaymentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,9 @@ Route::get('/', function () {
 Route::get('test',function(){
     return app()->version();
 });
+
+Route::get('payments',function(){
+    return view('payments');
+});
+
+// Route::get('buy',[PaymentsController::class,'buy'])->name('buy');

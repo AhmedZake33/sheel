@@ -62,6 +62,10 @@ class RequestService extends Base
         
 
         // now i have request : 
-        return success($requestModel->data(),System::HTTP_OK,'SUCCESS CREATE REQUEST');
+        if($request->payment){
+            return success($requestModel->data(System::DATA_DETAILS),System::HTTP_OK,'SUCCESS CREATE REQUEST');
+        }else{
+            return success($requestModel->data(),System::HTTP_OK,'SUCCESS CREATE REQUEST');
+        }
     }    
 }
