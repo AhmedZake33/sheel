@@ -4,6 +4,7 @@ namespace App\Models\Payment;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Payment extends Model
 {
@@ -13,7 +14,7 @@ class Payment extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::Class);
+        return $this->belongsTo(User::class);
     }
     
     public function request()
@@ -24,7 +25,7 @@ class Payment extends Model
     public function createAndUpdate($data)
     {
         $payment = new Payment();
-        $payment->payment_provider_id = $data['payment_provider_id'];
+        // $payment->payment_provider_id = $data['payment_provider_id'];
         $payment->amount = $data['amount'];
         $payment->user_id = $data['user_id'];
         $payment->promo_code_id = $data['promo_code_id'];
@@ -41,5 +42,10 @@ class Payment extends Model
         }
         return $payment;
 
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }

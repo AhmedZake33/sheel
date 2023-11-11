@@ -1634,3 +1634,18 @@ if (!function_exists('sendSMS')) {
     }
 }
 
+if(!function_exists('fetchTransaction')){
+    function fetchTransaction($response)
+    {
+        $assocArray =  (array) $response;
+        $result = (object)[];
+        foreach($assocArray as $key => $target){
+            if(in_array($key , ['id','status','amount','currency','transaction','reference'])){
+                $result->$key = $target;
+            }
+            // return $key;
+        }
+
+        return $result;
+    }
+}

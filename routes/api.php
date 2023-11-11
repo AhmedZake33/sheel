@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\UsersController;
 use App\Http\Controllers\Api\payments\PaymentsController;
+use App\Http\Controllers\Api\Payments\TransactionsController;
 use App\Models\Payment\PromoCode;
 
 /*
@@ -43,14 +44,18 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
 });
 
 // payments
-Route::group(['prefix' => 'payments' , 'middleware' => 'auth:api'] , function(){
+Route::group(['prefix' => 'payments' ] , function(){
     Route::post('add/card',[CardsController::class,'addCard']);
     Route::post('edit/card/{card}',[CardsController::class,'editCard']);
 
     Route::post('check/promocode',[PromoCodesController::class , 'check']);
     
     // tap payment
-    Route::get('buy/{id}',[PaymentsController::class , 'buy'])->name('buy');
+    // Route::get('buy/{id}',[PaymentsController::class , 'buy'])->name('buy');
+
+    // transactions api
+    Route::post('transactions/create',[TransactionsController::class , 'createTransaction']);
+    Route::get('buy/{transaction}/{card}',[TransactionsController::class , 'buy'])->name('buy');
 });
 
 // notification
@@ -58,8 +63,9 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'notifications'] , functi
     Route::post('','NotificationsController@index');
 });
 
-Route::group(['middleware' => 'auth:api'] , function(){
-    Route::get('profile','UsersController@profile');
+Route::group(["prefix" => 'profile','middleware' => 'auth:api'] , function(){
+    Route::get('','UsersController@profile');
+    Route::post('/update/{user  }','UsersController@update');
 });
 
-Route::get('download/{archive}','ArchiveController@download')->middleware('auth:api')->name('download_file');
+Route::get('download/{archive}','ArchiveController@download')->name('download_file');

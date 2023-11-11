@@ -6,24 +6,29 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\CardRequest;
 use App\Models\Payment\Card;
+use App\Models\Payment\Transaction;
 use App\Models\System\System;
 use App\Models\Request as RequestModel;
 use App\Services\PaymentService;
+use App\Services\TapService;
+use DB;
 class PaymentsController extends Controller
 {
 
-  protected  $paymentService = null;
+    protected  $paymentService = null;
+    protected  $tapService = null;
 
-    public function __construct(PaymentService $paymentService)
+    public function __construct(PaymentService $paymentService , TapService $tapService)
     {
         $this->paymentService = $paymentService;
+        $this->tapService = $tapService;
     }
 
     public function buy($id)
     {
         $request = RequestModel::find($id);
         // $data = [];
-        // $data['amount'] = 1;
+      // $data['amount'] = 1;
         // $data['currency'] = 'USD';
         // $data['customer']['first_name'] = 'zaki';
         // $data['customer']['phone']['contry_code'] = '+20';
@@ -74,8 +79,23 @@ class PaymentsController extends Controller
         // return redirect()->to($data['transaction']['url']);
 
 
-        $this->paymentService->buy($request);
+        return $this->paymentService->buy($request);
         
 
+    }
+
+    public function callBack($transaction)
+    {
+        $charge_id =  $_GET['tap_id'];
+        DB::table('testcallback')->insert(['data' => 'test data']);
+        $response = $this->tapService->getCharge($charge_id);
+        $result = json_decode($response);
+        
+        if($result->status == "CAPTURED"){
+           // update transaction and payment and request
+           $transaction = Transaction::find($transaction);
+            $transaction->updateStatus($result);
+           return $result;
+        }
     }
 }

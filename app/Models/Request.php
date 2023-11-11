@@ -57,6 +57,11 @@ class Request extends Model
         return $this->belongsto(Payment::class);
     }
 
+    public function user()
+    {
+        return $this->belongsto(User::class);
+    }
+
     public function data($type = System::DATA_BRIEF)
     {
         $locationProvider = new LocationService();
@@ -71,12 +76,13 @@ class Request extends Model
         $files = $this->archive->children;
         $data->provider = $this->provider;
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
-        $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
+        // $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
+        $data->estimatedCost = 100;
         $temp_files = [];
         foreach($files as $file){
             array_push($temp_files , route('download_file',$file));
         }
-        $data->buy = $this->payment ? route('buy',$this->id) : null;  
+        // $data->pay = $this->payment ? route('buy',[$this->id,'otfff']) : null;  
         $data->files = $temp_files;
         // $data->file = 
         if($type == System::DATA_BRIEF){

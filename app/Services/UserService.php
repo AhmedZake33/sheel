@@ -65,11 +65,13 @@ class UserService extends Base
         $user =  auth()->user();
         $data = (object)[];
         $data->name = $user->name;
+        $data->id = $user->id;
         $data->mobile = $user->mobile;
         $data->email = $user->email;
         $data->secret = $user->secret;
         $data->email_verification = $user->email_verification;
         $data->status = $user->status;
+        $data->photo = route('download_file', $user->archive->children()->where('short_name','profile_photo')->pluck('id')[0]);
 
         return success($data , System::HTTP_OK , 'success');
 

@@ -15,7 +15,8 @@ use App\Http\Requests\ResendCodeRequest;
 use App\Models\System\System;
 use App\Services\UserService;
 use Carbon\Carbon;
-
+use App\Http\Requests\profileRequest;
+use Illuminate\Support\Arr;
 class UsersController extends Controller
 {
     protected $service;
@@ -54,4 +55,25 @@ class UsersController extends Controller
     {
         return $this->service->profile();
     }
-}
+
+    public function update(ProfileRequest $request , User $user)
+    {
+        
+        $validated = $request->validated();
+        if($request->profile_photo){
+            if($user->archive->findChildByShortName('profile_photo')){
+                $user->archive->findChildByShortName('profile_photo')->delete();
+                $user->archive->addDocumentWithShortName($request->profile_photo , null , 'profile_photo' , 'profile_photo');
+            }
+        }
+        $user->update(Arr::except($validated , ['email','profile_photo']));
+        if($validated['email']){
+            $user->email = $validated['email'];
+            $user->email_verification =  User::STATUS_INCOMPLETE ;
+            $user->save();
+        }
+        $message = ['ar' => 'تم التعديل بنجاح' , 'en' => 'profile updated successfully'][$this->lang];
+        return success([],System::HTTP_OK , $message);
+    }
+}   
+

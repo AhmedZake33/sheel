@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Payments\PaymentsController;
+use App\Models\Payment\Transaction;
+use App\Services\StripeService;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,4 +28,24 @@ Route::get('payments',function(){
     return view('payments');
 });
 
+Route::get('transaction',function(){
+    return Transaction::find(1)->user;
+});
+
+Route::get('addCard',function(){
+    // $object = (object)[];
+    // $object->name = 'zake';
+    // $object->id = 12;
+    // return fetchTransaction( $object);
+    return view('addCard');
+});
+
 // Route::get('buy',[PaymentsController::class,'buy'])->name('buy');
+
+Route::get('callback/{transaction}',[PaymentsController::class , 'callBack'])->name('callback');
+
+Route::get('stripe',function(){
+    $StripeService = new StripeService();
+    return $StripeService->createCharge();
+    return 'success';
+});

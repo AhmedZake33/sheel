@@ -11,6 +11,7 @@ class CardRequest extends FormRequest
      *
      * @return bool
      */
+    protected $stopOnFirstFailure = true;
     public function authorize()
     {
         return true;
@@ -24,11 +25,13 @@ class CardRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
             'card_number' => 'required',
-            'cvv' => 'required',
-            'expiration' => 'required',
+            'cvc' => 'required',
+            'exp_month' => 'required',
+            'exp_year' => 'required',
+            'name' => 'required',
             'region' => 'required'
         ];
     }
+
 }
