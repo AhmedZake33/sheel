@@ -69,3 +69,9 @@ Route::group(["prefix" => 'profile','middleware' => 'auth:api'] , function(){
 });
 
 Route::get('download/{archive}','ArchiveController@download')->name('download_file');
+
+// chat api
+Route::group(["prefix" => 'chats','middleware' => 'auth:api'] , function(){
+    Route::get('','ChatsController@get');
+    Route::post('/send/{request}','ChatsController@send');
+});

@@ -16,7 +16,16 @@ use App\Models\System\System;
 use App\Services\UserService;
 use Carbon\Carbon;
 use App\Http\Requests\profileRequest;
+use Exception;
 use Illuminate\Support\Arr;
+use App\Models\Request as RequestModel;
+use App\Models\Chat;
+use App\Events\ChatEvent;
+use Pusher\Pusher;
+use Illuminate\Support\Facades\Broadcast;
+
+
+
 class UsersController extends Controller
 {
     protected $service;
@@ -74,6 +83,42 @@ class UsersController extends Controller
         }
         $message = ['ar' => 'تم التعديل بنجاح' , 'en' => 'profile updated successfully'][$this->lang];
         return success([],System::HTTP_OK , $message);
+    }
+
+    public function loginWithEmail(Request $request)
+    {
+        $user = User::where('email',$request->email)->first();
+        if($user){
+            event(new ChatEvent("welcome here from controller" , 2));
+            if(Auth::loginUsingId($user->id)){
+                return redirect()->route('home');
+            }
+        }
+    }
+    
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        return redirect()->route('login');
+    }
+
+    public function sendMessage(Request $request , $id)
+    {
+        // return auth()->user();
+        $ReceivingUser = RequestModel::find($id)->getReceivingUser();
+
+        $message = new Chat();
+        $message->request_id = $id;
+        $message->received_id = $ReceivingUser;
+        $message->user_id = Auth::id();
+        $message->message = $request->message;
+        $message->save();
+
+        \App\Events\testEvent::dispatch(RequestModel::find($id) ,$request->message);
+        // broadcast(new \App\Events\testEvent($request->message , $id))->to('channel');
+        broadcast(new \App\Events\testEvent(RequestModel::find($id) ,$request->message))->toOthers();
+
+        return $message;
     }
 }   
 

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use App\Models\User;
+use App\Models\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,11 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+Broadcast::channel('channel.{requestId}', function (User $user, int $requestId) {
+   return Request::canAccessChat($requestId,$user);
+});
+
+// Broadcast::channel('private-user-channel-{receiverUserId}', function ($user, $receiverUserId) {
+//     return (int) $user->id === (int) $receiverUserId;
+// });
