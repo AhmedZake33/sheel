@@ -35,9 +35,7 @@ class loginRequest extends FormRequest
             'mobile' => [
                 'required','regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/',
                 "exists:users,mobile"
-                
             ]
-            
         ];
     }
 
