@@ -71,7 +71,7 @@ class UserService extends Base
         $data->secret = $user->secret;
         $data->email_verification = $user->email_verification;
         $data->status = $user->status;
-        $data->photo = route('download_file', $user->archive->children()->where('short_name','profile_photo')->pluck('id')[0]);
+        $data->photo = count($user->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
 
         return success($data , System::HTTP_OK , 'success');
 

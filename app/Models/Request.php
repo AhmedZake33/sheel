@@ -52,6 +52,11 @@ class Request extends Model
         return $this->hasMany(RequestProvider::class , 'request_id' , 'id')->where('requests_providers.status',1);
     }
 
+    public function CurrentProvider()
+    {
+        return $this->hasOne(RequestProvider::class , 'request_id' , 'id')->where('requests_providers.status',1);
+    }
+
     public function payment()
     {
         return $this->belongsto(Payment::class);
@@ -59,7 +64,7 @@ class Request extends Model
 
     public function user()
     {
-        return $this->belongsto(User::class);
+        return $this->belongsto(User::class)->select('id','name','email');
     }
 
     public function data($type = System::DATA_BRIEF)
@@ -67,6 +72,7 @@ class Request extends Model
         $locationProvider = new LocationService();
         $data = (object)[];
         $data->id = $this->id;
+        $data->user = $this->user;
         $data->current_latituide = $this->current_lat;
         $data->current_lngituide = $this->current_lng;
         $data->destination_latituide = $this->destination_lat;
@@ -74,7 +80,7 @@ class Request extends Model
         $data->payment = $this->payment;
         $data->service = $this->service;
         $files = $this->archive->children;
-        $data->provider = $this->provider;
+        $data->provider = $this->CurrentProvider;
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
         // $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
         $data->estimatedCost = 100;
@@ -102,5 +108,32 @@ class Request extends Model
         ->where('requests_providers.status',0)->pluck('providers.user_id')->toArray();
 
         return $users;
+    }
+
+    public static function canAccessChat($requestModel,$user)
+    {
+        
+        $requestModel = Request::find($requestModel);
+        // return $requestModel->user->is(auth()->user());
+        if(!$requestModel->CurrentProvider){
+            return false;
+        }
+
+        if($requestModel->CurrentProvider->is($user) || $requestModel->user->is($user)){
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getReceivingUser()
+    {
+        if(auth()->id() == $this->user_id){
+            return $this->CurrentProvider->id;
+        }else if(auth()->id() == $this->CurrentProvider->id){
+            return $this->user_id;
+        }else{
+            return;
+        }
     }
 }
