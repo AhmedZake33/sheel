@@ -20,8 +20,14 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('channel.{requestId}', function (User $user, int $requestId) {
-   return Request::canAccessChat($requestId,$user);
+   return Request::canAccess($requestId,$user);
 });
+
+
+Broadcast::channel('Notification.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
+});
+
 
 // Broadcast::channel('private-user-channel-{receiverUserId}', function ($user, $receiverUserId) {
 //     return (int) $user->id === (int) $receiverUserId;

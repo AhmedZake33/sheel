@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Archive;
 use App\Models\System\System;
 use App\Services\LocationService;
+use App\Services\ProviderRequestService;
 use App\Models\Payment\Payment;
 
 class Request extends Model
@@ -80,7 +81,8 @@ class Request extends Model
         $data->payment = $this->payment;
         $data->service = $this->service;
         $files = $this->archive->children;
-        $data->provider = $this->CurrentProvider;
+        $data->provider = $this->CurrentProvider?$this->CurrentProvider->provider->user : null;
+        $data->chats = $this->chats;
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
         // $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
         $data->estimatedCost = 100;
@@ -110,30 +112,59 @@ class Request extends Model
         return $users;
     }
 
-    public static function canAccessChat($requestModel,$user)
+    public static function canAccess($requestModel,$user)
     {
         
         $requestModel = Request::find($requestModel);
         // return $requestModel->user->is(auth()->user());
-        if(!$requestModel->CurrentProvider){
-            return false;
+
+        if(  ($requestModel->CurrentProvider  && $requestModel->CurrentProvider->provider->user->is($user)) || $requestModel->user->is($user)){
+            return true;
         }
 
-        if($requestModel->CurrentProvider->is($user) || $requestModel->user->is($user)){
-            return true;
+        if(!$requestModel->CurrentProvider){
+            return false;
         }
 
         return false;
     }
 
+    public function chats()
+    {
+        return $this->hasMany(Chat::class)->orderBy('created_at','DESC');
+    }
+
     public function getReceivingUser()
     {
         if(auth()->id() == $this->user_id){
-            return $this->CurrentProvider->id;
-        }else if(auth()->id() == $this->CurrentProvider->id){
+            return $this->CurrentProvider->provider->user->id;
+        }else if(auth()->id() == $this->CurrentProvider->provider->user->id){
             return $this->user_id;
         }else{
             return;
+        }
+    }
+
+    public function startShowLocation()
+    {
+        // service to get nearest locations
+        $locationService = new LocationService();
+        $providerRequestService = new providerRequestService();
+        $nearestLocations =  $locationService->getNearestLocations($this);
+        // service to get nearest location  
+        if($nearestLocations){
+            $nearestLocation = $locationService->getNearestLocation($this->current_lat , $this->current_lng , $nearestLocations);
+            // assign to provider 
+            if($nearestLocation){
+                $existProvider = RequestProvider::where('request_id',$this->id)->where('status',RequestProvider::STATUS_PENDING)->first();
+                if(!$existProvider){
+                    $providerRequestService->assignProvider($nearestLocation->user_id , $this->id);
+                }
+                // notification to provider
+                $title = ['ar' => 'arabic' , 'en' => 'english'];
+                Notification::createNotification($nearestLocation->user_id , $this->id , $title);
+            }
+            
         }
     }
 }

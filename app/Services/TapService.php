@@ -137,7 +137,8 @@ class TapService extends base {
     public function getCharge($charge_id)
     {
         $client = new \GuzzleHttp\Client();
-        $secret = env('TAP_SECRET_KEY');
+        $secret = 'sk_test_XKokBfNWv6FIYuTMg5sLPjhJ';
+        // $secret = env('TAP_SECRET_KEY');
         $response = $client->request('GET', "https://api.tap.company/v2/charges/$charge_id", [
             'headers' => [
                 'Authorization' => "Bearer $secret",

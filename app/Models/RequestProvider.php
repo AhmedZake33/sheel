@@ -32,4 +32,9 @@ class RequestProvider extends Model
     // 0 refused
     // 3 canceled
     use HasFactory;
+
+    public function provider()
+    {
+        return $this->belongsTo(Provider::class);
+    }
 }

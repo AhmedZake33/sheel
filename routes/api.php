@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
    Route::get('show','RequestsController@show');
    Route::post('accept','RequestsController@accept');
    Route::post('cancel','RequestsController@cancel');
+   Route::post('{request}/pay','RequestsController@pay');
 });
 
 // payments
@@ -65,13 +66,13 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'notifications'] , functi
 
 Route::group(["prefix" => 'profile','middleware' => 'auth:api'] , function(){
     Route::get('','UsersController@profile');
-    Route::post('/update/{user  }','UsersController@update');
+    Route::post('/update/{user}','UsersController@update');
 });
 
 Route::get('download/{archive}','ArchiveController@download')->name('download_file');
 
 // chat api
 Route::group(["prefix" => 'chats','middleware' => 'auth:api'] , function(){
-    Route::get('','ChatsController@get');
+    Route::post('{request}','ChatsController@get');
     Route::post('/send/{request}','ChatsController@send');
 });

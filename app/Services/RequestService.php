@@ -42,15 +42,56 @@ class RequestService extends Base
             $requestModel->payment_id = $payment->id;
             $requestModel->save();
         }
+
+        $requestModel->startShowLocation();
         
         
         if($request->card_id){
             $card = Card::find($request->card_id);
-            if($card->user_id = auth()->id()){
+            if($card->user_id == auth()->id()){
                 $transaction = Transaction::find($request->transaction_id);
                 // api to complete pay and update request ....
                 $paymentService = new PaymentService();
                 $paymentService->buy($transaction ,$card->id);
+                // service to get nearest locations
+                // $locationService = new LocationService();
+                // $providerRequestService = new providerRequestService();
+                // $nearestLocations =  $locationService->getNearestLocations($requestModel);
+                // // service to get nearest location  
+                // if($nearestLocations){
+                //     $nearestLocation = $locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
+                //     // assign to provider 
+                //     if($nearestLocation){
+                //         $providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
+
+                //         // notification to provider
+                //         $title = ['ar' => 'arabic' , 'en' => 'english'];
+                //         Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
+                //     }
+                    
+                // }
+            }
+        }
+        
+        
+
+        // now i have request : 
+        if($request->payment){
+            return success($requestModel->data(System::DATA_DETAILS),System::HTTP_OK,'SUCCESS CREATE REQUEST');
+        }else{
+            return success($requestModel->data(),System::HTTP_OK,'SUCCESS CREATE REQUEST');
+        }
+    } 
+    
+    public function pay($request , $requestModel)
+    {
+        if($request->card_id){
+            $card = Card::find($request->card_id);
+            if($card->user_id == auth()->id()){
+                $transaction = Transaction::find($request->transaction_id);
+                // api to complete pay and update request ....
+                $paymentService = new PaymentService();
+                $paymentService->buy($transaction ,$card->token);
                 // service to get nearest locations
                 $locationService = new LocationService();
                 $providerRequestService = new providerRequestService();
@@ -70,14 +111,5 @@ class RequestService extends Base
                 }
             }
         }
-        
-        
-
-        // now i have request : 
-        if($request->payment){
-            return success($requestModel->data(System::DATA_DETAILS),System::HTTP_OK,'SUCCESS CREATE REQUEST');
-        }else{
-            return success($requestModel->data(),System::HTTP_OK,'SUCCESS CREATE REQUEST');
-        }
-    }    
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use App\Events\ChatEvent;
+use App\Models\Request;
 use App\Models\System\System;
 use Auth;
 
@@ -13,9 +14,13 @@ class ChatService extends Base {
         $chat = Auth::user()->chats()->createMany([
            ["message" => $request->message , 'request_id' => $requestModel ,'received_id' => $ReceivingUser]
         ]);
+        // return $chat;
+        // $user = \App\Models\User::find(2);
 
+        // return Request::find(133)->CurrentProvider->provider->user->is($user);
+        // return Request::canAccess($requestModel,$user);
         // fire broadcast
-        ChatEvent::dispatch($request->message , $requestModel);
+        ChatEvent::dispatch($chat[0]);
 
 
         if($chat){

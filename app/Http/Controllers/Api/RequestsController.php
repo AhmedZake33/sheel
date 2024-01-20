@@ -70,18 +70,8 @@ class RequestsController extends Controller
     public function nearestLocations(Request $request)
     {
         $requestModel = RequestModel::findOrFail($request['request']);
-        return $this->locationService->getNearestLocations($requestModel);
-        $data = (object)[];
-        $user = (object)[];
-        $user->id = 2;
-        $user->name = 'zaki';
-        $data->id = 1;
-        $data->lat = '123';
-        $data->lng = '123';
-        $data->user = $user;
-        $arr = [$data,$data,$data];
-        
-        return success($arr,System::HTTP_OK,'SUCCESS');
+        $locations =  $this->locationService->getNearestLocations($requestModel);
+        return success($locations , System::HTTP_OK,'SUCCESS');
     }
 
     public function nearestLocation(Request $request)
@@ -97,17 +87,6 @@ class RequestsController extends Controller
         // notification to provider 
 
         return success($nearestLocation , System::HTTP_OK,'SUCCESS');
-        // $data = (object)[];
-        // $user = (object)[];
-        // $user->id = 2;
-        // $user->name = 'zaki';
-
-        // $data->id = 1;
-        // $data->lat = '123';
-        // $data->lng = '123';
-        // $data->user = $user;
-
-        // return success($data,System::HTTP_OK,'SUCCESS');
     }
 
     public function cancel(Request $request)
@@ -118,8 +97,16 @@ class RequestsController extends Controller
         if($requestModel->user_id == $user->id){
             // user can cancel his request 
             $requestModel->update(['status' => RequestModel::STATUS_CANCEL]);
+            
+            if($requestModel->CurrentProvider && $requestModel->CurrentProvider->provider->user->id){
+                $title = ['ar' => 'User Cancel Request' , 'en' => 'User Cancel Request'];
+                Notification::createNotification($requestModel->CurrentProvider->provider->user->id , $requestModel->id , $title);
+            }
+
             DB::table('requests_providers')->where('request_id',$requestModel->id)->update(['status' => RequestProvider::STATUS_CANCELED]);
             DB::table('notifications')->where('request_id',$requestModel->id)->update(['removed' => 1]);
+
+            
             return success([],System::HTTP_OK,'SUCCESS CANCEL Your Request');
         }
         $provider = Provider::where('user_id',$user->id)->first();
@@ -178,7 +165,8 @@ class RequestsController extends Controller
                 Notification::seen($notification);
                 
                 // notification to request user that provider is comming
-                $title = ['ar' => 'provider is comming' , 'en' => 'provider is comming'];
+                
+                $title = ['ar' => 'provider is Accepting Requesting' , 'en' => 'provider is Accepting Requesting'];
                 Notification::createNotification($requestModel->user_id , $requestModel->id , $title);
                     
             }else{
@@ -192,7 +180,15 @@ class RequestsController extends Controller
     public function show(Request $request)
     {
        $request = RequestModel::findOrFail($request->request_id);
-
+    //    return $request;
+        if(!RequestModel::canAccess($request->id , auth()->user())){
+            return error(null,System::HTTP_UNAUTHORIZED);
+        }
         return success($request->data(),System::HTTP_OK,'SUCCESS');
+    }
+
+    public function pay(Request $request , $requestModel)
+    {
+        return $this->requestService->pay($request , $requestModel);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models\Payment;
 
+use App\Models\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
@@ -31,6 +32,10 @@ class Transaction extends Model
                 $payment->status = 1;
                 $payment->paid =  self::where('payment_id', $this->payment->id)->where('status', 1)->sum('paid');
                 $payment->save();
+
+                // start show near By locations to Providers 
+                $request = Request::where('payment_id',$payment->id)->firstOrFail();
+                $request->startShowLocation();
             }
         }
     }

@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Scopes\ActiveScope;
+use Illuminate\Support\Facades\Broadcast;
+use App\Events\NotificationEvent;
+
 class Notification extends Model
 {
     protected static function booted(): void
@@ -26,6 +29,9 @@ class Notification extends Model
         $notification = Notification::create(['user_id' => $user_id , 'request_id' => $request_id]);
         $notification->title = $title;
         $notification->save();
+
+        // fire event 
+        NotificationEvent::dispatch($notification);
     }
 
     public static function seen($notification)

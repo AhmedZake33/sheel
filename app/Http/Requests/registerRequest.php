@@ -39,7 +39,8 @@ class registerRequest extends FormRequest
             ],
             'mobile' => ['required','regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/' , Rule::unique('users')->where(function($q){
                 return $q->where('status' , 0);
-            })]
+            })],
+            'mobile_code' => 'required|regex:/^\+\d{1,4}$/'
         ];
     }
 
@@ -50,6 +51,8 @@ class registerRequest extends FormRequest
             'name.regex' =>    ['ar' => 'الاسم لابد ان يحتوي علي حروف' , 'en' => 'The name must contain letters'][$this->lang],
             'email.required' =>  ['ar' => 'البريد الالكتروني مطلوب للتسجيل' , 'en' => 'ُE-mail is required For Register'][$this->lang],
             'email.unique' =>  ['ar' => 'البريد الالكتروني مطلوب مستخدم من قبل' , 'en' => 'ُE-mail is used before'][$this->lang],
+            'mobile_code.required' =>  ['ar' => 'كود البلد مطلوب' , 'en' => 'ُCode is required'][$this->lang],
+            'mobile_code.regex' => ['ar' => 'الكود خاطئ' , 'en' => 'Code Format is Wrong'][$this->lang]
         ];
     }
 

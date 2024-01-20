@@ -41,6 +41,7 @@ class User extends Authenticatable
         'otp_code',
         'otp_time',
         'mobile',
+        'mobile_code',
         'secret',
         'draft_email',
         'draft_mobile'

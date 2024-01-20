@@ -67,16 +67,18 @@ class UsersController extends Controller
 
     public function update(ProfileRequest $request , User $user)
     {
-        
         $validated = $request->validated();
         if($request->profile_photo){
             if($user->archive->findChildByShortName('profile_photo')){
                 $user->archive->findChildByShortName('profile_photo')->delete();
                 $user->archive->addDocumentWithShortName($request->profile_photo , null , 'profile_photo' , 'profile_photo');
+            }else{
+                $user->archive->addDocumentWithShortName($request->profile_photo , null , 'profile_photo' , 'profile_photo');
             }
         }
+
         $user->update(Arr::except($validated , ['email','profile_photo']));
-        if($validated['email']){
+        if(array_key_exists('email',$validated)){
             $user->email = $validated['email'];
             $user->email_verification =  User::STATUS_INCOMPLETE ;
             $user->save();
@@ -89,7 +91,7 @@ class UsersController extends Controller
     {
         $user = User::where('email',$request->email)->first();
         if($user){
-            event(new ChatEvent("welcome here from controller" , 2));
+            // event(new ChatEvent("welcome here from controller" , 2));
             if(Auth::loginUsingId($user->id)){
                 return redirect()->route('home');
             }
@@ -106,7 +108,7 @@ class UsersController extends Controller
     {
         // return auth()->user();
         $ReceivingUser = RequestModel::find($id)->getReceivingUser();
-
+        // return $ReceivingUser;
         $message = new Chat();
         $message->request_id = $id;
         $message->received_id = $ReceivingUser;
@@ -115,8 +117,7 @@ class UsersController extends Controller
         $message->save();
 
         \App\Events\testEvent::dispatch(RequestModel::find($id) ,$request->message);
-        // broadcast(new \App\Events\testEvent($request->message , $id))->to('channel');
-        broadcast(new \App\Events\testEvent(RequestModel::find($id) ,$request->message))->toOthers();
+        // broadcast(new \App\Events\testEvent(RequestModel::find($id) ,$request->message))->toOthers();
 
         return $message;
     }

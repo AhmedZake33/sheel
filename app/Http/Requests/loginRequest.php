@@ -35,7 +35,8 @@ class loginRequest extends FormRequest
             'mobile' => [
                 'required','regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/',
                 "exists:users,mobile"
-            ]
+            ],
+            'mobile_code' => 'required|regex:/^\+\d{1,4}$/'
         ];
     }
 
@@ -44,7 +45,9 @@ class loginRequest extends FormRequest
         return [
             'mobile.required' =>  ['ar' => 'رقم الموبايل مطلوب للتسجيل' , 'en' => 'Phone Number is required For Register'][$this->lang],
             'mobile.regex' =>    ['ar' => 'رقم الموبايل غير صحيح' , 'en' => 'Phone number is incorrect'][$this->lang],
-            'mobile.exists' => ['ar' => 'رقم الموبايل غير مسجل في قاعدة البيانات' , 'en' => 'Phone number Not Exists in our Database'][$this->lang]
+            'mobile.exists' => ['ar' => 'رقم الموبايل غير مسجل في قاعدة البيانات' , 'en' => 'Phone number Not Exists in our Database'][$this->lang],
+            'mobile_code.required' =>  ['ar' => 'كود البلد مطلوب' , 'en' => 'ُCode is required'][$this->lang],
+            'mobile_code.regex' => ['ar' => 'الكود خاطئ' , 'en' => 'Code Format is Wrong'][$this->lang]
            
         ];
     }

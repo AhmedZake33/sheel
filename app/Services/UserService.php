@@ -90,9 +90,10 @@ class UserService extends Base
     {
         // validate data
        $mobile =  $request->validated()['mobile'];
+       $mobile_code =  $request->validated()['mobile_code'];
        $message = null;
         // try find user by phone 
-        $user = User::where('mobile',$mobile)->first();
+        $user = User::where('mobile',$mobile)->where('mobile_code' , $mobile_code)->first();
         
         // create otp code
         if($user && $user->status == User::STATUS_ACTIVE){
@@ -113,11 +114,12 @@ class UserService extends Base
 
     public function resendCode($request)
     {
-         // validate data
+        // validate data
        $mobile =  $request->validated()['mobile'];
+       $mobile_code =  $request->validated()['mobile_code'];
 
        // try find user by phone 
-       $user = User::where('mobile',$mobile)->orWhere('draft_mobile',$mobile)->first();
+       $user = User::where('mobile',$mobile)->where('mobile_code',$mobile_code)->orWhere('draft_mobile',$mobile)->first();
         
        // if not found user in DB
        if(!$user){

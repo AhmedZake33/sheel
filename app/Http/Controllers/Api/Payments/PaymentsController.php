@@ -12,6 +12,7 @@ use App\Models\Request as RequestModel;
 use App\Services\PaymentService;
 use App\Services\TapService;
 use DB;
+use App\Models\Notification;
 class PaymentsController extends Controller
 {
 
@@ -95,6 +96,15 @@ class PaymentsController extends Controller
            // update transaction and payment and request
            $transaction = Transaction::find($transaction);
             $transaction->updateStatus($result);
+
+            // request
+            // provider
+            $payment = $transaction->payment;
+            $requestModel = RequestModel::where('payment_id',$payment->id)->first();
+            
+            $provider = $requestModel->CurrentProvider->provider->user;
+            $title = ['ar' => 'User was Paid the amount' , 'en' => 'User was Paid the amount'];
+            Notification::createNotification($provider->id , $requestModel->id , $title);
            return $result;
         }
     }
