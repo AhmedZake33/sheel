@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Broadcast;
 class UsersController extends Controller
 {
     protected $service;
-
+ 
     public function __construct(UserService $service)
     {
         $this->service = $service;
