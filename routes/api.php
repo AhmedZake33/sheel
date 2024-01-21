@@ -42,6 +42,7 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
    Route::post('accept','RequestsController@accept');
    Route::post('cancel','RequestsController@cancel');
    Route::post('{request}/pay','RequestsController@pay');
+   Route::post('{request}/manual/pay','RequestsController@manualPay');
 });
 
 // payments

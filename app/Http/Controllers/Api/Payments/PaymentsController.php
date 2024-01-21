@@ -102,9 +102,11 @@ class PaymentsController extends Controller
             $payment = $transaction->payment;
             $requestModel = RequestModel::where('payment_id',$payment->id)->first();
             
-            $provider = $requestModel->CurrentProvider->provider->user;
-            $title = ['ar' => 'User was Paid the amount' , 'en' => 'User was Paid the amount'];
-            Notification::createNotification($provider->id , $requestModel->id , $title);
+            $provider = ($requestModel->CurrentProvider && $requestModel->CurrentProvider->provider->user) ? $requestModel->CurrentProvider->provider->user : null;
+            if($provider){
+                $title = ['ar' => 'User was Paid the amount' , 'en' => 'User was Paid the amount'];
+                Notification::createNotification($provider->id , $requestModel->id , $title);
+            }
            return $result;
         }
     }

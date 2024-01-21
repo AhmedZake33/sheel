@@ -180,7 +180,7 @@ class RequestsController extends Controller
     public function show(Request $request)
     {
        $request = RequestModel::findOrFail($request->request_id);
-    //    return $request;
+        //    return $request;
         if(!RequestModel::canAccess($request->id , auth()->user())){
             return error(null,System::HTTP_UNAUTHORIZED);
         }
@@ -190,5 +190,12 @@ class RequestsController extends Controller
     public function pay(Request $request , $requestModel)
     {
         return $this->requestService->pay($request , $requestModel);
+    }
+
+    public function manualPay(Request $request , $requestModel)
+    {
+        $request = RequestModel::findOrFail($requestModel);
+        $request->manualPay();
+        return success([],System::HTTP_OK,'SUCCESS');
     }
 }

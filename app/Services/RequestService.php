@@ -46,32 +46,32 @@ class RequestService extends Base
         $requestModel->startShowLocation();
         
         
-        if($request->card_id){
-            $card = Card::find($request->card_id);
-            if($card->user_id == auth()->id()){
-                $transaction = Transaction::find($request->transaction_id);
-                // api to complete pay and update request ....
-                $paymentService = new PaymentService();
-                $paymentService->buy($transaction ,$card->id);
-                // service to get nearest locations
-                // $locationService = new LocationService();
-                // $providerRequestService = new providerRequestService();
-                // $nearestLocations =  $locationService->getNearestLocations($requestModel);
-                // // service to get nearest location  
-                // if($nearestLocations){
-                //     $nearestLocation = $locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
-                //     // assign to provider 
-                //     if($nearestLocation){
-                //         $providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
+        // if($request->card_id){
+        //     $card = Card::find($request->card_id);
+        //     if($card->user_id == auth()->id()){
+        //         $transaction = Transaction::find($request->transaction_id);
+        //         // api to complete pay and update request ....
+        //         $paymentService = new PaymentService();
+        //         $paymentService->buy($transaction ,$card->id);
+        //         // service to get nearest locations
+        //         // $locationService = new LocationService();
+        //         // $providerRequestService = new providerRequestService();
+        //         // $nearestLocations =  $locationService->getNearestLocations($requestModel);
+        //         // // service to get nearest location  
+        //         // if($nearestLocations){
+        //         //     $nearestLocation = $locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
+        //         //     // assign to provider 
+        //         //     if($nearestLocation){
+        //         //         $providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
 
-                //         // notification to provider
-                //         $title = ['ar' => 'arabic' , 'en' => 'english'];
-                //         Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
-                //     }
+        //         //         // notification to provider
+        //         //         $title = ['ar' => 'arabic' , 'en' => 'english'];
+        //         //         Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
+        //         //     }
                     
-                // }
-            }
-        }
+        //         // }
+        //     }
+        // }
         
         
 
@@ -85,6 +85,7 @@ class RequestService extends Base
     
     public function pay($request , $requestModel)
     {
+        // return $request->all();
         if($request->card_id){
             $card = Card::find($request->card_id);
             if($card->user_id == auth()->id()){
@@ -109,6 +110,9 @@ class RequestService extends Base
                     }
                     
                 }
+            }else{
+                $message = ($this->lang == 'en') ? 'something went wrong' : 'حدث خطأ ما';
+            return success([],System::HHTP_Unprocessable_Content,$message);
             }
         }
     }

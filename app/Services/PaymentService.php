@@ -48,8 +48,7 @@ class PaymentService extends Base {
         echo  $result;
         
         return $data['redirect']? $data['redirect']['url']:null;
-        // return redirect()->to($data['transaction']['url']);
-        
+        // return redirect()->to($data['transaction']['url']);   
     } 
 
 

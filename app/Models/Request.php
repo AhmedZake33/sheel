@@ -84,8 +84,8 @@ class Request extends Model
         $data->provider = $this->CurrentProvider?$this->CurrentProvider->provider->user : null;
         $data->chats = $this->chats;
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
-        // $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
-        $data->estimatedCost = 100;
+        $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
+        // $data->estimatedCost = 100;
         $temp_files = [];
         foreach($files as $file){
             array_push($temp_files , route('download_file',$file));
@@ -165,6 +165,20 @@ class Request extends Model
                 Notification::createNotification($nearestLocation->user_id , $this->id , $title);
             }
             
+        }
+    }
+
+    public function manualPay()
+    {
+        $payment = Payment::where('id',$this->payment_id)->first();
+        if($payment){
+            $payment->status = 1;
+            $payment->paid = $payment->amount;
+            $payment->save();
+        }
+
+        if(!$this->CurrentProvider()){
+            $this->startShowLocation();
         }
     }
 }
