@@ -22,24 +22,24 @@ class Payment extends Model
         return $this->hasOne(Request::class);
     }
 
-    public function createAndUpdate($data)
+    public static function createAndUpdate($data)
     {
-        // $payment = new Payment();
-        $this->amount = $data['amount'];
-        $this->user_id = $data['user_id'];
-        $this->promo_code_id = $data['promo_code_id'];
-        $this->save();
+        $payment = new Payment();
+        $payment->amount = $data['amount'];
+        $payment->user_id = $data['user_id'];
+        $payment->promo_code_id = $data['promo_code_id'];
+        $payment->save();
         
         // send if valid
         if($data['promo_code_id']){
             $promocode = PromoCode::find($data['promo_code_id']);
             $discount = $promocode->discount;
             if($discount){
-                $this->amount = $this->amount - $discount;
-                $this->save();
+                $payment->amount = $payment->amount - $discount;
+                $payment->save();
             }
         }
-        return $this;
+        return $payment;
 
     }
 

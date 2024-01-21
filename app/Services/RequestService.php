@@ -37,8 +37,8 @@ class RequestService extends Base
         // return $requestModel->payment;
         if($request->with_payment && $requestModel->payment_id == null){
             // create payment 
-            $payment = new Payment();
-            $payment = $payment->createAndUpdate(['amount' => 100, 'user_id' => $requestModel->user_id , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id]);
+            // $payment = new Payment();
+            $payment = Payment::createAndUpdate(['amount' => 100, 'user_id' => $requestModel->user_id , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id]);
             $requestModel->payment_id = $payment->id;
             $requestModel->save();
         }
