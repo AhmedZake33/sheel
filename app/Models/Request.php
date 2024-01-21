@@ -162,7 +162,7 @@ class Request extends Model
                 }
                 // notification to provider
                 $title = ['ar' => 'arabic' , 'en' => 'english'];
-                Notification::createNotification($nearestLocation->user_id , $this->id , $title);
+                // Notification::createNotification($nearestLocation->user_id , $this->id , $title);
             }
             
         }
