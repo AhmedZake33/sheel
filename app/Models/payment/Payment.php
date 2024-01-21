@@ -25,7 +25,6 @@ class Payment extends Model
     public function createAndUpdate($data)
     {
         $payment = new Payment();
-        // $payment->payment_provider_id = $data['payment_provider_id'];
         $payment->amount = $data['amount'];
         $payment->user_id = $data['user_id'];
         $payment->promo_code_id = $data['promo_code_id'];
