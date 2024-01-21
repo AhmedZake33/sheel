@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models\Payment;
+namespace App\Models\Payments;
 
-use App\Models\Payment\PromoCode;
+use App\Models\Payments\PromoCode;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

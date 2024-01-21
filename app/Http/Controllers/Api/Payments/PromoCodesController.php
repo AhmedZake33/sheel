@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Payments;
 
 use App\Http\Controllers\Controller;
-use App\Models\Payment\PromoCode;
+use App\Models\Payments\PromoCode;
 use App\Models\System\System;
 use Illuminate\Http\Request;
 use Carbon\Carbon;

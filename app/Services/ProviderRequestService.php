@@ -15,6 +15,7 @@ class ProviderRequestService
         if($user_id != $request->user_id){
             $provider = Provider::where('user_id',$user_id)->firstOrFail();
             if($user_id && $request_id){
+                
                 // create new record in requests_providers table 
                 RequestProvider::create(['provider_id'  => $provider->id , 'request_id' => $request_id]);
             }

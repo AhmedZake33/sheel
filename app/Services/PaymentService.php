@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Payment\Payment;
-use App\Models\Payment\Transaction;
+use App\Models\Payments\Payment;
+use App\Models\Payments\Transaction;
 use App\Models\System\System;
 use App\models\Request;
 use Auth;

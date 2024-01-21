@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api\Payments;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\TapService;
-use App\Models\Payment\Transaction;
+use App\Models\Payments\Transaction;
 use App\Models\System\System;
 use App\Services\PaymentService;
-use App\Models\Payment\Card;
+use App\Models\Payments\Card;
 
 class TransactionsController extends Controller
 {

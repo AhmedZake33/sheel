@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\UsersController;
 use App\Http\Controllers\Api\payments\PaymentsController;
 use App\Http\Controllers\Api\Payments\TransactionsController;
-use App\Models\Payment\PromoCode;
+use App\Models\Payments\PromoCode;
 
 /*
 |--------------------------------------------------------------------------

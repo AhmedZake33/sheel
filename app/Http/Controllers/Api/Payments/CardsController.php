@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Payments;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CardRequest;
-use App\Models\Payment\Card;
+use App\Models\Payments\Card;
 use Illuminate\Http\Request;
 use App\Models\System\System;
 use App\Services\TapService;

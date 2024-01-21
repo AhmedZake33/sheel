@@ -8,7 +8,7 @@ use App\Models\Archive;
 use App\Models\System\System;
 use App\Services\LocationService;
 use App\Services\ProviderRequestService;
-use App\Models\Payment\Payment;
+use App\Models\Payments\Payment;
 
 class Request extends Model
 {

@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\Chat\PusherController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Payments\PaymentsController;
 use App\Http\Controllers\api\UsersController;
-use App\Models\Payment\Transaction;
+use App\Models\Payments\Transaction;
 use App\Services\StripeService;
 
 /*
