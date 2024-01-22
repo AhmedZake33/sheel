@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\models\Request;
 use App\Models\Payments\Card;
+use App\Services\Base;
 
 class TapService extends base {
 

@@ -15,7 +15,7 @@ use App\Http\Requests\ResendCodeRequest;
 use App\Models\System\System;
 use App\Services\UserService;
 use Carbon\Carbon;
-use App\Http\Requests\profileRequest;
+use App\Http\Requests\ProfileRequest;
 use Exception;
 use Illuminate\Support\Arr;
 use App\Models\Request as RequestModel;
