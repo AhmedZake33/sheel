@@ -27,11 +27,11 @@ class Payment extends Model
         $payment = new Payment();
         $payment->amount = $data['amount'];
         $payment->user_id = $data['user_id'];
-        $payment->promo_code_id = $data['promo_code_id'];
+        $payment->promo_code_id = ($data['promo_code_id'] != null)?$data['promo_code_id'] : null;
         $payment->save();
         
         // send if valid
-        if($data['promo_code_id']){
+        if($data['promo_code_id'] != null){
             $promocode = PromoCode::find($data['promo_code_id']);
             $discount = $promocode->discount;
             if($discount){
