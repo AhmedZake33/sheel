@@ -34,7 +34,7 @@ class ProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'regex:/^[a-zA-Z]+$/',
+            'name' => 'regex:/^[a-zA-Z ]+$/',
             'email' => [
                 'nullable',
                 Rule::unique('users')->where(function($q){
