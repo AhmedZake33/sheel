@@ -23,7 +23,7 @@ class TapService extends base {
             ]
         );
         $client = new \GuzzleHttp\Client();
-        $secret = env('TAP_SECRET_KEY');
+        $secret = env('TEST_TAP_SECRET_KEY');
         $response = $client->request('POST', 'https://api.tap.company/v2/tokens', [
             "body" => $data , 
             'headers' => [

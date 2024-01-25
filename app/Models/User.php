@@ -87,9 +87,14 @@ class User extends Authenticatable
         return $this->belongsTo(Provider::class , 'id','user_id');
     }
 
-    public function cards()
+    public function cards($deatils = null)
     {
-        return $this->hasMany(Card::class);
+        $query =  $this->hasMany(Card::class);
+        if($deatils == null){
+            return $query;
+        }else{
+            return $query->select('first_six','last_four','exp_month','exp_year')->get();
+        }
     }
 
     public function payments()

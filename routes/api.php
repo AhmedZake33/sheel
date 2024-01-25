@@ -46,9 +46,10 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
 });
 
 // payments
-Route::group(['prefix' => 'payments' ] , function(){
+Route::group(['prefix' => 'payments' , 'middleware' => 'auth:api' ] , function(){
     Route::post('add/card',[CardsController::class,'addCard']);
     Route::post('edit/card/{card}',[CardsController::class,'editCard']);
+    Route::get('cards',[CardsController::class,'cards']);
 
     Route::post('check/promocode',[PromoCodesController::class , 'check']);
     
