@@ -37,14 +37,14 @@ class ProfileRequest extends FormRequest
             'name' => 'regex:/^[a-zA-Z ]+$/',
             'email' => [
                 'nullable',
-                Rule::unique('users')->where(function($q){
+                Rule::unique('users')->ignore(auth()->id())->where(function($q){
                     return $q->where('status',0);
                 })
             ],
-            'mobile' => ['regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/' , Rule::unique('users')->where(function($q){
+            'mobile' => ['regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/' , Rule::unique('users')->ignore(auth()->id())->where(function($q){
                 return $q->where('status' , 0);
             })],
-            'profile_photo' => 'max:2000|mimes:jpeg,png,doc,docs,pdf',
+            'profile_photo' => 'max:2000|mimes:jpeg,png,jpg',
         ];
     }
 

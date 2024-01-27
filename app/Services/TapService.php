@@ -42,7 +42,7 @@ class TapService extends base {
     {
         $card = Card::find($card_id);
         $data = json_encode(['saved_card' => ["card_id" => $card->card_id ,"customer_id"=> $card->customer_id] , "client_id" => "127.0.0.1"]);
-        $secret = env('TAP_SECRET_KEY');
+        $secret = env('TEST_TAP_SECRET_KEY');
         $client = new \GuzzleHttp\Client();
         
         $response = $client->request('POST', 'https://api.tap.company/v2/tokens', [
@@ -117,7 +117,7 @@ class TapService extends base {
             );
         }
         
-        $secret = env('TAP_SECRET_KEY');
+        $secret = env('TEST_TAP_SECRET_KEY');
         $response = $client->request('POST', 'https://api.tap.company/v2/charges', [
             'body' => $data,
             'headers' => [
@@ -138,7 +138,7 @@ class TapService extends base {
     public function getCharge($charge_id)
     {
         $client = new \GuzzleHttp\Client();
-        $secret = 'sk_test_XKokBfNWv6FIYuTMg5sLPjhJ';
+        $secret = env('TEST_TAP_SECRET_KEY');
         // $secret = env('TAP_SECRET_KEY');
         $response = $client->request('GET', "https://api.tap.company/v2/charges/$charge_id", [
             'headers' => [

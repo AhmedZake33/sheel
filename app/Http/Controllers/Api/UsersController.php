@@ -68,6 +68,8 @@ class UsersController extends Controller
     public function update(ProfileRequest $request , User $user)
     {
         $validated = $request->validated();
+        $user = auth()->user();
+        // return $user;
         if($request->profile_photo){
             if($user->archive->findChildByShortName('profile_photo')){
                 $user->archive->findChildByShortName('profile_photo')->delete();
@@ -78,10 +80,12 @@ class UsersController extends Controller
         }
 
         $user->update(Arr::except($validated , ['email','profile_photo']));
-        if(array_key_exists('email',$validated)){
+        if(array_key_exists('email',$validated) && $user->email != $validated['email']){
             $user->email = $validated['email'];
-            $user->email_verification =  User::STATUS_INCOMPLETE ;
+            $user->email_verification =  User::STATUS_INCOMPLETE;
             $user->save();
+
+            // send email by mail server
         }
         $message = ['ar' => 'تم التعديل بنجاح' , 'en' => 'profile updated successfully'][$this->lang];
         return success([],System::HTTP_OK , $message);
