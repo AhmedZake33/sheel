@@ -83,6 +83,7 @@ class Request extends Model
         $files = $this->archive->children;
         $data->provider = $this->CurrentProvider?$this->CurrentProvider->provider->user : null;
         $data->chats = $this->chats;
+        $data->review = $this->review()->select('rate','comment')->first();
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
         $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
         // $data->estimatedCost = 100;
@@ -116,7 +117,6 @@ class Request extends Model
     {
         
         $requestModel = Request::find($requestModel);
-        // return $requestModel->user->is(auth()->user());
 
         if(  ($requestModel->CurrentProvider  && $requestModel->CurrentProvider->provider->user->is($user)) || $requestModel->user->is($user)){
             return true;
@@ -124,6 +124,22 @@ class Request extends Model
 
         if(!$requestModel->CurrentProvider){
             return false;
+        }
+
+        return false;
+    }
+
+    public static function canReview($requestModel,$user)
+    {
+        
+        $requestModel = Request::find($requestModel);
+
+        if(!$requestModel->CurrentProvider){
+            return false;
+        }
+
+        if( $requestModel->CurrentProvider  && $requestModel->user->is($user)){
+            return true;
         }
 
         return false;
@@ -180,5 +196,10 @@ class Request extends Model
         if(!$this->CurrentProvider()){
             $this->startShowLocation();
         }
+    }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class);
     }
 }

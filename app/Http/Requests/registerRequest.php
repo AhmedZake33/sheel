@@ -32,7 +32,10 @@ class registerRequest extends FormRequest
     {
         return [
             'name' => 'required|regex:/^[a-zA-Z]+$/',
-            'email' => ['required',
+            'email' => [
+                'required'
+                ,'email'
+                ,'regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/',
                 Rule::unique('users')->where(function($q){
                     return $q->where('status',0);
                 })
@@ -51,8 +54,9 @@ class registerRequest extends FormRequest
             'name.regex' =>    ['ar' => 'الاسم لابد ان يحتوي علي حروف' , 'en' => 'The name must contain letters'][$this->lang],
             'email.required' =>  ['ar' => 'البريد الالكتروني مطلوب للتسجيل' , 'en' => 'ُE-mail is required For Register'][$this->lang],
             'email.unique' =>  ['ar' => 'البريد الالكتروني مطلوب مستخدم من قبل' , 'en' => 'ُE-mail is used before'][$this->lang],
-            'mobile_code.required' =>  ['ar' => 'كود البلد مطلوب' , 'en' => 'ُCode is required'][$this->lang],
-            'mobile_code.regex' => ['ar' => 'الكود خاطئ' , 'en' => 'Code Format is Wrong'][$this->lang]
+            'email.email' =>  ['ar' => 'البريد الالكتروني خاطئ' , 'en' => 'ُE-mail Format is incorrect'][$this->lang],
+            'mobile_code.required' =>  ['ar' => 'كود الموبايل مطلوب' , 'en' => 'Mobile Code is required'][$this->lang],
+            'mobile_code.regex' => ['ar' => 'الكود الموبايل خاطئ' , 'en' => 'Mobile Code Format is Wrong'][$this->lang]
         ];
     }
 

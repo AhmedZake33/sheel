@@ -34,17 +34,20 @@ class ProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'regex:/^[a-zA-Z ]+$/',
+            'name' => 'required|regex:/^[a-zA-Z ]+$/',
             'email' => [
-                'nullable',
+                'required'
+                ,'email'
+                ,'regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/',
                 Rule::unique('users')->ignore(auth()->id())->where(function($q){
                     return $q->where('status',0);
                 })
             ],
-            'mobile' => ['regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/' , Rule::unique('users')->ignore(auth()->id())->where(function($q){
+            'mobile' => ['required','regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/' , Rule::unique('users')->ignore(auth()->id())->where(function($q){
                 return $q->where('status' , 0);
             })],
             'profile_photo' => 'max:2000|mimes:jpeg,png,jpg',
+            'mobile_code' => 'required|regex:/^\+\d{1,4}$/'
         ];
     }
 
@@ -54,6 +57,10 @@ class ProfileRequest extends FormRequest
         return [
             'name.regex' =>    ['ar' => 'الاسم لابد ان يحتوي علي حروف' , 'en' => 'The name must contain letters'][$this->lang],
             'email.unique' =>  ['ar' => 'البريد الالكتروني مطلوب مستخدم من قبل' , 'en' => 'ُE-mail is used before'][$this->lang],
+            'email.email' =>  ['ar' => 'البريد الالكتروني خاطئ' , 'en' => 'ُE-mail Format is incorrect'][$this->lang],
+            'mobile_code.required' =>  ['ar' => 'كود الموبايل مطلوب' , 'en' => 'mobile Code is required'][$this->lang],
+            'mobile_code.regex' => ['ar' => 'الكود الموبايل خاطئ' , 'en' => 'mobile Code Format is Wrong'][$this->lang]
+            
         ];
     }
 

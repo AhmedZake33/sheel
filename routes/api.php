@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\UsersController;
 use App\Http\Controllers\Api\payments\PaymentsController;
 use App\Http\Controllers\Api\Payments\TransactionsController;
-use App\Models\Payments\PromoCode;
+use App\Http\Controllers\Api\ReviewsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,4 +77,9 @@ Route::get('download/{archive}','ArchiveController@download')->name('download_fi
 Route::group(["prefix" => 'chats','middleware' => 'auth:api'] , function(){
     Route::post('{request}','ChatsController@get');
     Route::post('/send/{request}','ChatsController@send');
+});
+
+// reviews api
+Route::group(["prefix" => "reviews" , 'middleware' => "auth:api"] , function(){
+    Route::post('/{id}','ReviewsController@add');
 });

@@ -67,6 +67,7 @@ class UserService extends Base
         $data->name = $user->name;
         $data->id = $user->id;
         $data->mobile = $user->mobile;
+        $data->mobile_code = $user->mobile_code;
         $data->email = $user->email;
         $data->secret = $user->secret;
         $data->email_verification = $user->email_verification;
