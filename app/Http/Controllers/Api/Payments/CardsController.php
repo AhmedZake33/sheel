@@ -8,12 +8,13 @@ use App\Models\Payments\Card;
 use Illuminate\Http\Request;
 use App\Models\System\System;
 use App\Services\TapService;
+use App\Services\PaymentService;
 use Auth;
 class CardsController extends Controller
 {
     protected  $paymentService = null;
 
-    public function __construct(TapService $paymentService)
+    public function __construct(PaymentService $paymentService)
     {
         $this->paymentService = $paymentService;
     }
@@ -29,27 +30,9 @@ class CardsController extends Controller
     {
         $user = auth()->user();
         $response = $this->paymentService->createToken($request);
-        // return $response;
         if($response){
-            $card = new Card();
-            $card->user_id = $user->id;
-            $card->token =$response['id'];
-            $card->card_id =$response['card']['id'];
-            // $card->customer_id =$response['card']['customer'];
-            $card->last_four = $response['card']['last_four'];
-            $card->first_six = $response['card']['first_six'];
-            $card->exp_month = $response['card']['exp_month'];
-            $card->exp_year = $response['card']['exp_year'];
-            $card->save();
-
-            $message  = ($this->lang == 'ar')?  'تم إضافة البطاقة بنجاح' : 'Card added Successfully';
-            return success([] , System::HTTP_OK ,$message);
-        }
-        
-        $message  = ($this->lang == 'ar')?  'حدث خطأ' : 'SOMETHING WENT WRONG';
-        return success([] , System::HHTP_Unprocessable_Content ,$message);
-       
-        
+            return $this->paymentService->saveCard($user , $response);
+        }       
     }
 
     public function editCard(CardRequest $request , Card $card)

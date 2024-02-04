@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Http\Requests\registerProvider;
 use App\Http\Requests\ResendCodeRequest;
 use App\Http\Requests\verifyRequest;
+use App\Models\System\System;
 use App\Services\ProviderService;
 use App\Services\UserService;
 
@@ -26,17 +27,16 @@ class UsersController extends Controller
     public function regsiterProvider(registerProvider $request)
     {
         return $this->provider->createProvider($request);
-        return 'success';
-    }
-
-    public function resendCode(ResendCodeRequest $request)
-    {
-        return $this->user->resendCode($request);
     }
 
     public function verifyCode(verifyRequest $request)
     {
         return $this->provider->verifyCode($request);
+    }
+
+    public function resendCode(ResendCodeRequest $request)
+    {
+        return $this->user->resendCode($request);
     }
 
     public function login(loginRequest $request)
@@ -46,12 +46,22 @@ class UsersController extends Controller
 
     public function profile()
     {
-        return auth()->user();;
         return $this->user->profile();
     }
 
     public function verifyEmail($secret , $slug)
     {  
         return $this->user->verifyEmail($secret , $slug);
+    }
+
+    public function activate($userSecret)
+    {
+        $user = User::where('secret',$userSecret)->first();
+        if($user){
+            $user->status = User::STATUS_ACTIVE;
+            $user->save();
+            return success([],System::HTTP_OK , "SUCCESS ACTIVIATE ACCOUNT");
+        }
+        
     }
 }

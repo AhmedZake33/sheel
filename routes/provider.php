@@ -13,7 +13,11 @@ Route::post('resendCode','UsersController@resendCode');
 Route::post('verifyCode','UsersController@verifyCode');
 Route::get('verifyEmail/{secret}/{slug}','UsersController@verifyEmail');
 Route::post('login','UsersController@login');
-Route::get('profile','UsersController@profile')->middleware('auth:api');
+
+Route::group(["prefix" => "user" , "middleware" => "auth:api"], function(){
+    Route::get('profile','UsersController@profile');
+    Route::get('activate/{userSecret}','UsersController@activate');
+});
 
 // request 
 Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){

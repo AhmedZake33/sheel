@@ -91,10 +91,10 @@ class PaymentsController extends Controller
         DB::table('testcallback')->insert(['data' => 'test data']);
         $response = $this->tapService->getCharge($charge_id);
         $result = json_decode($response);
-        
+        // return $result;
         if($result->status == "CAPTURED"){
            // update transaction and payment and request
-           $transaction = Transaction::find($transaction);
+            $transaction = Transaction::find($transaction);
             $transaction->updateStatus($result);
 
             // request
@@ -108,6 +108,35 @@ class PaymentsController extends Controller
                 Notification::createNotification($provider->id , $requestModel->id , $title);
             }
            return $result;
+        }
+    }
+
+    public function callbackSavedCard($userId)
+    {
+        $charge_id =  $_GET['tap_id'];
+        DB::table('testcallback')->insert(['data' => 'test data']);
+        $response = $this->paymentService->getCharge($charge_id);
+        $result = json_decode($response , true);
+        // return $result;
+        if($result['status'] == "CAPTURED"){
+            // save card
+            $card = new Card();
+            $card->user_id = $userId;
+            $card->card_id =$result['card']['id'];
+            $card->customer_id = $result['customer']['id'];
+            $card->last_four = $result['card']['last_four'];
+            $card->first_six = $result['card']['first_six'];
+            $card->save();
+            // return $result;
+
+            // refund 
+            $this->paymentService->refund($result);
+
+            return success([],System::HTTP_OK , 'SUCCESS ADD CARD');
+            
+           
+        }else{
+            return $result;
         }
     }
 }

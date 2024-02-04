@@ -70,6 +70,7 @@ Route::get('send',[PusherController::class , "send"]);
 // Route::get('buy',[PaymentsController::class,'buy'])->name('buy');
 
 Route::get('callback/{transaction}',[PaymentsController::class , 'callBack'])->name('callback');
+Route::get('callbackSavedCard/{transaction}',[PaymentsController::class , 'callbackSavedCard'])->name('callbackSavedCard');
 
 Route::get('stripe',function(){
     $StripeService = new StripeService();
@@ -84,4 +85,11 @@ Route::get('showEvent/{requestId}',function($requestId){
 
 Route::get('sendEvent/{requestId}',function($requestId){
     \App\Events\testEvent::dispatch('welcome' , $requestId);
+});
+
+Route::get('createToken',function(){
+    $card = \App\Models\Payments\Card::find(28); 
+    return \App\Services\TapService::createTokenFromCard($card->id);
+    // return $card;
+   return domain();
 });

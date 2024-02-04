@@ -49,6 +49,7 @@ class registerProvider extends FormRequest
             'RTA_card_front' => 'required|max:2000|mimes:jpeg,png,doc,docs,pdf',
             'RTA_card_back' => 'required|max:2000|mimes:jpeg,png,doc,docs,pdf',
             'vehicle_registration_form' => 'required|max:2000|mimes:jpeg,png,doc,docs,pdf',
+            'mobile_code' => 'required|regex:/^\+\d{1,4}$/'
 
         ];
     }
@@ -67,7 +68,8 @@ class registerProvider extends FormRequest
             "RTA_card_front.required" => ["ar" => " صورة بطاقة هيئة الطرق والمواصلات من الامام مطلوبة " , "en" => " RTA Card Front Is required"][$this->lang],
             "RTA_card_back.required" => ["ar" => " صورة بطاقة هيئة الطرق والمواصلات من الامام مطلوبة "  , "en" => "RTA Card Back Is required"][$this->lang],
             "vehicle_registration_form.required" => ["ar" => "استمارة تسجيل المركبه مطلوبة" , "en" => "Vehicle Registration Form Is required"][$this->lang],
-
+            'mobile_code.required' =>  ['ar' => 'كود الموبايل مطلوب' , 'en' => 'Mobile Code is required'][$this->lang],
+            'mobile_code.regex' => ['ar' => 'الكود الموبايل خاطئ' , 'en' => 'Mobile Code Format is Wrong'][$this->lang]
         ];
     }
 

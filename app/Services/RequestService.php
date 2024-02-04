@@ -85,14 +85,17 @@ class RequestService extends Base
     
     public function pay($request , $requestModel)
     {
-        // return $request->all();
         if($request->card_id){
             $card = Card::find($request->card_id);
             if($card->user_id == auth()->id()){
                 $transaction = Transaction::find($request->transaction_id);
                 // api to complete pay and update request ....
                 $paymentService = new PaymentService();
-                $paymentService->buy($transaction ,$card->token);
+                if(!$card->token){
+                    // create card from saved card 
+                    $paymentService->createTokenFromCard($card->id);
+                }                
+                return $paymentService->buy($transaction ,$card->token);
                 // service to get nearest locations
                 $locationService = new LocationService();
                 $providerRequestService = new providerRequestService();

@@ -56,7 +56,7 @@ class TapService extends base {
 
         $result =  $response->getBody();
         $data =  json_decode($result,true);
-        return $data['id'];
+        return $data;
     }   
     // create token from saved card
 

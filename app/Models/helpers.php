@@ -1648,4 +1648,10 @@ if(!function_exists('fetchTransaction')){
 
         return $result;
     }
+
+    if(!function_exists('domain')){
+        function domain(){
+            return \Illuminate\Support\Facades\Request::getSchemeAndHttpHost();
+        }
+    }
 }
