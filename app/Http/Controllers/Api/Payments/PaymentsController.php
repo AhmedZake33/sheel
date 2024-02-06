@@ -107,7 +107,7 @@ class PaymentsController extends Controller
                 $title = ['ar' => 'User was Paid the amount' , 'en' => 'User was Paid the amount'];
                 Notification::createNotification($provider->id , $requestModel->id , $title);
             }
-           return $result;
+           return success([],System::HTTP_OK , "payment success");
         }
     }
 
@@ -117,7 +117,7 @@ class PaymentsController extends Controller
         DB::table('testcallback')->insert(['data' => 'test data']);
         $response = $this->paymentService->getCharge($charge_id);
         $result = json_decode($response , true);
-        // return $result;
+        return $result;
         if($result['status'] == "CAPTURED"){
             // save card
             $card = new Card();

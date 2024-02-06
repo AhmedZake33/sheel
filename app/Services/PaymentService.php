@@ -65,14 +65,14 @@ class PaymentService extends Base {
         }
     }
 
-    public static function buy($transaction , $token , $saveCard = false)
+    public static function buy($transaction , $card , $saveCard = false)
     {
         $payment = $transaction->payment;
         // return $payment;
         $request = Request::where('payment_id',$payment->id)->first();
         // return $request;
         $user = $request->user;
-        // return $user->email;
+        // return $user;
         $secret = env('TEST_TAP_SECRET_KEY');
         $client = new \GuzzleHttp\Client();
         $data = json_encode(array(
@@ -87,13 +87,14 @@ class PaymentService extends Base {
                 "middle_name"=>$user->name,
                 "last_name"=>$user->name,
                 "email"=>$user->email,
+                "id" => $card->customer_id,
                 "phone"=>[
                     "country_code"=>"965",
                     "number"=>"51234567"
                 ]
             ] , 
             "source"=>[
-                "id"=>$token
+                "id"=>$card->token
             ],
             "post"=>[
                 "url"=>"http://your_website.com/post_url"
@@ -112,23 +113,10 @@ class PaymentService extends Base {
           ]);
         $result = $response->getBody(); 
         $data =  json_decode($result, true);
-        $transaction->data = $result;
-        if($data['status'] == 'CAPTURED' && $data['amount'] == $transaction->amount){
-            $transaction->status = 1;
-            $transaction->paid = $data['amount'];
-            if($transaction->paid >= $transaction->amount){
-                $payment->status = 1;
-                $payment->save();
-            }
-            return success([],200,'success');            
-        }
-        $transaction->save();
-        // return response()->json($result);
-
-        echo  $result;
-        
-        return $data['redirect']? $data['redirect']['url']:null;
-        // return redirect()->to($data['transaction']['url']);   
+        // clear token from card 
+        $card->token = null;
+        $card->save();
+        return success($data["transaction"]["url"] , System::HTTP_OK ,"success");
     }
 
     public static function saveCard($user ,$response)

@@ -46,7 +46,7 @@ class ProfileRequest extends FormRequest
             // 'mobile' => ['required','regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/' , Rule::unique('users')->ignore(auth()->id())->where(function($q){
             //     return $q->where('status' , 0);
             // })],
-            'profile_photo' => 'max:2000|mimes:jpeg,png,jpg',
+            'profile_photo' => 'image',
             // 'mobile_code' => 'required|regex:/^\+\d{1,4}$/'
         ];
     }
