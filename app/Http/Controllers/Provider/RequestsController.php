@@ -67,9 +67,10 @@ class RequestsController extends Controller
 
     public function accept(Request $request)
     {
-        $requestModel = RequestModel::find($request->request_id);
+        $requestModel = RequestModel::findOrFail($request->request_id);
         $user = auth()->user();
         $provider = Provider::where('user_id',$user->id)->first();
+        // return $provider;
         if($provider){
             // get request provider 
             $requestProvider = RequestProvider::where('request_id',$requestModel->id)->where('provider_id',$provider->id)->where('status',RequestProvider::STATUS_PENDING)->first();
@@ -78,7 +79,10 @@ class RequestsController extends Controller
 
                 // seen notification
                 $notification = Notification::where(['user_id' => auth()->user()->id , 'request_id' => $requestModel->id , 'seen' => Notification::UNSEEN])->first();
-                Notification::seen($notification);
+                if($notification){
+                    Notification::seen($notification);
+                }
+                
                 
                 // notification to request user that provider is comming
                 $title = ['ar' => 'provider is comming' , 'en' => 'provider is comming'];

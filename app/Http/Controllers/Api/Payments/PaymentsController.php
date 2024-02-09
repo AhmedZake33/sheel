@@ -13,6 +13,7 @@ use App\Services\PaymentService;
 use App\Services\TapService;
 use DB;
 use App\Models\Notification;
+use Illuminate\Support\Facades\Redirect;
 class PaymentsController extends Controller
 {
 
@@ -87,8 +88,10 @@ class PaymentsController extends Controller
 
     public function callBack($transaction)
     {
+        // dd(request()->all());
         $charge_id =  $_GET['tap_id'];
-        DB::table('testcallback')->insert(['data' => 'test data']);
+
+        // DB::table('testcallback')->insert(['data' => 'test data']);
         $response = $this->tapService->getCharge($charge_id);
         $result = json_decode($response);
         // return $result;
@@ -96,28 +99,25 @@ class PaymentsController extends Controller
            // update transaction and payment and request
             $transaction = Transaction::find($transaction);
             $transaction->updateStatus($result);
-
-            // request
-            // provider
             $payment = $transaction->payment;
             $requestModel = RequestModel::where('payment_id',$payment->id)->first();
-            
-            $provider = ($requestModel->CurrentProvider && $requestModel->CurrentProvider->provider->user) ? $requestModel->CurrentProvider->provider->user : null;
-            if($provider){
-                $title = ['ar' => 'User was Paid the amount' , 'en' => 'User was Paid the amount'];
-                Notification::createNotification($provider->id , $requestModel->id , $title);
-            }
-           return success([],System::HTTP_OK , "payment success");
+            $requestModel->startFindProvider();
+            // $provider = ($requestModel->CurrentProvider && $requestModel->CurrentProvider->provider->user) ? $requestModel->CurrentProvider->provider->user : null;
+            // if($provider){
+            //     $title = ['ar' => 'User was Paid the amount' , 'en' => 'User was Paid the amount'];
+            //     Notification::createNotification($provider->id , $requestModel->id , $title);
+            // }
+            return Redirect::to(domain() .  '/success');
+        }else{
+            return Redirect::to(domain() .  '/fail');
         }
     }
 
     public function callbackSavedCard($userId)
     {
         $charge_id =  $_GET['tap_id'];
-        DB::table('testcallback')->insert(['data' => 'test data']);
         $response = $this->paymentService->getCharge($charge_id);
         $result = json_decode($response , true);
-        return $result;
         if($result['status'] == "CAPTURED"){
             // save card
             $card = new Card();
@@ -131,12 +131,10 @@ class PaymentsController extends Controller
 
             // refund 
             $this->paymentService->refund($result);
-
-            return success([],System::HTTP_OK , 'SUCCESS ADD CARD');
-            
+            return Redirect::to(domain() .  '/success');            
            
         }else{
-            return $result;
+            return Redirect::to(domain() .  '/fail');
         }
     }
 }

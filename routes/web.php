@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Payments\PaymentsController;
 use App\Http\Controllers\api\UsersController;
 use App\Models\Payments\Transaction;
 use App\Services\StripeService;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +72,13 @@ Route::get('send',[PusherController::class , "send"]);
 
 Route::get('callback/{transaction}',[PaymentsController::class , 'callBack'])->name('callback');
 Route::get('callbackSavedCard/{transaction}',[PaymentsController::class , 'callbackSavedCard'])->name('callbackSavedCard');
+Route::get('success',function(){
+    return "success payment";
+})->name('success');
+
+Route::get('fail',function(){
+    return "fail payment";
+})->name('fail');
 
 Route::get('stripe',function(){
     $StripeService = new StripeService();
@@ -92,4 +100,28 @@ Route::get('createToken',function(){
     return \App\Services\TapService::createTokenFromCard($card->id);
     // return $card;
    return domain();
+});
+
+Route::get('checkPassword',function(){
+    $password = "123445sds";
+    $request = new Request();
+    // dd($request);
+    $request['password'] = $password;
+    // $request->save();
+    // return $request;
+    $request->validate([
+        'password' => 'email',
+    ]);
+
+    if($request->validate(['password' => 'email'])){
+        dd('fail');
+    }else{
+        dd('success');
+    }
+
+    // $request->validate([
+    //     'title' => 'required|unique:posts|max:255',
+    //     'body' => 'required',
+    // ]);
+    // return $password;
 });

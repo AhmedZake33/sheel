@@ -161,7 +161,7 @@ class Request extends Model
         }
     }
 
-    public function startShowLocation()
+    public function startFindProvider()
     {
         // service to get nearest locations
         $locationService = new LocationService();
@@ -194,7 +194,7 @@ class Request extends Model
         }
 
         if(!$this->CurrentProvider()){
-            $this->startShowLocation();
+            $this->startFindProvider();
         }
     }
 

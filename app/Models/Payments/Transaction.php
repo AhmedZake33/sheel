@@ -35,7 +35,7 @@ class Transaction extends Model
 
                 // start show near By locations to Providers 
                 $request = Request::where('payment_id',$payment->id)->firstOrFail();
-                $request->startShowLocation();
+                $request->startFindProvider();
             }
         }
     }

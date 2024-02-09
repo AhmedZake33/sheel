@@ -38,12 +38,14 @@ class RequestService extends Base
         if($request->with_payment && $requestModel->payment_id == null){
             // create payment 
             // $payment = new Payment();
-            $payment = Payment::createAndUpdate(['amount' => 100, 'user_id' => $requestModel->user_id , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id]);
+            $locationProvider = new LocationService();
+            $amount = $locationProvider->calcDistance($request->current_lat , $request->current_lng , $request->destination_lat , $request->destination_lng)*env('costPerKilo');
+            $payment = Payment::createAndUpdate(['amount' => $amount, 'user_id' => $requestModel->user_id , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id]);
             $requestModel->payment_id = $payment->id;
             $requestModel->save();
         }
 
-        $requestModel->startShowLocation();
+        // $requestModel->startFindProvider();
         
         
         // if($request->card_id){
@@ -73,8 +75,6 @@ class RequestService extends Base
         //     }
         // }
         
-        
-
         // now i have request : 
         if($request->payment){
             return success($requestModel->data(System::DATA_DETAILS),System::HTTP_OK,'SUCCESS CREATE REQUEST');

@@ -100,7 +100,7 @@ class PaymentService extends Base {
                 "url"=>"http://your_website.com/post_url"
             ],
             "redirect"=>[
-                "url"=>"http://127.0.0.1:8000/callback/$transaction->id"
+                "url"=> domain() .  "/callback/$transaction->id"
             ] 
         ));
         $response = $client->request('POST', 'https://api.tap.company/v2/charges', [
