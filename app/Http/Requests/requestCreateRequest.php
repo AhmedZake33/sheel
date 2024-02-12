@@ -37,7 +37,7 @@ class requestCreateRequest extends FormRequest
             'destination_lng' => 'regex:/^[0-9 .]+$/',
             'service_id' => 'exists:services,id',
             'description' => 'nullable|regex:/^[A-Za-z ]+$/',
-            'file.*' => 'nullable|mimes:jpeg,jpg,png,gif|max:10000',
+            'file.*' => 'nullable|image',
             'request_id' => "numeric"
         ];
     }
