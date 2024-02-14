@@ -31,6 +31,11 @@ class RequestsController extends Controller
 
     public function create(requestCreateRequest $request)
     {
+        // return $this->locationService->getNearestLocations($request);
+        if(count($this->locationService->getNearestLocations($request)) == 0){
+            $message = ["ar" => "لا يمكنك عمل طلب الان" , "en" => "cannot create request now"];
+            return error([],System::HHTP_Unprocessable_Content , $message[$this->lang]);
+        }
         return $this->requestService->create($request);
         // $user =  auth()->user();
         // $data = $request->validated();

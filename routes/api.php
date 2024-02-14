@@ -83,3 +83,8 @@ Route::group(["prefix" => 'chats','middleware' => 'auth:api'] , function(){
 Route::group(["prefix" => "reviews" , 'middleware' => "auth:api"] , function(){
     Route::post('/{id}','ReviewsController@add');
 });
+
+// lookups api
+Route::group(["prefix" => "lookups" , 'middleware' => "auth:api"] , function(){
+    Route::get('','LookupsController@get');
+});
