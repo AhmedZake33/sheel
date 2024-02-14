@@ -166,7 +166,7 @@ class Request extends Model
         // service to get nearest locations
         $locationService = new LocationService();
         $providerRequestService = new providerRequestService();
-        $nearestLocations =  $locationService->getNearestLocations($this);
+        $nearestLocations =  $locationService->getNearestLocations($this , $this->refusedProviders());
         // service to get nearest location  
         if($nearestLocations){
             $nearestLocation = $locationService->getNearestLocation($this->current_lat , $this->current_lng , $nearestLocations);

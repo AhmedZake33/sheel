@@ -189,7 +189,11 @@ class RequestsController extends Controller
 
     public function pay(Request $request , $requestModel)
     {
-        return $this->requestService->pay($request , $requestModel);
+        $requestModel = RequestModel::findOrFail($requestModel);
+        if(!($requestModel && $requestModel->currentProvider)){
+            return error([],System::HHTP_Unprocessable_Content);
+        }
+        return $this->requestService->pay($request , $requestModel->id);
     }
 
     public function manualPay(Request $request , $requestModel)

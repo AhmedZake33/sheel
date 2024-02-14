@@ -38,25 +38,26 @@ class RequestsController extends Controller
                 $requestProvider->update(['status' => RequestProvider::STATUS_REFUSED]);
 
                 // seen notification 
-                $notification = Notification::where(['user_id' => auth()->user()->id , 'request_id' => $requestModel->id , 'seen' => Notification::UNSEEN])->first();
-                Notification::seen($notification);
+                // $notification = Notification::where(['user_id' => auth()->user()->id , 'request_id' => $requestModel->id , 'seen' => Notification::UNSEEN])->first();
+                // Notification::seen($notification);
 
                 // get nearest locations
-                $nearestLocations =  $this->locationService->getNearestLocations($requestModel , $user->id);
+                // $nearestLocations =  $this->locationService->getNearestLocations($requestModel , $user->id);
                
-                // get nearest location 
-                if($nearestLocations){
-                    $nearestLocation = $this->locationService->getNearestLocation($requestModel->lat , $requestModel->lng , $nearestLocations);
+                // // get nearest location 
+                // if($nearestLocations){
+                //     $nearestLocation = $this->locationService->getNearestLocation($requestModel->lat , $requestModel->lng , $nearestLocations);
         
-                    // assign to provider 
-                    if($nearestLocation){
-                        $this->providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
+                //     // assign to provider 
+                //     if($nearestLocation){
+                //         $this->providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
 
-                        // notification to new provider
-                        $title = ['ar' => 'arabic' , 'en' => 'english'];
-                        Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
-                    }
-                }
+                //         // notification to new provider
+                //         $title = ['ar' => 'arabic' , 'en' => 'english'];
+                //         Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
+                //     }
+                // }
+                $requestModel->startFindProvider();
                 return success([],System::HTTP_OK,'SUCCESS CANCEL REQUEST');
             }
         }

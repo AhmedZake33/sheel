@@ -45,7 +45,7 @@ class RequestService extends Base
             $requestModel->save();
         }
 
-        // $requestModel->startFindProvider();
+        $requestModel->startFindProvider();
         
         
         // if($request->card_id){
@@ -89,6 +89,7 @@ class RequestService extends Base
             $card = Card::find($request->card_id);
             // return $card;
             if($card->user_id == auth()->id()){
+                // return $card;
                 $transaction = Transaction::find($request->transaction_id);
                 // api to complete pay and update request ....
                 $paymentService = new PaymentService();
