@@ -82,6 +82,7 @@ class UserService extends Base
     {
         $user = User::create($validated);
         $user->secret = Str::random(50);
+        $user->type = User::TYPE_USER;
         $user->save();
         User::createOtp($user , true);
         return $user;

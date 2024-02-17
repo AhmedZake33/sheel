@@ -34,7 +34,7 @@ Route::post('verifyCode','UsersController@verifyCode');
 Route::post('resendCode','UsersController@resendCode');
 
 // request 
-Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
+Route::group(['prefix' => 'request' , 'middleware' => 'auth:api'] , function(){
    Route::post('create','RequestsController@create');
    Route::get('nearestLocations','RequestsController@nearestLocations');
    Route::get('nearestLocation','RequestsController@nearestLocation');

@@ -14,6 +14,7 @@ class ProviderService extends Base
     {
          // after validate all data filter data only 
         $user = User::create($request->except(['emairate_id_front','emairate_id_back','drive_photo','RTA_card_front','RTA_card_back','vehicle_registration_form']));
+        $user->type = User::TYPE_PROVIDER;
         $user->secret = Str::random(50);
         $user->save();
          // add files

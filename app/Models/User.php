@@ -19,6 +19,9 @@ class User extends Authenticatable
     const STATUS_REMOVED = 1;
     const STATUS_PENDING_PROVIDER = 3;
 
+    const TYPE_USER = 1;
+    const TYPE_PROVIDER = 2;
+
     // emairate_id_front
     // emairate_id_back
     // drive_photo 
