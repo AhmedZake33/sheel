@@ -25,7 +25,7 @@ class Provider
         }
         $user = Auth::user();
         if($user->type != UserModel::TYPE_PROVIDER){
-            return error([],System::HTTP_UNAUTHORIZED , "You cannot access");
+            return error([],System::HTTP_UNAUTHORIZED , "Not authentication");
         }
         return $next($request);
     }
