@@ -41,7 +41,7 @@ class UsersController extends Controller
 
     public function login(loginRequest $request)
     {
-        return $this->user->login($request);
+        return $this->user->login($request , User::TYPE_PROVIDER);
     }
 
     public function profile()

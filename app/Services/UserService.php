@@ -88,14 +88,14 @@ class UserService extends Base
         return $user;
     }
 
-    public function login($request)
+    public function login($request , $type = User::TYPE_USER)
     {
         // validate data
        $mobile =  $request->validated()['mobile'];
        $mobile_code =  $request->validated()['mobile_code'];
        $message = null;
         // try find user by phone 
-        $user = User::where('mobile',$mobile)->where('mobile_code' , $mobile_code)->first();
+        $user = User::where('mobile',$mobile)->where('mobile_code' , $mobile_code)->where("type",$type)->first();
         
         // create otp code
         if($user && $user->status == User::STATUS_ACTIVE){
