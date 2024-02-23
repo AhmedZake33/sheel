@@ -36,13 +36,14 @@ class CardsController extends Controller
         }       
     }
 
-    public function deleteCard(Card $card)
+    public function deleteCard(Request $request)
     {
+        $card = Card::find($request->card_id);
         if($card){
             $card->delete();
             return success(["cardIsDeleted" => true] , System::HTTP_OK , "Deleted Success");
         }else{
-            return error(["cardIsDeleted" => false] , System::HHTP_Unprocessable_Content, "not found");
+            return success(["cardIsDeleted" => false] , System::HHTP_Unprocessable_Content, "not found");
         }
     }
 

@@ -49,7 +49,7 @@ Route::group(['prefix' => 'request' , 'middleware' => 'auth:api'] , function(){
 Route::group(['prefix' => 'payments' , 'middleware' => 'auth:api' ] , function(){
     Route::post('add/card',[CardsController::class,'addCard']);
     Route::post('edit/card/{card}',[CardsController::class,'editCard']);
-    Route::delete('card/{card}',[CardsController::class,'deleteCard']);
+    Route::post('delete/card',[CardsController::class,'deleteCard']);
     Route::get('cards',[CardsController::class,'cards']);
 
     Route::post('check/promocode',[PromoCodesController::class , 'check']);
