@@ -116,7 +116,7 @@ class PaymentService extends Base {
         // clear token from card 
         // $card->token = null;
         // $card->save();
-        return success($data["transaction"]["url"] , System::HTTP_OK ,"success");
+        return success(["url" => $data["transaction"]["url"]], System::HTTP_OK ,"success");
     }
 
     public static function saveCard($user ,$response)
@@ -161,7 +161,7 @@ class PaymentService extends Base {
 
         $result = $response->getBody(); 
         $data =  json_decode($result, true);
-        return success($data["transaction"]["url"] , System::HTTP_OK ,"success");
+        return success(["url"=>$data["transaction"]["url"]] , System::HTTP_OK ,"success");
     }
 
 
