@@ -561,10 +561,14 @@ if (!function_exists('autoSetup')) {
 }
 
 if (! function_exists('success')) {
-    function success($data = null, $status = null , $message = null) {
+    function success($data = null, $status = null , $message = null , $flag = null) {
         $reponse = [ 'message' => $message ,'status'=>$status];
         if($data){
             $reponse['data'] = $data;
+        }
+
+        if($flag){
+            $reponse['flag'] = $flag;
         }
         return response()->json($reponse , $status);
     }

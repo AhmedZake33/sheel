@@ -36,6 +36,16 @@ class CardsController extends Controller
         }       
     }
 
+    public function deleteCard(Card $card)
+    {
+        if($card){
+            $card->delete();
+            return success(["cardIsDeleted" => true] , System::HTTP_OK , "Deleted Success");
+        }else{
+            return error(["cardIsDeleted" => false] , System::HHTP_Unprocessable_Content, "not found");
+        }
+    }
+
     public function editCard(CardRequest $request , Card $card)
     {
         return $card;
