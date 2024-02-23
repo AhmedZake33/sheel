@@ -39,7 +39,7 @@ class CardsController extends Controller
     public function deleteCard(Request $request)
     {
         $card = Card::find($request->card_id);
-        if($card){
+        if($card && $card->user_id == auth()->id()){
             $card->delete();
             return success(["cardIsDeleted" => true] , System::HTTP_OK , "Deleted Success");
         }else{
