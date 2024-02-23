@@ -19,7 +19,7 @@ class Provider
      */
     public function handle(Request $request, Closure $next)
     {
-        $allowedRoutes = ['registerProvider','verifyCode','login'];
+        $allowedRoutes = ['registerProvider','verifyCode','login','download'];
         if(in_array($request->route()->getActionMethod() , $allowedRoutes)){
             return $next($request);
         }

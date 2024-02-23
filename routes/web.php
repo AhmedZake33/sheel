@@ -125,3 +125,9 @@ Route::get('checkPassword',function(){
     // ]);
     // return $password;
 });
+
+Route::get("test",function(){
+    $user = \App\Models\User::find(48);
+    // return $user;
+    return $user->cards()->update(['token' => null]);
+});

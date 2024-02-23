@@ -114,8 +114,8 @@ class PaymentService extends Base {
         $result = $response->getBody(); 
         $data =  json_decode($result, true);
         // clear token from card 
-        $card->token = null;
-        $card->save();
+        // $card->token = null;
+        // $card->save();
         return success($data["transaction"]["url"] , System::HTTP_OK ,"success");
     }
 

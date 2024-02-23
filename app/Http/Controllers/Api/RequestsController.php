@@ -198,6 +198,9 @@ class RequestsController extends Controller
         if(!($requestModel && $requestModel->currentProvider)){
             return error([],System::HHTP_Unprocessable_Content);
         }
+        if(count(auth()->user()->cards)){
+            auth()->user()->cards()->update(['token' => null]);
+        }
         return $this->requestService->pay($request , $requestModel->id);
     }
 

@@ -19,7 +19,7 @@ class User
      */
     public function handle(Request $request, Closure $next)
     {
-        $allowedRoutes = ['register','verifyCode','login'];
+        $allowedRoutes = ['register','verifyCode','login','download'];
         if(in_array($request->route()->getActionMethod() , $allowedRoutes)){
             return $next($request);
         }

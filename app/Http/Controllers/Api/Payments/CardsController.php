@@ -22,8 +22,9 @@ class CardsController extends Controller
     public function cards()
     {
         $user =  auth()->user();
+        $lastCard = Card::where("user_id",$user->id)->whereNotNull("token")->select("id","last_four","first_six")->first();
         // return $user;
-        return success($user->cards(true) , System::HTTP_OK , 'success');
+        return success( ["cards" => $user->cards(true) , "last_card" => $lastCard] , System::HTTP_OK , 'success');
     }
 
     public function addCard(CardRequest $request)

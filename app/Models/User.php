@@ -96,7 +96,7 @@ class User extends Authenticatable
         if($deatils == null){
             return $query;
         }else{
-            return $query->select('first_six','last_four','exp_month','exp_year')->get();
+            return $query->select('id','first_six','last_four')->get();
         }
     }
 
