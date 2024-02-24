@@ -65,8 +65,13 @@ class UsersController extends Controller
         return $this->service->profile();
     }
 
-    public function update(ProfileRequest $request , User $user)
+    public function update(ProfileRequest $request , $user)
     {
+        // return $user;
+        $user = User::find($user);
+        if(!$user){
+            return error([],404,"user Not Found");
+        }
         $validated = $request->validated();
         $user = auth()->user();
         // return $user;
