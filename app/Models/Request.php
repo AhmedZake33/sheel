@@ -202,4 +202,9 @@ class Request extends Model
     {
         return $this->hasOne(Review::class);
     }
+
+    public function autoAssignProvider($id)
+    {
+        RequestProvider::create(['provider_id'  => $id, 'request_id' => $this->id , 'status' => RequestProvider::STATUS_ACCEPTED]);
+    }
 }

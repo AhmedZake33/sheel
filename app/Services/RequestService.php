@@ -46,6 +46,10 @@ class RequestService extends Base
         }
 
         $requestModel->startFindProvider();
+
+        if(domain() != "http://127.0.0.1:8000"){
+            $requestModel->autoAssignProvider(5);
+        }
         
         
         // if($request->card_id){
