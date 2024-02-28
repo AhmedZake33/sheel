@@ -73,11 +73,11 @@ Route::get('send',[PusherController::class , "send"]);
 Route::get('callback/{transaction}',[PaymentsController::class , 'callBack'])->name('callback');
 Route::get('callbackSavedCard/{transaction}',[PaymentsController::class , 'callbackSavedCard'])->name('callbackSavedCard');
 Route::get('success',function(){
-    return "success payment";
+    return view("success_payment");
 })->name('success');
 
 Route::get('fail',function(){
-    return "fail payment";
+    return view("fail_payment");
 })->name('fail');
 
 Route::get('stripe',function(){
