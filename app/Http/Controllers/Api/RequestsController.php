@@ -96,12 +96,13 @@ class RequestsController extends Controller
 
     public function cancel(Request $request)
     {
+        // return $request->all();
         // check if auth user is provider in this request 
         $requestModel = RequestModel::find($request->request_id);
         $user = auth()->user();
         if($requestModel->user_id == $user->id){
             // user can cancel his request 
-            $requestModel->update(['status' => RequestModel::STATUS_CANCEL]);
+            $requestModel->update(['status' => RequestModel::STATUS_CANCEL,"cancel_reason" => $request->cancel_reason]);
             
             if($requestModel->CurrentProvider && $requestModel->CurrentProvider->provider->user->id){
                 $title = ['ar' => 'User Cancel Request' , 'en' => 'User Cancel Request'];

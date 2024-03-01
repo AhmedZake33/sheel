@@ -14,7 +14,7 @@ class Request extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['current_lat','current_lng','destination_lat','destination_lng','service_id','user_id','description','status'];
+    protected $fillable = ['current_lat','current_lng','destination_lat','destination_lng','service_id','user_id','description','status',"cancel_reason"];
 
     // new => 0
     // accepted => 1
@@ -81,7 +81,7 @@ class Request extends Model
         $data->payment = $this->payment;
         $data->service = $this->service;
         $files = $this->archive->children;
-        $data->provider = $this->CurrentProvider?$this->CurrentProvider->provider->user : null;
+        $data->provider = $this->CurrentProvider? $this->CurrentProvider->provider->with("user")->first() : null;
         $data->chats = $this->chats;
         $data->review = $this->review()->select('rate','comment')->first();
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
