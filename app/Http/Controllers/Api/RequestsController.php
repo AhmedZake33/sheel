@@ -106,7 +106,7 @@ class RequestsController extends Controller
             
             if($requestModel->CurrentProvider && $requestModel->CurrentProvider->provider->user->id){
                 $title = ['ar' => 'User Cancel Request' , 'en' => 'User Cancel Request'];
-                Notification::createNotification($requestModel->CurrentProvider->provider->user->id , $requestModel->id , $title);
+                // Notification::createNotification($requestModel->CurrentProvider->provider->user->id , $requestModel->id , $title);
             }
 
             DB::table('requests_providers')->where('request_id',$requestModel->id)->update(['status' => RequestProvider::STATUS_CANCELED]);
