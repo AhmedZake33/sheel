@@ -24,6 +24,7 @@ class TransactionsController extends Controller
     public function createTransaction(Request $request)
     {
         // return $request->all();
+        sleep(2);
         $transaction =  $this->paymentService->createTransaction($request->payment_id , $request->provider_id);
         return success($transaction , System::HTTP_OK);
         return route('buy',[$transaction->id , 'tok_pvEh5523187TMt02hM9G31']);
