@@ -75,7 +75,6 @@ class Request extends Model
         $data->id = $this->id;
         $data->user = $this->user;
         $data->status = $this->status;
-        $data->isCanceled = ($this->status && $this->status == 2) ? true : false;
         $data->current_latituide = $this->current_lat;
         $data->current_lngituide = $this->current_lng;
         $data->destination_latituide = $this->destination_lat;
