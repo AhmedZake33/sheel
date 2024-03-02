@@ -82,6 +82,11 @@ class PaymentService extends Base {
             "save_card"=>$saveCard, 
             "customer_initiated"=>true,
             "description"=>"Test Description",
+            "payment_agreement"=> [
+                "id"=> "$card->payment_agreement_id",
+                "contract"=>[
+                "id"=> "$card->card_id"
+            ]],
             "customer"=>[
                 "first_name"=>$user->name,
                 "middle_name"=>$user->name,

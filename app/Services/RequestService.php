@@ -102,22 +102,22 @@ class RequestService extends Base
                 // return $card->token;           
                 return $paymentService->buy($transaction ,$card);
                 // service to get nearest locations
-                $locationService = new LocationService();
-                $providerRequestService = new providerRequestService();
-                $nearestLocations =  $locationService->getNearestLocations($requestModel);
-                // service to get nearest location  
-                if($nearestLocations){
-                    $nearestLocation = $locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
-                    // assign to provider 
-                    if($nearestLocation){
-                        $providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
+                // $locationService = new LocationService();
+                // $providerRequestService = new providerRequestService();
+                // $nearestLocations =  $locationService->getNearestLocations($requestModel);
+                // // service to get nearest location  
+                // if($nearestLocations){
+                //     $nearestLocation = $locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
+                //     // assign to provider 
+                //     if($nearestLocation){
+                //         $providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
 
-                        // notification to provider
-                        $title = ['ar' => 'arabic' , 'en' => 'english'];
-                        Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
-                    }
+                //         // notification to provider
+                //         $title = ['ar' => 'arabic' , 'en' => 'english'];
+                //         Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
+                //     }
                     
-                }
+                // }
             }else{
                 $message = ($this->lang == 'en') ? 'something went wrong' : 'حدث خطأ ما';
             return success([],System::HHTP_Unprocessable_Content,$message);

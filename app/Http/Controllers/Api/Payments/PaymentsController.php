@@ -126,6 +126,7 @@ class PaymentsController extends Controller
             $card->customer_id = $result['customer']['id'];
             $card->last_four = $result['card']['last_four'];
             $card->first_six = $result['card']['first_six'];
+            $card->payment_agreement_id = $result['payment_agreement']['id'];
             $card->save();
             // return $result;
 
