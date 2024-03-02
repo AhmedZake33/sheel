@@ -114,7 +114,8 @@ class RequestsController extends Controller
 
             $requestModel = $requestModel->fresh();
             
-            return success(["isCanceled" => ($requestModel && $requestModel->status == 2)? true : false],System::HTTP_OK,'SUCCESS CANCEL Your Request');
+            // return success(["isCanceled" => ($requestModel && $requestModel->status == 2)? true : false],System::HTTP_OK,'SUCCESS CANCEL Your Request');
+            return success([],System::HTTP_OK,'SUCCESS CANCEL Your Request');
         }
         $provider = Provider::where('user_id',$user->id)->first();
         if($provider && $requestModel->status == RequestModel::STATUS_NEW){
