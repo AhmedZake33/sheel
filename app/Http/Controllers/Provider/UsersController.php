@@ -26,7 +26,7 @@ class UsersController extends Controller
     }
     public function regsiterProvider(registerProvider $request)
     {
-        return $this->provider->createProvider($request);
+        // return $this->provider->createProvider($request);
     }
 
     public function verifyCode(verifyRequest $request)
