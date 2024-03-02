@@ -74,6 +74,7 @@ class Request extends Model
         $data = (object)[];
         $data->id = $this->id;
         $data->user = $this->user;
+        $data->status = $this->status;
         $data->current_latituide = $this->current_lat;
         $data->current_lngituide = $this->current_lng;
         $data->destination_latituide = $this->destination_lat;

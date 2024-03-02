@@ -12,7 +12,7 @@ class Provider extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class , 'user_id','id')->select('id','name','email');
+        return $this->belongsTo(User::class , 'user_id','id')->select('id','name','email','mobile','mobile_code');
     }
 
     public function service()
