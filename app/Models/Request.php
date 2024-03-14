@@ -23,6 +23,11 @@ class Request extends Model
     const STATUS_NEW  = 0;
     const STATUS_CANCEL = 2;
 
+    // pending 
+    // accept / cancel 
+    // time out 
+    // complete
+
     public function archive()
     {
         if (empty($this->archive_id)) {

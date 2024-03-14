@@ -14,19 +14,19 @@ font-family: 'Nunito', sans-serif;
 <body class="antialiased">    
 
     @auth
-    <p>Welcome, {{ auth()->user()->name }}!</p>
+        <p>Welcome, {{ auth()->user()->name }}! {{ auth()->id() }}</p>
 
-    Active Users <span id="length"></span>
-    <form action="{{route('logout')}}" method="POST"> 
-        @csrf
-        <input type="submit" value="Logout" class="btn btn-primary">
-    </form>
+        Active Users <span id="length"></span>
+        <form action="{{route('logout')}}" method="POST"> 
+            @csrf
+            <input type="submit" value="Logout" class="btn btn-primary">
+        </form>
     @else
-    <form action="{{route('login')}}" method="POST"> 
-        @csrf
-        <input type="email" name="email">
-        <input type="submit" class="btn btn-primary">
-    </form>
+        <form action="{{route('login')}}" method="POST"> 
+            @csrf
+            <input type="email" name="email">
+            <input type="submit" class="btn btn-primary">
+        </form>
 @endauth
 
 
@@ -40,55 +40,30 @@ font-family: 'Nunito', sans-serif;
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
 </script>
          
-<script>             
-    $(function(){                 
-        //let socket = io('http://localhost:3000');    
-        let ip = "http://localhost";
-        let socket_port = '3000';
-        let socket = io(ip + ':'+ socket_port);
-        let user = @json(auth()->user()->id);
-        let token = '{{ csrf_token() }}'
-        console.log(token);
+<script>  
 
-        const pusher = new Pusher('e352c1403f81a822031a', {
-            cluster: 'eu',
-            authEndpoint: 'http://127.0.0.1:8000/pusher/auth',
-            headers: {
-                "X-CSRF-Token": token,
-            }, // Replace with your server's URL
+    
+    let token = '{{ csrf_token() }}'
+    console.log(token); 
 
-        });
+    const pusher = new Pusher('e352c1403f81a822031a', {
+        cluster: 'eu',
+        authEndpoint: 'http://127.0.0.1:8000/broadcasting/auth',
+        headers: {
+            "X-CSRF-Token": token,
+        },
+    });
 
-        const channel = pusher.subscribe('private-user-channel');
-        channel.bind('my-event', (data) => {
-            console.log('Received:', data.message);
-        });
 
-        socket.emit('message', { message: 'Hello from the client' });
+    var channel = pusher.subscribe('private-channel.173');
+    channel.bind('chat', function(data) {
+        alert("success");
+      console.log("success");
+    });
 
-        socket.on('connect',function(){
-            socket.emit('user_connected',user);
-        });       
 
-        socket.on('updateUserStatus',(data) => {
-            length = data.filter(value => (value !== null)).length;
-            document.getElementById('length').innerHTML = length
-            $.each(data, function(key , val){
-                if( val !== null && val !== 0){
-                    console.log(key);
-                }
-            })
-        });
 
-        socket.on('private-event', (data) => {
-            console.log('Received private message:', data.message);
-        });
-
-        //socket.on('private-user-channel-2:App\\Events\\ChatEvent', (data) => {
-        //     console.log('Received private message:', data.message);
-        // });
-    });             
-    //socket.on('connection');         
+         
 </script>     
 </body> 
 </html>

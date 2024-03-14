@@ -19,6 +19,34 @@ use Illuminate\Http\Request;
 |
 */
 
+// Route::post('/pusher/auth', function (Request $request) {
+//     $user = $request->user();
+
+//     if (!$user) {
+//         return response()->json(['error' => 'Unauthorized'], 401);
+//     }
+
+//     $socket_id = $request->input('socket_id');
+//     $channel_name = $request->input('channel_name');
+
+//     $pusher = new Pusher\Pusher(
+//         env('PUSHER_APP_KEY'),
+//         env('PUSHER_APP_SECRET'),
+//         env('PUSHER_APP_ID'),
+//         [
+//             'cluster' => env('PUSHER_APP_CLUSTER'),
+//             'useTLS' => true,
+//         ]
+//     );
+
+//     $presence_data = ['id' => $user->id, 'name' => $user->name];
+
+//     $auth = $pusher->presence_auth($channel_name, $socket_id, $user->id, $presence_data);
+
+//     return response()->json($auth + ['csrf_token' => csrf_token()]);
+// })->middleware('auth');
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -127,5 +155,5 @@ Route::get('checkPassword',function(){
 });
 
 Route::get("test",function(){
-   return domain();
+    $request = App\Models\Request::find(173);
 });

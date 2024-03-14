@@ -66,7 +66,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
 
-     public function archive()
+    public function archive()
     {
         if (empty($this->archive_id)) {
             $this->createArchive();

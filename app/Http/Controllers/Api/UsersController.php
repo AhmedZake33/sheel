@@ -115,7 +115,7 @@ class UsersController extends Controller
 
     public function sendMessage(Request $request , $id)
     {
-        // return auth()->user();
+        // return "auth()->user()";
         $ReceivingUser = RequestModel::find($id)->getReceivingUser();
         // return $ReceivingUser;
         $message = new Chat();
@@ -125,8 +125,8 @@ class UsersController extends Controller
         $message->message = $request->message;
         $message->save();
 
-        \App\Events\testEvent::dispatch(RequestModel::find($id) ,$request->message);
-        // broadcast(new \App\Events\testEvent(RequestModel::find($id) ,$request->message))->toOthers();
+        // \App\Events\testEvent::dispatch(RequestModel::find($id) ,$request->message);
+        broadcast(new \App\Events\testEvent(RequestModel::find($id) ,$request->message))->toOthers();
 
         return $message;
     }

@@ -20,7 +20,8 @@ class ChatService extends Base {
         // return Request::find(133)->CurrentProvider->provider->user->is($user);
         // return Request::canAccess($requestModel,$user);
         // fire broadcast
-        ChatEvent::dispatch($chat[0]);
+        // ChatEvent::dispatch($chat[0]);
+        broadcast(new ChatEvent($chat[0]))->toOthers();
 
 
         if($chat){
