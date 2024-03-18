@@ -2160,9 +2160,41 @@ module.exports = {
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var laravel_echo__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! laravel-echo */ "./node_modules/laravel-echo/dist/echo.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
+
+window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
+window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
+  broadcaster: 'pusher',
+  key: 'pusherKey',
+  wsHost: window.location.hostname,
+  cluster: "eu",
+  wsPort: 6001,
+  forceTLS: false,
+  disableStats: true
+  // authEndpoint: '/broadcasting/auth',
+  // auth: {
+  //     headers: {
+  //         Authorization: 'Bearer ' + "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5OWE3MmRjMC0wZjU3LTQ5NmItYmY1ZS0wN2Y3ZjM0YmMwOGEiLCJqdGkiOiJkNmM2NDRhNDdiMTAwMjcyYzA0ZjYyNmY5NThkNzAzODEyZjk3NmUxOTg0OWIxYmEyNzVmMWZhMmUzNDJmZTFhY2UxMTU3NWM4YmY5ODViNyIsImlhdCI6MTcxMDYyNjM5Ni42ODM1NzQsIm5iZiI6MTcxMDYyNjM5Ni42ODM1NzgsImV4cCI6MTcxMDcxMjc5Ni42NzEyNjYsInN1YiI6IjQ4Iiwic2NvcGVzIjpbXX0.oobIape5kfQSrCD6LC_B_8hbY1mb_0q0L0ZeNn1gmX-okiFb24xGd_MY3iyMqY00c_zK2LyMUw7iD615tMhUDjSuTEAdg-CrNn-YOLOO5oix6To0_2tpNZ1BgsogNcFcoVNCWgCj0BW7c0dV_ZWNTjSH3KEshDnHpefIhI1x8-lM7u5DolLUyilY8mhNhXGvlUc6bkyIucmkbUms4sQseoh6miSq4vQPvpHjCBAl5Fw8i8lVpUhzqUcGmqpgpUPPyrJBRY30m2aCGjAtdiTGwNL5bjbNpPQVsPagyrLHdfzSTlYmJOZ71QJRWcGdkuJ0LReHSGjksUOaISB9-EFOZceNB3gdTWh_1WB_fpesrZIXO_I10i17DDvk13kIzQNr2zOckOU7Suh_vdtBa9OaCOqzjq40XQJcGPYEUul5riyDSF9SBi3Ny13kgPwaWkp5Tlk2-_kOpUKBBwlWwuhBU-WQrU89Voj-AkKoWp_Y1xubbZ9wKS2mZjg-hmsACeF-i1WWnN0RvXUke0FPXVioM8ZaFjTAMGPvY5Y1CBYywksN2L1vVfoTxbdk1ezvZjs0YtepirU9iR4kiSn0cG4IVYSIG2lkODroP9UBvQSV33BorrMpqNxDaoFf0Pu9-s37_oMvDYNF9FCUspEe1GsKPKhtvc5EU7ntrzCfAiQTKZU" // Include your access token for authentication
+  //     },
+  // },
+});
+
+window.Echo.channel('Notifiction').listen('ChatMessageEvent', function (e) {
+  console.log(e);
+  alert();
+});
+
+// private channel
+
+window.Echo["private"]('privateNotification.' + 48).listen('NotificationEvent', function (e) {
+  console.log(e);
+  alert("private notification");
+});
 
 /***/ }),
 
@@ -2196,7 +2228,7 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
-  key: "e352c1403f81a822031a",
+  key: "pusherKey",
   cluster: "eu",
   forceTLS: true
 });

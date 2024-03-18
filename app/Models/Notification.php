@@ -10,6 +10,7 @@ use App\Events\NotificationEvent;
 
 class Notification extends Model
 {
+    protected $table = "notifications";
     protected static function booted(): void
     {
         static::addGlobalScope(new ActiveScope);

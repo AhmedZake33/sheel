@@ -10,29 +10,24 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NotificationEvent implements ShouldBroadcast
+class ChatMessageEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
-    protected $notification;
+    public $message;
 
-    public function __construct($notification)
+    public function __construct($message)
     {
-        $this->notification = $notification;
+        $this->message = $message;
     }
 
     public function broadcastOn()
     {
-        return new PrivateChannel('privateNotification.'.$this->notification->user_id);
+        return new Channel('Notifiction');
     }
-
+    
     public function broadcastWith()
     {
-        return ['notification' => $this->notification];
+        return ['message' => $this->message];
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Chat\PusherController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Payments\PaymentsController;
 use App\Http\Controllers\api\UsersController;
+use App\Models\Notification;
 use App\Models\Payments\Transaction;
 use App\Services\StripeService;
 use Illuminate\Http\Request;
@@ -48,7 +49,7 @@ use Illuminate\Http\Request;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Route::get('/login', function () {
@@ -157,3 +158,23 @@ Route::get('checkPassword',function(){
 Route::get("test",function(){
     $request = App\Models\Request::find(173);
 });
+
+
+
+Route::get("send-chat",function(){
+    try {
+        // $user = App\Models\User::find(48);
+        // return $user->createToken('My Token')->accessToken;
+        $notification = DB::table("notifications")->where('id',127)->first();
+        // return ($notification);
+        // Broadcast(new \App\Events\NotificationEvent($notification));
+        Broadcast(new \App\Events\ChatMessageEvent('$notification'));
+    } catch(\Exception $ex){
+        return $ex->getMessage();
+    }
+  
+    return "true";
+});
+
+
+Route::get('/broadcasting/auth', 'UsersController@authenticate');

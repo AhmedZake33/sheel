@@ -130,5 +130,15 @@ class UsersController extends Controller
 
         return $message;
     }
+
+    public function authenticate(Request $request)
+    {
+        if ($user = Auth::user()) {
+            return response()->json(['auth' => $user->createToken('sheel')->accessToken]);
+        } else {
+            return response()->json(['error' => 'Unauthenticated.'], 403);
+        }
+    }
+
 }   
 

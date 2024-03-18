@@ -39,27 +39,14 @@ font-family: 'Nunito', sans-serif;
         
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
 </script>
+
+       {{-- <script src="{{ asset('/js/app.js') }}"></script> --}}
+
          
 <script>  
 
     
-    let token = '{{ csrf_token() }}'
-    console.log(token); 
-
-    const pusher = new Pusher('e352c1403f81a822031a', {
-        cluster: 'eu',
-        authEndpoint: 'http://127.0.0.1:8000/broadcasting/auth',
-        headers: {
-            "X-CSRF-Token": token,
-        },
-    });
-
-
-    var channel = pusher.subscribe('private-channel.173');
-    channel.bind('chat', function(data) {
-        alert("success");
-      console.log("success");
-    });
+    
 
 
 
