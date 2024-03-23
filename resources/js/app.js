@@ -9,7 +9,7 @@ window.Echo = new Echo({
     key: 'pusherKey',
     wsHost: window.location.hostname,
     cluster: process.env.MIX_PUSHER_APP_CLUSTER, 
-    wsPort: 6001,
+    wsPort: 443,
     forceTLS: false,
     disableStats: true,
     // authEndpoint: '/broadcasting/auth',

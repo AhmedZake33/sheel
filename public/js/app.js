@@ -2173,7 +2173,7 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   key: 'pusherKey',
   wsHost: window.location.hostname,
   cluster: "eu",
-  wsPort: 6001,
+  wsPort: 443,
   forceTLS: false,
   disableStats: true
   // authEndpoint: '/broadcasting/auth',
