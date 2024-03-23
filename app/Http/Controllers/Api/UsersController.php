@@ -92,7 +92,7 @@ class UsersController extends Controller
 
             // send email by mail server
         }
-        $message = ['ar' => 'تم التعديل بنجاح' , 'en' => 'profile updated successfully'][$this->lang];
+        $message = ['ar' => 'تم التعديل بنجاح' , 'en' => 'profile updated successfully'][app()->getLocale()];
         return success([],System::HTTP_OK , $message);
     }
 

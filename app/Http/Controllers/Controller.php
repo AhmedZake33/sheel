@@ -13,7 +13,7 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        $this->lang = request()->header('lang')?request()->header('lang') : 'en';
+        app()->getLocale() = request()->header('lang')?request()->header('lang') : 'en';
     }
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 }

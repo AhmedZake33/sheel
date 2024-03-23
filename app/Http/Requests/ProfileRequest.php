@@ -55,18 +55,18 @@ class ProfileRequest extends FormRequest
     {
         // message is here
         return [
-            'name.regex' =>    ['ar' => 'الاسم لابد ان يحتوي علي حروف' , 'en' => 'The name must contain letters'][$this->lang],
-            'email.unique' =>  ['ar' => 'البريد الالكتروني مطلوب مستخدم من قبل' , 'en' => 'ُE-mail is used before'][$this->lang],
-            'email.email' =>  ['ar' => 'البريد الالكتروني خاطئ' , 'en' => 'ُE-mail Format is incorrect'][$this->lang],
-            // 'mobile_code.required' =>  ['ar' => 'كود الموبايل مطلوب' , 'en' => 'mobile Code is required'][$this->lang],
-            // 'mobile_code.regex' => ['ar' => 'الكود الموبايل خاطئ' , 'en' => 'mobile Code Format is Wrong'][$this->lang]
+            'name.regex' =>    ['ar' => 'الاسم لابد ان يحتوي علي حروف' , 'en' => 'The name must contain letters'][app()->getLocale()],
+            'email.unique' =>  ['ar' => 'البريد الالكتروني مطلوب مستخدم من قبل' , 'en' => 'ُE-mail is used before'][app()->getLocale()],
+            'email.email' =>  ['ar' => 'البريد الالكتروني خاطئ' , 'en' => 'ُE-mail Format is incorrect'][app()->getLocale()],
+            // 'mobile_code.required' =>  ['ar' => 'كود الموبايل مطلوب' , 'en' => 'mobile Code is required'][app()->getLocale()],
+            // 'mobile_code.regex' => ['ar' => 'الكود الموبايل خاطئ' , 'en' => 'mobile Code Format is Wrong'][app()->getLocale()]
             
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        // $message = ($this->lang == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;
+        // $message = (app()->getLocale() == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;
         $message = array_values($validator->errors()->toArray())[0][0];
         $response = success(null , System::HHTP_Unprocessable_Content , $message );
 

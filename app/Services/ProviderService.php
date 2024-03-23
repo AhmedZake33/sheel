@@ -36,7 +36,7 @@ class ProviderService extends Base
         // create opt 
         User::createOtp($user ,true);
         
-        $message =  ($this->lang == 'ar')? 'تم التسجيل بنجاح'  : "Register Complete Successfully";
+        $message =  (app()->getLocale() == 'ar')? 'تم التسجيل بنجاح'  : "Register Complete Successfully";
         return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
     }
 
@@ -58,19 +58,19 @@ class ProviderService extends Base
                     $token = $user->createToken('My Token')->accessToken;
                     $data->token = $token;
                     $user->verify('mobile');
-                    $message = ($this->lang == 'en')? 'successfully completed ' : ' مكتملة بنجاح ' ;
+                    $message = (app()->getLocale() == 'en')? 'successfully completed ' : ' مكتملة بنجاح ' ;
                     return success($data,System::HTTP_OK ,$message);   
 
                 }
                 $user->verify('mobile' , User::STATUS_PENDING_PROVIDER);
-                $message = ($this->lang == 'en')? 'successfully completed Please wait to Activate Your Account' : ' مكتملة بنجاح برجاء الانتظار حتي تفعيل الحساب' ;
+                $message = (app()->getLocale() == 'en')? 'successfully completed Please wait to Activate Your Account' : ' مكتملة بنجاح برجاء الانتظار حتي تفعيل الحساب' ;
                 return success([],System::HTTP_OK ,$message);
             }else{
-                $message = ($this->lang == 'en')? 'Data Is invalid':'الكود خاطئ';
+                $message = (app()->getLocale() == 'en')? 'Data Is invalid':'الكود خاطئ';
                 return success([],System::HHTP_Unprocessable_Content , $message);
             }
         }
-        $message = ($this->lang == 'en')? 'Invalid Inputs' :  'البياتات المدخلة غير صحيحة';
+        $message = (app()->getLocale() == 'en')? 'Invalid Inputs' :  'البياتات المدخلة غير صحيحة';
         return success(System::ERROR_INVALID_INPUT,$message , []) ;
     }
 

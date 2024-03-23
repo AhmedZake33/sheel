@@ -43,16 +43,16 @@ class ResendCodeRequest extends FormRequest
     public function messages()
     {
         return [
-            'mobile.required' =>  ['ar' => 'رقم الموبايل مطلوب للتسجيل' , 'en' => 'Phone Number is required For Register'][$this->lang],
-            'mobile.regex' =>    ['ar' => 'رقم الموبايل غير صحيح' , 'en' => 'Phone number is incorrect'][$this->lang], 
-            'mobile_code.required' =>  ['ar' => 'كود البلد مطلوب' , 'en' => 'ُCode is required'][$this->lang],
-            'mobile_code.regex' => ['ar' => 'الكود خاطئ' , 'en' => 'Code Format is Wrong'][$this->lang]          
+            'mobile.required' =>  ['ar' => 'رقم الموبايل مطلوب للتسجيل' , 'en' => 'Phone Number is required For Register'][app()->getLocale()],
+            'mobile.regex' =>    ['ar' => 'رقم الموبايل غير صحيح' , 'en' => 'Phone number is incorrect'][app()->getLocale()], 
+            'mobile_code.required' =>  ['ar' => 'كود البلد مطلوب' , 'en' => 'ُCode is required'][app()->getLocale()],
+            'mobile_code.regex' => ['ar' => 'الكود خاطئ' , 'en' => 'Code Format is Wrong'][app()->getLocale()]          
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        // $message = ($this->lang == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;
+        // $message = (app()->getLocale() == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;
         $message = array_values($validator->errors()->toArray())[0][0];
         $response = success([] , System::HHTP_Unprocessable_Content , $message );
 

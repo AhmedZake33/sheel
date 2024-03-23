@@ -119,7 +119,7 @@ class RequestService extends Base
                     
                 // }
             }else{
-                $message = ($this->lang == 'en') ? 'something went wrong' : 'حدث خطأ ما';
+                $message = (app()->getLocale() == 'en') ? 'something went wrong' : 'حدث خطأ ما';
             return success([],System::HHTP_Unprocessable_Content,$message);
             }
         }

@@ -11,7 +11,7 @@ class BetweenOneAndFive implements Rule
 
     public function __construct()
     {
-        $this->lang = request()->header('lang')?request()->header('lang') : 'en';
+        app()->getLocale() = request()->header('lang')?request()->header('lang') : 'en';
     }
 
     public function passes($attribute, $value)
@@ -21,6 +21,6 @@ class BetweenOneAndFive implements Rule
 
     public function message()
     {
-        return ['ar' => 'التقيم لابد ان يكون بين رقمين 1 و 5' , 'en' => 'Rate Must be Between in 1 and 5'][$this->lang];
+        return ['ar' => 'التقيم لابد ان يكون بين رقمين 1 و 5' , 'en' => 'Rate Must be Between in 1 and 5'][app()->getLocale()];
     }
 }

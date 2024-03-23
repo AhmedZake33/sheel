@@ -14,7 +14,7 @@ class UserService extends Base
     {
         // validate the data 
         $validated = $request->validated();
-        $message = ($this->lang == 'en')? "Successfully Please Check Your Mobile Phone To Complete Registeration" : "تم بنجاح , يرجى التحقق من هاتفك المحمول لإكمال التسجيل";
+        $message = (app()->getLocale() == 'en')? "Successfully Please Check Your Mobile Phone To Complete Registeration" : "تم بنجاح , يرجى التحقق من هاتفك المحمول لإكمال التسجيل";
         
         // return $validated['email'];
         // check if not complete registeration cycle 
@@ -26,7 +26,7 @@ class UserService extends Base
         }
 
         if($this->checkUserFound($validated)){
-            $message = ($this->lang == 'en') ? 'User Already found Please Login' : '  المستخدم موجود بالفعل برجاء تسجيل الدخول' ;
+            $message = (app()->getLocale() == 'en') ? 'User Already found Please Login' : '  المستخدم موجود بالفعل برجاء تسجيل الدخول' ;
             return success([],System::HHTP_Unprocessable_Content,$message);
         }
        
@@ -101,15 +101,15 @@ class UserService extends Base
         if($user && $user->status == User::STATUS_ACTIVE){
             User::createOtp($user);
         }elseif($user && $user->status == User::STATUS_PENDING_PROVIDER){
-            $message = ($this->lang == 'en') ? 'Please Wait to review Your Data' : ' برجاء الانتظار لمراجعة البيانات';
+            $message = (app()->getLocale() == 'en') ? 'Please Wait to review Your Data' : ' برجاء الانتظار لمراجعة البيانات';
             return success([],System::HHTP_Unprocessable_Content,$message);
         }else{
-            $message = ($this->lang == 'en') ? 'Please Complete Verification' : '  برجاء اكمال التحقق من البيانات  ';
+            $message = (app()->getLocale() == 'en') ? 'Please Complete Verification' : '  برجاء اكمال التحقق من البيانات  ';
             return success([],System::HHTP_Unprocessable_Content,$message);
         }
 
         // send otp to user mobile phone
-        $message = ($this->lang == 'en')?  'Success Check Your mobile Phone To Complete Login' : 'تم بنجاح , تحقق من هاتفك المحمول لإكمال تسجيل الدخول';
+        $message = (app()->getLocale() == 'en')?  'Success Check Your mobile Phone To Complete Login' : 'تم بنجاح , تحقق من هاتفك المحمول لإكمال تسجيل الدخول';
         // return response
         return success(['secret' => $user->secret , 'opt_code' => $user->otp_code],System::HTTP_OK,$message);
     }
@@ -125,13 +125,13 @@ class UserService extends Base
         
        // if not found user in DB
        if(!$user){
-        $message = ($this->lang == 'en')?  'Phone number is incorrect':'رقم الموبايل غير صحيح' ;
+        $message = (app()->getLocale() == 'en')?  'Phone number is incorrect':'رقم الموبايل غير صحيح' ;
         return success([],System::HHTP_Unprocessable_Content,$message);
        }
        // create otp code
        User::createOtp($user);
 
-        $message = ($this->lang == 'en')?  'Success resend Code Again':'تم إرسال الكود بنجاح مرة اخري' ;
+        $message = (app()->getLocale() == 'en')?  'Success resend Code Again':'تم إرسال الكود بنجاح مرة اخري' ;
        // return response
        return success(['secret' => $user->secret],System::HTTP_OK,$message);
     }
@@ -153,14 +153,14 @@ class UserService extends Base
                 $data = $user->data(System::DATA_DETAILS);
                 $token = $user->createToken('My Token')->accessToken;
                 $data->token = $token;
-                $message = ($this->lang == 'en')? 'successfully completed ' : 'مكتملة بنجاح' ;
+                $message = (app()->getLocale() == 'en')? 'successfully completed ' : 'مكتملة بنجاح' ;
                 return success($data,System::HTTP_OK ,$message);
             }else{
-                $message = ($this->lang == 'en')? 'Otp Is Expired Or Incorrect':'كود التفعيل منتهي او خاطئ';
+                $message = (app()->getLocale() == 'en')? 'Otp Is Expired Or Incorrect':'كود التفعيل منتهي او خاطئ';
                 return success([],System::HHTP_Unprocessable_Content , $message);
             }
         }
-        $message = ($this->lang == 'en')? 'Invalid Inputs' :  'البياتات المدخلة غير صحيحة';
+        $message = (app()->getLocale() == 'en')? 'Invalid Inputs' :  'البياتات المدخلة غير صحيحة';
         return success(System::ERROR_INVALID_INPUT,$message , []) ;
     }
 
@@ -173,14 +173,14 @@ class UserService extends Base
             if($user){
                 $email = 'email';
                 $user->verify($email);
-                $message = ($this->lang == 'en') ? 'Successfully Verify Email' : 'تم التحقق من البريد الالكتروني بنجاح';
+                $message = (app()->getLocale() == 'en') ? 'Successfully Verify Email' : 'تم التحقق من البريد الالكتروني بنجاح';
                 return success([],System::HTTP_OK , $message);
             }
-            $message = ($this->lang == 'en') ? 'Not Found Data' : 'البيانات غير موجودة';
+            $message = (app()->getLocale() == 'en') ? 'Not Found Data' : 'البيانات غير موجودة';
             return success([],System::HHTP_Unprocessable_Content , $message);
             
         }
-        $message = ($this->lang == 'en') ? 'Not Found Data' : 'البيانات غير موجودة';
+        $message = (app()->getLocale() == 'en') ? 'Not Found Data' : 'البيانات غير موجودة';
         return success([],System::HHTP_Unprocessable_Content , $message);
     }
 }   

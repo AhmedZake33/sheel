@@ -34,7 +34,7 @@ class RequestsController extends Controller
         // return $this->locationService->getNearestLocations($request);
         // if(count($this->locationService->getNearestLocations($request)) == 0){
         //     $message = ["ar" => "لا يمكنك عمل طلب الان" , "en" => "cannot create request now"];
-        //     return error([],System::HHTP_Unprocessable_Content , $message[$this->lang]);
+        //     return error([],System::HHTP_Unprocessable_Content , $message[app()->getLocale()]);
         // }
         return $this->requestService->create($request);
         // $user =  auth()->user();

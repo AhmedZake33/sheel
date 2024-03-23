@@ -217,7 +217,7 @@ class PaymentService extends Base {
             $transaction->save();
             return $transaction;
         }else{
-            $message  = ($this->lang == 'ar')?  'حدث خطأ' : 'something went wrong';
+            $message  = (app()->getLocale() == 'ar')?  'حدث خطأ' : 'something went wrong';
             return success([] , System::HHTP_Unprocessable_Content ,$message);
         }
     }

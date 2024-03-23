@@ -41,14 +41,14 @@ class verifyRequest extends FormRequest
     public function messages()
     {
         return [
-            'otp_code.required' => ['ar' => 'الكود مطلوب' , 'en' => 'Code Is Required'][$this->lang],
-            'otp_code.regex' => ['ar' => 'الكود لابد ان يكون ارقام مكون من خمس ارقام' , 'en' => 'Code Must Be Numbers only and Consist Of 5 numbers'][$this->lang],
+            'otp_code.required' => ['ar' => 'الكود مطلوب' , 'en' => 'Code Is Required'][app()->getLocale()],
+            'otp_code.regex' => ['ar' => 'الكود لابد ان يكون ارقام مكون من خمس ارقام' , 'en' => 'Code Must Be Numbers only and Consist Of 5 numbers'][app()->getLocale()],
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        // $message = ($this->lang == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;        
+        // $message = (app()->getLocale() == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;        
         $message = array_values($validator->errors()->toArray())[0][0];
         $response = success([] , System::HHTP_Unprocessable_Content , $message );
 

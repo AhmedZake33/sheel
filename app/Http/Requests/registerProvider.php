@@ -58,24 +58,24 @@ class registerProvider extends FormRequest
     {
         // message is here
         return [
-            'name.required' =>  ['ar' => 'الاسم مطلوب للتسجيل' , 'en' => 'Name is required For Register'][$this->lang],
-            'name.regex' =>    ['ar' => 'الاسم لابد ان يحتوي علي حروف' , 'en' => 'The name must contain letters'][$this->lang],
-            'email.required' =>  ['ar' => 'البريد الالكتروني مطلوب للتسجيل' , 'en' => 'ُE-mail is required For Register'][$this->lang],
-            'email.unique' =>  ['ar' => 'البريد الالكتروني مطلوب مستخدم من قبل' , 'en' => 'ُE-mail is used before'][$this->lang],
-            "emairate_id_front.required" => ["ar" => "صورة بطاقة الهويه الاماميه مطلوبة" , "en" => "Emirate Front ID Is required"][$this->lang],
-            "emairate_id_back.required" => ["ar" => "صورة بطاقة الهويه الخلفيه مطلوبة" , "en" => "Emirate Back ID Is required"][$this->lang],
-            "drive_photo.required" => ["ar" => "صورة رخصة القيادة  مطلوبة" , "en" => "Drive Photo Is required"][$this->lang],
-            "RTA_card_front.required" => ["ar" => " صورة بطاقة هيئة الطرق والمواصلات من الامام مطلوبة " , "en" => " RTA Card Front Is required"][$this->lang],
-            "RTA_card_back.required" => ["ar" => " صورة بطاقة هيئة الطرق والمواصلات من الامام مطلوبة "  , "en" => "RTA Card Back Is required"][$this->lang],
-            "vehicle_registration_form.required" => ["ar" => "استمارة تسجيل المركبه مطلوبة" , "en" => "Vehicle Registration Form Is required"][$this->lang],
-            'mobile_code.required' =>  ['ar' => 'كود الموبايل مطلوب' , 'en' => 'Mobile Code is required'][$this->lang],
-            'mobile_code.regex' => ['ar' => 'الكود الموبايل خاطئ' , 'en' => 'Mobile Code Format is Wrong'][$this->lang]
+            'name.required' =>  ['ar' => 'الاسم مطلوب للتسجيل' , 'en' => 'Name is required For Register'][app()->getLocale()],
+            'name.regex' =>    ['ar' => 'الاسم لابد ان يحتوي علي حروف' , 'en' => 'The name must contain letters'][app()->getLocale()],
+            'email.required' =>  ['ar' => 'البريد الالكتروني مطلوب للتسجيل' , 'en' => 'ُE-mail is required For Register'][app()->getLocale()],
+            'email.unique' =>  ['ar' => 'البريد الالكتروني مطلوب مستخدم من قبل' , 'en' => 'ُE-mail is used before'][app()->getLocale()],
+            "emairate_id_front.required" => ["ar" => "صورة بطاقة الهويه الاماميه مطلوبة" , "en" => "Emirate Front ID Is required"][app()->getLocale()],
+            "emairate_id_back.required" => ["ar" => "صورة بطاقة الهويه الخلفيه مطلوبة" , "en" => "Emirate Back ID Is required"][app()->getLocale()],
+            "drive_photo.required" => ["ar" => "صورة رخصة القيادة  مطلوبة" , "en" => "Drive Photo Is required"][app()->getLocale()],
+            "RTA_card_front.required" => ["ar" => " صورة بطاقة هيئة الطرق والمواصلات من الامام مطلوبة " , "en" => " RTA Card Front Is required"][app()->getLocale()],
+            "RTA_card_back.required" => ["ar" => " صورة بطاقة هيئة الطرق والمواصلات من الامام مطلوبة "  , "en" => "RTA Card Back Is required"][app()->getLocale()],
+            "vehicle_registration_form.required" => ["ar" => "استمارة تسجيل المركبه مطلوبة" , "en" => "Vehicle Registration Form Is required"][app()->getLocale()],
+            'mobile_code.required' =>  ['ar' => 'كود الموبايل مطلوب' , 'en' => 'Mobile Code is required'][app()->getLocale()],
+            'mobile_code.regex' => ['ar' => 'الكود الموبايل خاطئ' , 'en' => 'Mobile Code Format is Wrong'][app()->getLocale()]
         ];
     }
 
     protected function failedValidation(Validator $validator)
     {
-        // $message = ($this->lang == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;
+        // $message = (app()->getLocale() == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;
         $message = array_values($validator->errors()->toArray())[0][0];
         $response = success(null , System::HHTP_Unprocessable_Content , $message );
 

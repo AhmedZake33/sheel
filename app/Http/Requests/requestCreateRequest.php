@@ -45,19 +45,19 @@ class requestCreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'current_lat.required' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][$this->lang],
-            'current_lat.regex' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][$this->lang],
-            'current_lng.required' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][$this->lang],
-            'current_lng.regex' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][$this->lang],
-            'destination_lat.required' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][$this->lang],
-            'destination_lat.regex' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][$this->lang],
-            'destination_lng.required' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][$this->lang],
-            'destination_lng.regex' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][$this->lang],
-            'service_id.required' => ['ar' => 'برجاء اختيار الخدمة المطلوبة ' , 'en' => 'Please Select Service'][$this->lang],
-            'service_id.exists' => ['ar' => '  برجاء ادخال الخدمة بشكل صحيح  ' , 'en' => 'Please Select Correct Service'][$this->lang],
-            'destination.regex' => ['ar' => 'برجاء ادخال الوصف بشكل صحيح' , 'en' => 'Description Format is Incorrect'][$this->lang],
-            'file.mimes' => ['ar' => 'برجاء اختيار الصوره بشكل صحيح' , 'en' => 'File format is incorrect'][$this->lang],
-            'file.max' => ['ar' => 'برجاء اختيار حجم الصوره  بشكل صحيح' , 'en' => 'File Size Not Allow'][$this->lang],
+            'current_lat.required' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][app()->getLocale()],
+            'current_lat.regex' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][app()->getLocale()],
+            'current_lng.required' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][app()->getLocale()],
+            'current_lng.regex' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][app()->getLocale()],
+            'destination_lat.required' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][app()->getLocale()],
+            'destination_lat.regex' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][app()->getLocale()],
+            'destination_lng.required' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][app()->getLocale()],
+            'destination_lng.regex' => ['ar' => 'حدث مشكلة في ايجاد الموقع' , 'en' => 'Error occurred when getting Location'][app()->getLocale()],
+            'service_id.required' => ['ar' => 'برجاء اختيار الخدمة المطلوبة ' , 'en' => 'Please Select Service'][app()->getLocale()],
+            'service_id.exists' => ['ar' => '  برجاء ادخال الخدمة بشكل صحيح  ' , 'en' => 'Please Select Correct Service'][app()->getLocale()],
+            'destination.regex' => ['ar' => 'برجاء ادخال الوصف بشكل صحيح' , 'en' => 'Description Format is Incorrect'][app()->getLocale()],
+            'file.mimes' => ['ar' => 'برجاء اختيار الصوره بشكل صحيح' , 'en' => 'File format is incorrect'][app()->getLocale()],
+            'file.max' => ['ar' => 'برجاء اختيار حجم الصوره  بشكل صحيح' , 'en' => 'File Size Not Allow'][app()->getLocale()],
 
 
         ];
@@ -65,7 +65,7 @@ class requestCreateRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        // $message = ($this->lang == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;
+        // $message = (app()->getLocale() == 'en')? 'The data entered is incorrect' : 'البيانات المدخلة غير صحيحة' ;
         $message = array_values($validator->errors()->toArray())[0][0];
         $response = success([] , System::HHTP_Unprocessable_Content , $message);
         

@@ -37,7 +37,7 @@ class ReviewRequest extends FormRequest
     public function messages()
     {
         return [
-            // 'rate.between' => ['ar' => 'التقيم لابد ان يكون بين رقمين 1 و 5' , 'en' => 'Rate Must be Between in 1 and 5'][$this->lang]
+            // 'rate.between' => ['ar' => 'التقيم لابد ان يكون بين رقمين 1 و 5' , 'en' => 'Rate Must be Between in 1 and 5'][app()->getLocale()]
         ];
     }
 
