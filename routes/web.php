@@ -49,7 +49,7 @@ use Illuminate\Http\Request;
 
 
 Route::get('/', function () {
-    return domain(); 
+    // return domain(); 
     // return ENV("MIX_PUSHER_APP_CLUSTER");
     return view('home');
 });
