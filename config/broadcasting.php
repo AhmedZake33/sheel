@@ -40,7 +40,7 @@ return [
                 'encrypted' => true,
                 'host' => env("DOMAIN"),
                 'port' => 443,
-                'scheme' => 'http'
+                'scheme' => 'https'
             ],
         ],
 
