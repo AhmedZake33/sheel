@@ -239,7 +239,7 @@ class Archive extends Model
         if (empty($language))
             $language = app()->getLocale();
 
-        if ($language == app()->getLocale()uage)
+        if ($language == $this->language)
             return $this;
 
         $archive = Archive::where('related_id', $this->id)->where('language', $language)->first();
@@ -502,7 +502,7 @@ class Archive extends Model
 
         $appendID = false;
         if (empty($newTitle)) $newTitle = $this->title;
-        if (!$newParent->checkChildsTitle($newTitle, app()->getLocale()uage)) {
+        if (!$newParent->checkChildsTitle($newTitle, $this->language)) {
             $appendID = true;
         }
 
@@ -645,7 +645,7 @@ class Archive extends Model
     {
 
         $appendID = false;
-        if (!$this->checkChildsTitle($title, app()->getLocale()uage)) {
+        if (!$this->checkChildsTitle($title, $this->language)) {
             $appendID = true;
         }
 
@@ -677,7 +677,7 @@ class Archive extends Model
         $extension = $file->getClientOriginalExtension();
 
         $appendID = false;
-        if(!$this->checkChildsTitle($title, app()->getLocale()uage)) {
+        if(!$this->checkChildsTitle($title, $this->language)) {
             $appendID = true;
         }
 
@@ -719,7 +719,7 @@ class Archive extends Model
     {
 
         $appendID = false;
-        if (!$this->checkChildsTitle($document->title, app()->getLocale()uage)) {
+        if (!$this->checkChildsTitle($document->title, $this->language)) {
             $appendID = true;
         }
 
@@ -752,7 +752,7 @@ class Archive extends Model
 
         $extension = $file->getClientOriginalExtension();
         $appendID = false;
-        if(!$this->checkChildsTitle($title, app()->getLocale()uage)) {
+        if(!$this->checkChildsTitle($title, $this->language)) {
             $appendID = true;
         }
 
@@ -795,7 +795,7 @@ class Archive extends Model
 
         $extension = $file->getClientOriginalExtension();
         $appendID = false;
-        if(!$this->checkChildsTitle($title, app()->getLocale()uage)) {
+        if(!$this->checkChildsTitle($title, $this->language)) {
             $appendID = true;
         }
         $folder = null;
@@ -925,7 +925,7 @@ class Archive extends Model
         $extension = pathinfo($fileName, PATHINFO_EXTENSION);
 
         $appendID = false;
-        if (!$this->checkChildsTitle($title, app()->getLocale()uage)) {
+        if (!$this->checkChildsTitle($title, $this->language)) {
             $appendID = true;
         }
 
@@ -1006,7 +1006,7 @@ class Archive extends Model
         $extension = "html";
 
         $appendID = false;
-        if (!$this->checkChildsTitle($title, app()->getLocale()uage)) {
+        if (!$this->checkChildsTitle($title, $this->language)) {
             $appendID = true;
         }
 
@@ -1080,10 +1080,10 @@ class Archive extends Model
             $archive = $archive->parent->getLocale($archive->language);
         }
 
-        if (app()->getLocale()uage == null || app()->getLocale()uage == "en")
+        if ($this->language == null || $this->language == "en")
             return $path;
 
-        return app()->getLocale()uage . "/" . $path;
+        return $this->language . "/" . $path;
     }
 
     public function empty($removeFolders = true)
@@ -1324,7 +1324,7 @@ class Archive extends Model
         $locale = [];
 
         if ($this->exists())
-            $locale[app()->getLocale()uage] = $this;
+            $locale[$this->language] = $this;
 
         foreach ($this->related as $related) {
             if ($related->exists())
