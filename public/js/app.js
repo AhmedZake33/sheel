@@ -2195,6 +2195,10 @@ window.Echo["private"]('privateNotification.' + 48).listen('NotificationEvent', 
   console.log(e);
   alert("private notification");
 });
+window.Echo["private"]("requestChannel." + 172).listen("RequestEvent", function (e) {
+  alert("request event");
+  console.log(e);
+});
 
 /***/ }),
 

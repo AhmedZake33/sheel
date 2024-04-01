@@ -8,6 +8,7 @@ use App\Models\Notification;
 use App\Models\Payments\Transaction;
 use App\Services\StripeService;
 use Illuminate\Http\Request;
+use App\models\Request as Requestmodel;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,16 @@ Route::get('/', function () {
     // return domain(); 
     // return ENV("MIX_PUSHER_APP_CLUSTER");
     return view('home');
+});
+
+Route::get('fire-event', function () {
+    $request = Requestmodel::find(172);
+    return event(new \App\Events\RequestEvent($request,1));
+
+    $notification = Notification::find(127);
+    event(new \App\Events\NotificationEvent($notification));
+
+    return "success";
 });
 
 Route::get("test",function(){

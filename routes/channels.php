@@ -28,6 +28,10 @@ Broadcast::channel('privateNotification.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
+Broadcast::channel("requestChannel.{requestId}" , function(User $user , $requestId){
+   return Request::canAccess($requestId,$user);
+});
+
 
 // Broadcast::channel('private-user-channel-{receiverUserId}', function ($user, $receiverUserId) {
 //     return (int) $user->id === (int) $receiverUserId;
