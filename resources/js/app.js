@@ -31,12 +31,16 @@ window.Echo.channel('Notifiction').listen('ChatMessageEvent', (e) => {
 
 // private channel
 
-window.Echo.private('privateNotification.'+ 48).listen('NotificationEvent', (e) => {
-    console.log(e);
-    alert("private notification");
-});
+// window.Echo.private('privateNotification.'+ 48).listen('NotificationEvent', (e) => {
+//     console.log(e);
+//     alert("private notification");
+// });
 
-window.Echo.private("requestChannel."+172).listen("RequestEvent",(e) => {
-    alert("request event");
-    console.log(e)
-});
+// window.Echo.private("requestChannel."+172).listen("RequestEvent",(e) => {
+//     alert("request event");
+//     console.log(e)
+// });
+
+window.Echo.channel("public-channel").listen("PublicEvent",(e) => {
+    alert("this is public ");
+})

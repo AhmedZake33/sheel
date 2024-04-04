@@ -2191,13 +2191,18 @@ window.Echo.channel('Notifiction').listen('ChatMessageEvent', function (e) {
 
 // private channel
 
-window.Echo["private"]('privateNotification.' + 48).listen('NotificationEvent', function (e) {
-  console.log(e);
-  alert("private notification");
-});
-window.Echo["private"]("requestChannel." + 172).listen("RequestEvent", function (e) {
-  alert("request event");
-  console.log(e);
+// window.Echo.private('privateNotification.'+ 48).listen('NotificationEvent', (e) => {
+//     console.log(e);
+//     alert("private notification");
+// });
+
+// window.Echo.private("requestChannel."+172).listen("RequestEvent",(e) => {
+//     alert("request event");
+//     console.log(e)
+// });
+
+window.Echo.channel("public-channel").listen("PublicEvent", function (e) {
+  alert("this is public ");
 });
 
 /***/ }),
