@@ -56,8 +56,8 @@ Route::get('/', function () {
 });
 
 Route::get('fire-event', function () {
-    $request = Requestmodel::find(172);
-    return event(new \App\Events\RequestEvent($request,1));
+    // $request = Requestmodel::find(172);
+    // return event(new \App\Events\RequestEvent($request,1));
 
     $notification = Notification::find(127);
     event(new \App\Events\NotificationEvent($notification));
