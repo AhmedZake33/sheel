@@ -30,6 +30,11 @@ font-family: 'Nunito', sans-serif;
 @endauth
 
 
+@php
+    $appUrl = env('APP_URL');
+@endphp
+
+
     
 <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous">
 </script> 
@@ -39,14 +44,27 @@ font-family: 'Nunito', sans-serif;
         
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
 </script>
-
-       {{-- <script src="{{ asset('/js/app.js') }}"></script> --}}
-
          
 <script>  
 
     
-    
+    let token = '{{ csrf_token() }}'
+    console.log(token); 
+    var appUrl = '{{ $appUrl }}';
+    const pusher = new Pusher('e352c1403f81a822031a', {
+        cluster: 'eu',
+        authEndpoint: appUrl + '/broadcasting/auth',
+        headers: {
+            "X-CSRF-Token": token,
+        },
+    });
+
+
+    var channel = pusher.subscribe('private-privateNotification.48');
+    channel.bind('NotificationEvent', function(data) {
+        alert("success");
+      console.log("success");
+    });
 
 
 
