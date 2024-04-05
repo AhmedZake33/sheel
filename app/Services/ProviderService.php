@@ -28,7 +28,7 @@ class ProviderService extends Base
          // draft data
          $user->draft();
 
-         // activiate 
+         // activiate  for test only
          $user->status = User::STATUS_ACTIVE;
          $user->save();
          
