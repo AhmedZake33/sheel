@@ -61,7 +61,7 @@ Route::get('fire-event', function () {
 
     // return event(new \App\Events\PublicEvent());
 
-    $notification = Notification::find(1);
+    $notification = Notification::find(127);
     event(new \App\Events\NotificationEvent($notification));
 
     return "success";

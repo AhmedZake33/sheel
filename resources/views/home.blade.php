@@ -60,7 +60,7 @@ font-family: 'Nunito', sans-serif;
     });
 
 
-    var channel = pusher.subscribe('private-privateNotification.2');
+    var channel = pusher.subscribe('private-privateNotification.48');
     channel.bind('NotificationEvent', function(data) {
         alert("success");
       console.log("success");
