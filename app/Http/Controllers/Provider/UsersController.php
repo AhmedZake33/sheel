@@ -46,7 +46,7 @@ class UsersController extends Controller
 
     public function profile()
     {
-        return $this->user->profile();
+        return $this->user->profile(User::TYPE_PROVIDER);
     }
 
     public function verifyEmail($secret , $slug)
