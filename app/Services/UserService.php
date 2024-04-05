@@ -81,6 +81,21 @@ class UserService extends Base
             // 1- vehicle_registration_form
             $data->vehicle_registration_form = count($user->archive->children()->where('short_name','vehicle_registration_form')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','vehicle_registration_form')->pluck('id')[0]) : null;
 
+            // 1- RTA_card_back
+            $data->RTA_card_back = count($user->archive->children()->where('short_name','RTA_card_back')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','RTA_card_back')->pluck('id')[0]) : null;
+
+            // 1- RTA_card_front
+            $data->RTA_card_front = count($user->archive->children()->where('short_name','RTA_card_front')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','RTA_card_front')->pluck('id')[0]) : null;
+
+            // 1- drive_photo
+            $data->drive_photo = count($user->archive->children()->where('short_name','drive_photo')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','drive_photo')->pluck('id')[0]) : null;
+
+            // 1- emairate_id_back
+            $data->emairate_id_back = count($user->archive->children()->where('short_name','emairate_id_back')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','emairate_id_back')->pluck('id')[0]) : null;
+
+            // 1- emairate_id_front
+            $data->emairate_id_front = count($user->archive->children()->where('short_name','emairate_id_front')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','emairate_id_front')->pluck('id')[0]) : null;
+
         }
        
 
