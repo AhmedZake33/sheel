@@ -27,6 +27,10 @@ class ProviderService extends Base
          
          // draft data
          $user->draft();
+
+         // activiate 
+         $user->status = User::STATUS_ACTIVE;
+         $user->save();
          
         // create provider record 
         $provider = new Provider();
