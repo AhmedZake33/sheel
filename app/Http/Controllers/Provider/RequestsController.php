@@ -112,15 +112,18 @@ class RequestsController extends Controller
         $provider =  $user->provider;
         // return $provider;
         // request provider
-        $requestsProvider = DB::table("requests_providers")->where("provider_id",$provider->id)->where("status",1)->select("request_id")->get();
+        $requestsProvider = DB::table("requests_providers")->where("provider_id",$provider->id)->where("status",2)->select("request_id")->get();
         $result = [];
-        foreach($requestsProvider as $requestProvider){
-            // get request
-            $request = RequestModel::find($requestProvider->request_id);
-            if($request){
-                array_push($result , $request->data());
+        if(count($requestsProvider)){
+            foreach($requestsProvider as $requestProvider){
+                // get request
+                $request = RequestModel::find($requestProvider->request_id);
+                if($request){
+                    array_push($result , $request->data());
+                }
             }
+            return success($result,System::HTTP_OK , 'success');
         }
-        return success($result,System::HTTP_OK , 'success');
+        return success(System::HTTP_OK , 'success');
     }
 }
