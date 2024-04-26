@@ -16,6 +16,7 @@ Route::post('login','UsersController@login');
 
 Route::group(["prefix" => "user" , "middleware" => "auth:api"], function(){
     Route::get('profile','UsersController@profile');
+    Route::post('/update','UsersController@update');
 });
 Route::get('user/activate/{userSecret}','UsersController@activate');
 

@@ -74,7 +74,7 @@ class UserService extends Base
         $data->email_verification = $user->email_verification;
         $data->status = $user->status;
         if($type == User::TYPE_USER){
-            $data->photo = count($user->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
+            // $data->photo = count($user->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
 
         }else if($type == User::TYPE_PROVIDER){
             // PHOTOS 
@@ -98,7 +98,8 @@ class UserService extends Base
             $data->emairate_id_front = count($user->archive->children()->where('short_name','emairate_id_front')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','emairate_id_front')->pluck('id')[0]) : null;
 
         }
-       
+        
+        $data->photo = count($user->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
 
         return success($data , System::HTTP_OK , 'success');
 

@@ -12,6 +12,8 @@ use App\Http\Requests\verifyRequest;
 use App\Models\System\System;
 use App\Services\ProviderService;
 use App\Services\UserService;
+use App\Http\Requests\ProfileRequest;
+use Illuminate\Support\Arr;
 
 class UsersController extends Controller 
 {
@@ -63,5 +65,34 @@ class UsersController extends Controller
             return success([],System::HTTP_OK , "SUCCESS ACTIVIATE ACCOUNT");
         }
         
+    }
+
+    public function update(ProfileRequest $request)
+    {
+        // return $user;
+        $user = auth()->user();
+        if(!$user){
+            return error([],404,"user Not Found");
+        }
+        $validated = $request->validated();
+        if($request->profile_photo){
+            if($user->archive->findChildByShortName('profile_photo')){
+                $user->archive->findChildByShortName('profile_photo')->delete();
+                $user->archive->addDocumentWithShortName($request->profile_photo , null , 'profile_photo' , 'profile_photo');
+            }else{
+                $user->archive->addDocumentWithShortName($request->profile_photo , null , 'profile_photo' , 'profile_photo');
+            }
+        }
+
+        $user->update(Arr::except($validated , ['email','profile_photo']));
+        if(array_key_exists('email',$validated) && $user->email != $validated['email']){
+            $user->email = $validated['email'];
+            $user->email_verification =  User::STATUS_INCOMPLETE;
+            $user->save();
+
+            // send email by mail server
+        }
+        $message = ['ar' => 'تم التعديل بنجاح' , 'en' => 'profile updated successfully'][app()->getLocale()];
+        return success([],System::HTTP_OK , $message);
     }
 }
