@@ -129,7 +129,8 @@ class UserService extends Base
             // $message = (app()->getLocale() == 'en') ? 'Please Wait to review Your Data' : ' برجاء الانتظار لمراجعة البيانات';
             // return success([],System::HHTP_Unprocessable_Content,$message);
         }else{
-            $message = (app()->getLocale() == 'en') ? 'Please Complete Verification' : '  برجاء اكمال التحقق من البيانات  ';
+            // $message = (app()->getLocale() == 'en') ? 'Please Complete Verification' : '  برجاء اكمال التحقق من البيانات  ';
+            $message = (app()->getLocale() == 'en')? "Data is Invalid" : "البيانات خاطة" ;
             return success([],System::HHTP_Unprocessable_Content,$message);
         }
 
