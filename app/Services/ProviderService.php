@@ -16,6 +16,7 @@ class ProviderService extends Base
         $user = User::create($request->except(['emairate_id_front','emairate_id_back','drive_photo','RTA_card_front','RTA_card_back','vehicle_registration_form']));
         $user->type = User::TYPE_PROVIDER;
         $user->secret = Str::random(50);
+        $user->status = User::STATUS_PENDING_PROVIDER;
         $user->save();
          // add files
          $user->archive->addDocumentWithShortName($request->emairate_id_front , null , 'emairate_id_front' , 'emairate_id_front');
@@ -46,6 +47,7 @@ class ProviderService extends Base
 
     public function verifyCode($request)
     {
+        
         $validated = $request->validated();
         $message = null;
         $otp_code = $validated['otp_code'];
@@ -56,16 +58,22 @@ class ProviderService extends Base
             $user = User::where('secret',$secret)->where('otp_code',$otp_code)->where('otp_time', '>=',$desiredTime)->first();
             //  dd(Carbon::now()->addMinutes(5)->diffInMinutes(carbon::parse('2023-08-07 21:07:49')));
             if($user){
-                if(($user->status == User::STATUS_ACTIVE) || ($user->status == User::STATUS_PENDING_PROVIDER)){
+                // return gettype($user->status);
+                if(in_array($user->status , [User::STATUS_ACTIVE , User::STATUS_PENDING_PROVIDER , User::STATUS_INCOMPLETE])){
+
                     // create token and become provider in system
                     $data = $user->data(System::DATA_DETAILS);
                     $token = $user->createToken('My Token')->accessToken;
                     $data->token = $token;
-                    $user->verify('mobile');
+                    if($user->status == User::STATUS_ACTIVE){
+                        $user->verify('mobile');
+                    }else if($user->status == User::STATUS_PENDING_PROVIDER){
+                        $user->verify('mobile' , User::STATUS_PENDING_PROVIDER);     
+                    }
                     $message = (app()->getLocale() == 'en')? 'successfully completed ' : ' مكتملة بنجاح ' ;
                     return success($data,System::HTTP_OK ,$message);   
                 }
-                $user->verify('mobile' , User::STATUS_PENDING_PROVIDER);
+                // $user->verify('mobile' , User::STATUS_PENDING_PROVIDER);
                 // $message = (app()->getLocale() == 'en')? 'successfully completed Please wait to Activate Your Account' : ' مكتملة بنجاح برجاء الانتظار حتي تفعيل الحساب' ;
                 // return success([],System::HTTP_OK ,$message);
             }else{

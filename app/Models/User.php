@@ -111,7 +111,7 @@ class User extends Authenticatable
     public function data($type = System::DATA_BRIEF)
     {
         $data = (object)[];
-        $data->active = ($this->status == User::STATUS_PENDING_PROVIDER)? false: true;
+        $data->active = ($this->status == User::STATUS_PENDING_PROVIDER)? false : true;
         if($type == System::DATA_BRIEF){
             $data->name = $this->name;
             $data->secret = $this->secret;
