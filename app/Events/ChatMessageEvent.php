@@ -23,7 +23,7 @@ class ChatMessageEvent implements ShouldBroadcast
 
     public function broadcastOn()
     {
-        return new Channel('Notifiction');
+        return new PrivateChannel('message.'. $this->message->received_id);
     }
     
     public function broadcastWith()

@@ -44,6 +44,9 @@ font-family: 'Nunito', sans-serif;
         
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous">
 </script>
+            {{-- "X-CSRF-Token": token, --}}
+            {{-- "Authorization" : "Bearer " + "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI5OWE3MmRjMC0wZjU3LTQ5NmItYmY1ZS0wN2Y3ZjM0YmMwOGEiLCJqdGkiOiJkZTUwZmY2M2M4M2Q1YjY0NWY3MTc3YTk5ZDMwYjQ4ZThjZDkyOTRjZDZlMDdlZWQwYjM5NDk1OGFjYjMwNDk2MWUzMjk0YTBhNjc5YWNlZiIsImlhdCI6MTcxMzA1NjM1Ny4yMDk5NDIsIm5iZiI6MTcxMzA1NjM1Ny4yMDk5NDUsImV4cCI6MTcxMzE0Mjc1Ny4xMjk1MTIsInN1YiI6IjQ4Iiwic2NvcGVzIjpbXX0.bnbs7LA_TTotK5qERtoNMgD5Ko0jTIH2Qqig02T4GvpYWFLobzBNfFsFBNAt_jiNaa6XAiJDwOyZmWFXeCxrry5o2kIBbNYOPaveqSJ1AaOUCXe1CWhGMu3e5SfvdxpysTn0KMfPHX_MqkMXaTpzyxrxUV6Fr3q84HDmEw5gq1NQ3pJu4rFIrXGR-XoaARt5OlbCUovPPaTFrlPCXyn-MwGA3ejXW1NgBB3KjONA5UlPDjwruSVeOTBoYahNYbtENMkrijoa2LUHt2WvqH9-0zN1LHXlXe_ZgRDoT8quuLdmQx7Iv1hgPIeYNRBglQ3oCn4I4VxSMqWEnPASzXZEA_RKqBgm2zoBahe4zRV6PAuFvqWhx6-z_ubSAGjiIFdQ3mIy-XgF8-MvX-KFX_UX83y83NtbNewoRGHR-6Ywtxgz9HySWiQnDev4Lcfwj7sjG0lrehedU69XBH8vkYb-MiL51mfNJGYPWDtWHj5FA0_-OLKCYpzDFidSlnNUkk_1BnCk_YQCH8PqwUw_QZqTpIdQkOef1KF458baazfBlXgeXx2P8Hz0DZlU_ZMzUmd9V_kgFqiY_KOtIgCkNyBwqEFQcBBG_PQPAp8ydIqsvUxxJ1IKyfqQN9GwH3cNmx9b0opbce1A70z3MHyFJuYrN7IAKktwyRa_JCcpoNPZM6U" --}}
+
          
 <script>  
 
@@ -54,16 +57,29 @@ font-family: 'Nunito', sans-serif;
     const pusher = new Pusher('e352c1403f81a822031a', {
         cluster: 'eu',
         authEndpoint: appUrl + '/broadcasting/auth',
-        headers: {
-            "X-CSRF-Token": token,
-        },
     });
 
 
     var channel = pusher.subscribe('private-privateNotification.48');
     channel.bind('NotificationEvent', function(data) {
         alert("success");
-      console.log("success");
+        console.log("success");
+    });
+
+    var channel = pusher.subscribe('public-channel');
+    channel.bind('PublicEvent', function(data) {
+        alert("success");
+    });
+
+    var channel = pusher.subscribe('private-requestChannel.172');
+    channel.bind('RequestEvent', function(data) {
+        alert("success");
+    });
+
+
+    var channel = pusher.subscribe('private-message.48');
+    channel.bind('ChatMessageEvent', function(data) {
+        alert("success");
     });
 
 

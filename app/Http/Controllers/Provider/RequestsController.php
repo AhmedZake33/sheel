@@ -12,6 +12,7 @@ use App\Services\ProviderRequestService;
 use App\Models\Provider;
 use App\Models\RequestProvider;
 use App\Models\Notification;
+use DB;
 
 class RequestsController extends Controller
 {
@@ -102,5 +103,24 @@ class RequestsController extends Controller
        $request = RequestModel::findOrFail($request->request_id);
 
         return success($request->data(),System::HTTP_OK,'SUCCESS');
+    }
+
+    public function current()
+    {
+        // get all request that are pending to user 
+        $user = auth()->user();
+        $provider =  $user->provider;
+        // return $provider;
+        // request provider
+        $requestsProvider = DB::table("requests_providers")->where("provider_id",$provider->id)->where("status",1)->select("request_id")->get();
+        $result = [];
+        foreach($requestsProvider as $requestProvider){
+            // get request
+            $request = RequestModel::find($requestProvider->request_id);
+            if($request){
+                array_push($result , $request->data());
+            }
+        }
+        return success($result,System::HTTP_OK , 'success');
     }
 }

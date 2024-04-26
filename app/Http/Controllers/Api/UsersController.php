@@ -23,6 +23,7 @@ use App\Models\Chat;
 use App\Events\ChatEvent;
 use Pusher\Pusher;
 use Illuminate\Support\Facades\Broadcast;
+use Laravel\Passport\Token;
 
 
 
@@ -102,9 +103,39 @@ class UsersController extends Controller
         if($user){
             // event(new ChatEvent("welcome here from controller" , 2));
             if(Auth::loginUsingId($user->id)){
-                return redirect()->route('home');
+                // return redirect()->route('home');
+                return redirect()->back();
+                
             }
         }
+    }
+
+    public function loginWithToken(Request $request)
+    {
+        $token = $request->token;
+        // return $token;
+        if ($token) {
+            // Retrieve the access token
+            return Token::WhereId('Bearer ' +$token)->get();
+            $accessToken = Token::where('id', $token)->first();
+
+            if ($accessToken) {
+                // Retrieve the associated user
+                $user = $accessToken->user;
+                if ($user) {
+                    // Authenticate the user
+                    Auth::login($user);
+
+                    // Generate and return a bearer token
+                    $bearerToken = $user->createToken('AccessToken')->accessToken;
+
+                    return response()->json(['token' => $bearerToken]);
+                }
+            }
+        }
+
+        return response()->json(['error' => 'Unauthorized'], 401);
+    
     }
     
     public function logout(Request $request)
@@ -133,11 +164,19 @@ class UsersController extends Controller
 
     public function authenticate(Request $request)
     {
-        if ($user = Auth::user()) {
+        if (Auth::user()) {
+            $user = Auth::user();
             return response()->json(['auth' => $user->createToken('sheel')->accessToken]);
         } else {
             return response()->json(['error' => 'Unauthenticated.'], 403);
         }
+    }
+
+    public function acceptProvider(Request $request , $provider)
+    {
+        $provider = User::findOrFail($provider);
+        $provider->update(["status" => User::STATUS_ACTIVE]);
+        return view("success_provider");
     }
 
 }   

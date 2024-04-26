@@ -21,6 +21,7 @@ class User extends Authenticatable
 
     const TYPE_USER = 1;
     const TYPE_PROVIDER = 2;
+    const TYPE_ADMIN = 3;
 
     // emairate_id_front
     // emairate_id_back
@@ -47,7 +48,8 @@ class User extends Authenticatable
         'mobile_code',
         'secret',
         'draft_email',
-        'draft_mobile'
+        'draft_mobile',
+        'status'
     ];
 
     /**
@@ -109,6 +111,7 @@ class User extends Authenticatable
     public function data($type = System::DATA_BRIEF)
     {
         $data = (object)[];
+        $data->active = ($this->status == User::STATUS_PENDING_PROVIDER)? false: true;
         if($type == System::DATA_BRIEF){
             $data->name = $this->name;
             $data->secret = $this->secret;
@@ -180,7 +183,7 @@ class User extends Authenticatable
    }
 
    public function draft($type = false)
-   {
+   { 
         $this->draft_email = $this->email;
         $this->draft_mobile = $this->mobile;
         $this->email = null;
@@ -192,5 +195,64 @@ class User extends Authenticatable
    {
         return $this->hasMany(Chat::class);
    }
+
+   public function files($type = User::TYPE_USER)
+    {
+        $data = [];
+        
+        if($type == User::TYPE_USER){
+            // $data->photo = count($this->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
+
+        }else if($type == User::TYPE_PROVIDER){
+            // PHOTOS
+
+            // 1- vehicle_registration_form
+            $vehicle_registration_form  = (object)[];
+            $vehicle_registration_form->key = "vehicle Registration Form";
+            $vehicle_registration_form->value = count($this->archive->children()->where('short_name','vehicle_registration_form')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','vehicle_registration_form')->pluck('id')[0]) : null;
+            // $data->vehicle_registration_form = $vehicle_registration_form;
+            array_push($data ,$vehicle_registration_form);
+
+            // 1- RTA_card_back
+            $RTA_card_back  = (object)[];
+            $RTA_card_back->key = "RTA Card Back";
+            $RTA_card_back->value = count($this->archive->children()->where('short_name','RTA_card_back')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','RTA_card_back')->pluck('id')[0]) : null;
+            // $data->RTA_card_back = $RTA_card_back;
+            array_push($data ,$RTA_card_back);
+
+
+            // 1- RTA_card_front
+            $RTA_card_front  = (object)[];
+            $RTA_card_front->key = "RTA Card Front";
+            $RTA_card_front->value = count($this->archive->children()->where('short_name','RTA_card_front')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','RTA_card_front')->pluck('id')[0]) : null;
+            // $data->RTA_card_front = $RTA_card_front;
+            array_push($data ,$RTA_card_front);
+
+
+            // 1- drive_photo
+            $drive_photo  = (object)[];
+            $drive_photo->key = "Drive Photo";
+            $drive_photo->value = count($this->archive->children()->where('short_name','drive_photo')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','drive_photo')->pluck('id')[0]) : null;
+            // $data->drive_photo = $drive_photo;
+            array_push($data ,$drive_photo);
+
+            // 1- emairate_id_back
+            $emairate_id_back = (object)[];
+            $emairate_id_back->key = "Emairate ID Back";
+            $emairate_id_back->value = count($this->archive->children()->where('short_name','emairate_id_back')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','emairate_id_back')->pluck('id')[0]) : null;
+            // $data->emairate_id_back = $emairate_id_back;
+            array_push($data ,$emairate_id_back);
+
+            // 1- emairate_id_front
+            $emairate_id_front = (object)[];
+            $emairate_id_front->key = "Emairate ID Front";
+            $emairate_id_front->value =  count($this->archive->children()->where('short_name','emairate_id_front')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','emairate_id_front')->pluck('id')[0]) : null;
+            // $data->emairate_id_front = $emairate_id_front;
+            array_push($data ,$emairate_id_front);
+        }
+       
+        return $data;
+
+    }
 
 }

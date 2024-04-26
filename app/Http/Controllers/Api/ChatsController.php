@@ -22,8 +22,8 @@ class ChatsController extends Controller
         if(!RequestModel::canAccess($requestModel,auth()->user())){
             return error(null,System::HTTP_UNAUTHORIZED);
         }
-        
         $ReceivingUser = RequestModel::find($requestModel)->getReceivingUser();
+
         // return $ReceivingUser;
         return $this->ChatService->sendMessage($request , $requestModel , $ReceivingUser);
     }

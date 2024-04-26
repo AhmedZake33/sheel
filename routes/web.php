@@ -56,23 +56,33 @@ Route::get('/', function () {
 });
 
 Route::get('fire-event', function () {
-    // $request = Requestmodel::find(172);
+    $request = Requestmodel::find(172);
     // return event(new \App\Events\RequestEvent($request,1));
 
-    // return event(new \App\Events\PublicEvent());
+    // event(new \App\Events\PublicEvent());
 
-    $notification = Notification::find(127);
-    event(new \App\Events\NotificationEvent($notification));
+    // $notification = Notification::find(127);
+    // event(new \App\Events\NotificationEvent($notification));
+
+
+    // fire request event
+    event(new \App\Events\RequestEvent($request));
 
     return "success";
+});
+
+Route::get("create-token/{id}",function($id){
+    $user = \App\Models\User::find($id);
+    $token = $user->createToken('My Token')->accessToken;
+    return $token;
 });
 
 Route::get("test",function(){
     return "test here";
 });
 
-Route::get('/login', function () {
-    return view('login');
+Route::get('/login/{token?}', function ($token = null) {
+    return view('login')->with(["token" => $token]);
 })->name('login');
 
 Route::get('/chat/{id}',function($id){
@@ -86,6 +96,7 @@ Route::get('/home', function () {
 })->name('home');
 
 route::post('login',[UsersController::class , 'loginWithEmail'])->name('login');
+route::post('loginWithToken',[UsersController::class , 'loginWithToken'])->name('loginWithToken');
 route::post('logout',[UsersController::class , 'logout'])->name('logout');
 
 
@@ -195,5 +206,20 @@ Route::get("send-chat",function(){
     return "true";
 });
 
+Route::get("review-provider",function(){
+    $providers = \App\Models\User::where("type",\App\Models\User::TYPE_PROVIDER)->where("status",\App\Models\User::STATUS_INCOMPLETE)->get()->transform(function($provider){
+        $data = $provider; 
+        $data->profile = $provider->files(\App\Models\User::TYPE_PROVIDER);
+        return $data;
+    });
+
+    // dd($providers[2]->profile);
+    // dd(get_object_vars(($providers[0]->profile)[0]));
+
+    return view("reviewProvider")->with(["providers" => $providers]);
+});
+
+Route::post("accept-provider/{provider}","UsersController@acceptProvider")->name("accept-provider");
+Route::post("refuse-provider/{provider}","UsersController@refuseProvider")->name("refuse-provider");
 
 Route::get('/broadcasting/auth', 'UsersController@authenticate');

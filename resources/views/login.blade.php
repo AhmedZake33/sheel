@@ -20,9 +20,12 @@ font-family: 'Nunito', sans-serif;
         <input type="submit" value="Logout" class="btn btn-primary">
     </form>
 @else
-    <form action="{{route('login')}}" method="POST"> 
+
+    {{$token}}
+
+    <form action="{{route('loginWithToken')}}" method="POST">
         @csrf
-        <input type="email" name="email">
+        <input type="hidden" name="token" value="{{$token}}">
         <input type="submit" class="btn btn-primary">
     </form>
 @endauth

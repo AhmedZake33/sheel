@@ -14,14 +14,14 @@ class ChatService extends Base {
         $chat = Auth::user()->chats()->createMany([
            ["message" => $request->message , 'request_id' => $requestModel ,'received_id' => $ReceivingUser]
         ]);
-        // return $chat;
         // $user = \App\Models\User::find(2);
 
         // return Request::find(133)->CurrentProvider->provider->user->is($user);
         // return Request::canAccess($requestModel,$user);
         // fire broadcast
         // ChatEvent::dispatch($chat[0]);
-        broadcast(new ChatEvent($chat[0]))->toOthers();
+        // broadcast(new ChatEvent($chat[0]))->toOthers();
+        broadcast(new \App\Events\ChatMessageEvent($chat[0]))->toOthers();
 
 
         if($chat){

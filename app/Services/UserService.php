@@ -121,13 +121,13 @@ class UserService extends Base
        $message = null;
         // try find user by phone 
         $user = User::where('mobile',$mobile)->where('mobile_code' , $mobile_code)->where("type",$type)->first();
-        
         // create otp code
         if($user && $user->status == User::STATUS_ACTIVE){
             User::createOtp($user);
         }elseif($user && $user->status == User::STATUS_PENDING_PROVIDER){
-            $message = (app()->getLocale() == 'en') ? 'Please Wait to review Your Data' : ' برجاء الانتظار لمراجعة البيانات';
-            return success([],System::HHTP_Unprocessable_Content,$message);
+            User::createOtp($user);
+            // $message = (app()->getLocale() == 'en') ? 'Please Wait to review Your Data' : ' برجاء الانتظار لمراجعة البيانات';
+            // return success([],System::HHTP_Unprocessable_Content,$message);
         }else{
             $message = (app()->getLocale() == 'en') ? 'Please Complete Verification' : '  برجاء اكمال التحقق من البيانات  ';
             return success([],System::HHTP_Unprocessable_Content,$message);

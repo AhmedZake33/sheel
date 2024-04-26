@@ -21,10 +21,9 @@ class RequestEvent implements ShouldBroadcast
      */
     public $request;
     public $user;
-    public function __construct($request , $user)
+    public function __construct($request)
     {
         $this->request = $request;
-        $this->user = $user;
     }
 
     

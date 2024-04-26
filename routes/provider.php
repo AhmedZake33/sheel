@@ -25,9 +25,13 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
     Route::get('show','RequestsController@show');
     Route::post('cancel','RequestsController@cancel');
     Route::post('accept','RequestsController@accept');
+    Route::get("current",'RequestsController@current');
  });
 
 
-
+// lookups api
+Route::group(["prefix" => "lookups" , 'middleware' => "auth:api"] , function(){
+    Route::get('','LookupsController@get');
+});
 
 ?>
