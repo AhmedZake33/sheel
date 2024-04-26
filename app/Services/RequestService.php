@@ -47,7 +47,7 @@ class RequestService extends Base
 
         $requestModel->startFindProvider();
 
-        if(domain() != "http://127.0.0.1:8000"){
+        if(domain() != "http://127.0.0.1:8000" && $user->id != 6){
             $requestModel->autoAssignProvider(5);
         }
         
