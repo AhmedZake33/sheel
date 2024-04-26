@@ -56,7 +56,7 @@ class ProviderService extends Base
             $user = User::where('secret',$secret)->where('otp_code',$otp_code)->where('otp_time', '>=',$desiredTime)->first();
             //  dd(Carbon::now()->addMinutes(5)->diffInMinutes(carbon::parse('2023-08-07 21:07:49')));
             if($user){
-                if($user->status == User::STATUS_ACTIVE || $user->status == User::STATUS_PENDING_PROVIDER){
+                if(($user->status == User::STATUS_ACTIVE) || ($user->status == User::STATUS_PENDING_PROVIDER)){
                     // create token and become provider in system
                     $data = $user->data(System::DATA_DETAILS);
                     $token = $user->createToken('My Token')->accessToken;
