@@ -66,6 +66,7 @@ class UserService extends Base
         $data = (object)[];
         $data->name = $user->name;
         $data->id = $user->id;
+        $data->active = ($user->status == User::STATUS_PENDING_PROVIDER)? false : true;
         $data->mobile = $user->mobile;
         $data->mobile_code = $user->mobile_code;
         $data->email = $user->email;
