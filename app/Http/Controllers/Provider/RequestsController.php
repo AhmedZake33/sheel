@@ -13,6 +13,7 @@ use App\Models\Provider;
 use App\Models\RequestProvider;
 use App\Models\Notification;
 use DB;
+use App\Models\User;
 
 class RequestsController extends Controller
 {
@@ -131,5 +132,20 @@ class RequestsController extends Controller
             return success($result,System::HTTP_OK , 'success');
         }
         return success(System::HTTP_OK , 'success');
+    }
+
+    public function history()
+    {
+        $user = User::find(auth()->id());
+        // return $user;
+        $requests = RequestModel::join("requests_providers","requests_providers.request_id","requests.id")
+        ->join("providers","providers.id","requests_providers.provider_id")
+        ->join("users","users.id","providers.user_id")
+        ->select("requests.*")
+        ->where("providers.user_id",$user->id)->get()
+        ->transform(function($request){
+            return $request->data();
+        });
+        return success($requests,System::HTTP_OK,'SUCCESS');
     }
 }

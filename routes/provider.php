@@ -28,6 +28,7 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
     Route::post('cancel','RequestsController@cancel');
     Route::post('accept','RequestsController@accept');
     Route::post("current",'RequestsController@current');
+    Route::get("history","RequestsController@history");
  });
 
 

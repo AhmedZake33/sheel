@@ -14,6 +14,7 @@ use App\Models\RequestProvider;
 use App\Models\Notification;
 use DB;
 use App\Services\RequestService;
+use App\Models\User;
 
 
 class RequestsController extends Controller
@@ -212,5 +213,15 @@ class RequestsController extends Controller
         $request = RequestModel::findOrFail($requestModel);
         $request->manualPay();
         return success([],System::HTTP_OK,'SUCCESS');
+    }
+
+    public function history()
+    {
+        $user = User::find(auth()->id());
+
+        $requests = RequestModel::where("user_id",$user->id)->get()->transform(function($request){
+            return $request->data();
+        });
+        return success($requests,System::HTTP_OK,'SUCCESS');
     }
 }
