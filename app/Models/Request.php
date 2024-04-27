@@ -28,6 +28,16 @@ class Request extends Model
     // time out 
     // complete
 
+    public function decodeStatus($id)
+    {
+        $statuses = [["id"=>0 ,"name"=>"new","name_local"=>"جديد"],["id"=>1 ,"name"=>"Accepted","name_local"=>"مقبول"],["id"=>2 ,"name"=>"cancel","name_local"=>"ملغي"]];
+        foreach($statuses as $status){
+            if($status["id"] == $id){
+                return $status;
+            }
+        }
+    }
+
     public function archive()
     {
         if (empty($this->archive_id)) {
@@ -79,7 +89,7 @@ class Request extends Model
         $data = (object)[];
         $data->id = $this->id;
         $data->user = $this->user;
-        $data->status = $this->status;
+        $data->status = $this->decodeStatus($this->status);
         $data->current_latituide = $this->current_lat;
         $data->current_lngituide = $this->current_lng;
         $data->destination_latituide = $this->destination_lat;
