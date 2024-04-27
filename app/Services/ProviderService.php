@@ -28,7 +28,6 @@ class ProviderService extends Base
          
          // draft data
          $user->draft();
-
          // activiate  for test only
         //  $user->status = User::STATUS_ACTIVE;
         //  $user->save();
@@ -37,6 +36,8 @@ class ProviderService extends Base
         $provider = new Provider();
         $provider->user_id = $user->id;
         $provider->service_id = $request->service_id;
+        // $provider->lat = $request->lat;
+        // $provider->lng = $request->lng;
         $provider->save();
         // create opt 
         User::createOtp($user ,true);

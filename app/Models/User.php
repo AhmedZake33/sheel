@@ -124,7 +124,7 @@ class User extends Authenticatable
             $data->secret = $this->secret;
             $data->mobile_code = $this->mobile_code;
         }else if ($type == System::DATA_LIST){
-
+            $data->provider = $this->provider;
         }
 
         return $data;

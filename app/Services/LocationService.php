@@ -18,6 +18,7 @@ class LocationService
         // return $minLat;
         $locations = Provider::with('user:id,name,email,mobile')
         ->where('service_id',$requestModel->service_id)
+        ->where('active',1)
         ->whereBetween('lat', [$minLat, $maxLat])
         ->whereBetween('lng', [$minLng, $maxLng])
         ->where('user_id','!=',$requestModel->user_id);

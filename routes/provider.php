@@ -17,6 +17,7 @@ Route::post('login','UsersController@login');
 Route::group(["prefix" => "user" , "middleware" => "auth:api"], function(){
     Route::get('profile','UsersController@profile');
     Route::post('/update','UsersController@update');
+    Route::post("activate",'UsersController@activeNow');
 });
 Route::get('user/activate/{userSecret}','UsersController@activate');
 
@@ -26,7 +27,7 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
     Route::get('show','RequestsController@show');
     Route::post('cancel','RequestsController@cancel');
     Route::post('accept','RequestsController@accept');
-    Route::get("current",'RequestsController@current');
+    Route::post("current",'RequestsController@current');
  });
 
 

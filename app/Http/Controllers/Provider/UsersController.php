@@ -95,4 +95,25 @@ class UsersController extends Controller
         $message = ['ar' => 'تم التعديل بنجاح' , 'en' => 'profile updated successfully'][app()->getLocale()];
         return success([],System::HTTP_OK , $message);
     }
+
+    public function activeNow(Request $request)
+    {
+
+        $user = User::find(auth()->id());
+        $provider = $user->provider;
+        
+        $provider->lat = $request->lat;
+        $provider->lng = $request->lng;
+        $provider->save();
+
+        if($user){
+            $provider =  $user->provider;
+            // update provider
+            $provider->active = !($provider->active);
+            $provider->save();
+            return success($user->data(System::DATA_LIST),System::HTTP_OK,"successs");
+        }
+        
+
+    }
 }

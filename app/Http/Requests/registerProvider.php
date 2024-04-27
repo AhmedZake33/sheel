@@ -49,8 +49,9 @@ class registerProvider extends FormRequest
             'RTA_card_front' => 'required|max:2000|mimes:jpeg,png,doc,docs,pdf',
             'RTA_card_back' => 'required|max:2000|mimes:jpeg,png,doc,docs,pdf',
             'vehicle_registration_form' => 'required|max:2000|mimes:jpeg,png,doc,docs,pdf',
-            'mobile_code' => 'required|regex:/^\+\d{1,4}$/'
-
+            'mobile_code' => 'required|regex:/^\+\d{1,4}$/',
+            // "lat" => "required",
+            // "lng" => "required"
         ];
     }
 

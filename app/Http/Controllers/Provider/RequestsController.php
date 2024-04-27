@@ -105,11 +105,17 @@ class RequestsController extends Controller
         return success($request->data(),System::HTTP_OK,'SUCCESS');
     }
 
-    public function current()
+    public function current(Request $request)
     {
         // get all request that are pending to user 
         $user = auth()->user();
         $provider =  $user->provider;
+
+        // update provider
+        $provider->lat = $request->lat;
+        $provider->lng = $request->lng;
+        $provider->save();
+
         // return $provider;
         // request provider
         $requestsProvider = DB::table("requests_providers")->where("provider_id",$provider->id)->where("status",2)->select("request_id")->get();

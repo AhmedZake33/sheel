@@ -62,7 +62,8 @@ class UserService extends Base
 
     public function profile($type = User::TYPE_USER)
     {
-        $user =  auth()->user();
+        // $user =  auth()->user();
+        $user = User::find(auth()->id());
         $data = (object)[];
         $data->name = $user->name;
         $data->id = $user->id;
@@ -75,9 +76,9 @@ class UserService extends Base
         $data->status = $user->status;
         if($type == User::TYPE_USER){
             // $data->photo = count($user->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
-
         }else if($type == User::TYPE_PROVIDER){
             // PHOTOS 
+            $data->isOnline = $user->provider->active;
 
             // 1- vehicle_registration_form
             $data->vehicle_registration_form = count($user->archive->children()->where('short_name','vehicle_registration_form')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','vehicle_registration_form')->pluck('id')[0]) : null;
