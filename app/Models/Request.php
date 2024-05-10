@@ -141,7 +141,7 @@ class Request extends Model
         $data->current_lngituide = $this->current_lng;
         $data->destination_latituide = $this->destination_lat;
         $data->destination_lngituide = $this->destination_lng;
-        $data->provider = $this->provider($provider->id) ? $this->provider($provider->id)->data() : null;
+        $data->provider = $this->provider($provider->id) ? $this->provider($provider->id)->first() : null;
         $data->payment = $this->payment;
         $data->service = $this->service;
         $files = $this->archive->children;
