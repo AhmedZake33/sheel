@@ -73,7 +73,7 @@ class Request extends Model
         return $this->hasOne(RequestProvider::class , 'request_id' , 'id')->where('requests_providers.status',1);
     }
 
-    public function provider($provider_id)
+    public function provider($provider_id = null)
     {
         $query =  $this->hasOne(RequestProvider::class , 'request_id' , 'id');
         if($provider_id){
