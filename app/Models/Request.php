@@ -73,9 +73,14 @@ class Request extends Model
         return $this->hasOne(RequestProvider::class , 'request_id' , 'id')->where('requests_providers.status',1);
     }
 
-    public function provider()
+    public function provider($provider_id)
     {
-        return $this->hasOne(RequestProvider::class , 'request_id' , 'id');
+        $query =  $this->hasOne(RequestProvider::class , 'request_id' , 'id');
+        if($provider_id){
+            $query->where("provider_id",$provider_id);
+        }
+
+        return $query;
     }
 
     public function payment()
@@ -124,6 +129,36 @@ class Request extends Model
         }
 
         return $data;
+    }
+
+    public function providerData($provider = null)
+    {
+        $locationProvider = new LocationService();
+        $data = (object)[];
+        $data->id = $this->id;
+        $data->user = $this->user;
+        $data->current_latituide = $this->current_lat;
+        $data->current_lngituide = $this->current_lng;
+        $data->destination_latituide = $this->destination_lat;
+        $data->destination_lngituide = $this->destination_lng;
+        $data->provider = $this->provider($provider->id) ? $this->provider($provider->id) : null;
+        $data->payment = $this->payment;
+        $data->service = $this->service;
+        $files = $this->archive->children;
+        $data->chats = $this->chats;
+        $data->review = $this->review()->select('rate','comment')->first();
+        $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
+        $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
+        // $data->estimatedCost = 100;
+        $temp_files = [];
+        foreach($files as $file){
+            array_push($temp_files , route('download_file',$file));
+        }
+        $data->files = $temp_files;        
+        $data->created_at = $this->created_at;
+        $data->updated_at = $this->updated_at; 
+
+        return $data;   
     }
 
     public function refusedProviders()

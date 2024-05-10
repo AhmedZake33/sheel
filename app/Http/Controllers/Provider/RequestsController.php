@@ -160,9 +160,9 @@ class RequestsController extends Controller
         ->with(["provider" => function($query) use ($provider){
             $query->where("provider_id",$provider->id);
         } , "payment"])
-        ->get()->transform(function($data){
+        ->get()->transform(function($data) use($provider){
             // $data->provider = $data->provider->data();
-            return $data->data();
+            return $data->providerData($provider);
         });
         return success($requests,System::HTTP_OK,'SUCCESS');
     }
