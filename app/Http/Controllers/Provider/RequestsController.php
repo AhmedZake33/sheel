@@ -156,6 +156,7 @@ class RequestsController extends Controller
         ->select("requests.*","requests_providers.id as requests_providers_id")
         ->orderBy("requests.id","DESC")
         ->where("providers.user_id",$user->id)
+        ->with(["provider","payment"])
         ->get();
         return success($requests,System::HTTP_OK,'SUCCESS');
     }
