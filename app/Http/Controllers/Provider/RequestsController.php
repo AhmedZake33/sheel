@@ -158,9 +158,11 @@ class RequestsController extends Controller
         ->orderBy("requests.id","DESC")
         ->where("providers.user_id",$user->id)
         ->with(["provider" => function($query) use ($provider){
-            $query->where("provider_id",$provider->id)->data();
+            $query->where("provider_id",$provider->id);
         } , "payment"])
-        ->get();
+        ->get()->transform(function($data){
+            return $data;
+        });
         return success($requests,System::HTTP_OK,'SUCCESS');
     }
 }
