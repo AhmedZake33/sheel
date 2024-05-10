@@ -140,15 +140,23 @@ class RequestsController extends Controller
     {
         $user = User::find(auth()->id());
         // return $user;
+        // $requests = RequestModel::join("requests_providers","requests_providers.request_id","requests.id")
+        // ->join("providers","providers.id","requests_providers.provider_id")
+        // ->join("users","users.id","providers.user_id")
+        // ->select("requests.*")
+        // ->orderBy("requests.id","DESC")
+        // ->where("providers.user_id",$user->id)
+        // ->get()->transform(function($request){
+        //     return $request->data();
+        // });
+
         $requests = RequestModel::join("requests_providers","requests_providers.request_id","requests.id")
         ->join("providers","providers.id","requests_providers.provider_id")
         ->join("users","users.id","providers.user_id")
         ->select("requests.*")
         ->orderBy("requests.id","DESC")
-        ->where("providers.user_id",$user->id)->get()
-        ->transform(function($request){
-            return $request->data();
-        });
+        ->where("providers.user_id",$user->id)
+        ->get()ك
         return success($requests,System::HTTP_OK,'SUCCESS');
     }
 }

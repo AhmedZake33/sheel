@@ -102,7 +102,7 @@ class Request extends Model
         $data->payment = $this->payment;
         $data->service = $this->service;
         $files = $this->archive->children;
-        $data->provider = $this->provider? $this->provider->provider->with("user")->first() : null;
+        $data->provider = $this->CurrentProvider? $this->CurrentProvider->provider->with("user")->first() : null;
         $data->chats = $this->chats;
         $data->review = $this->review()->select('rate','comment')->first();
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
