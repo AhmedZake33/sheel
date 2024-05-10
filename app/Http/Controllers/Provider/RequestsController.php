@@ -60,6 +60,8 @@ class RequestsController extends Controller
                 //     }
                 // }
                 $requestModel->startFindProvider();
+                $title = ['ar' => 'provider refuse request' , 'en' => 'provider refuse request'];
+                Notification::createNotification($requestModel->user_id , $requestModel->id , $title);
                 return success([],System::HTTP_OK,'SUCCESS CANCEL REQUEST');
             }
         }
@@ -142,6 +144,7 @@ class RequestsController extends Controller
         ->join("providers","providers.id","requests_providers.provider_id")
         ->join("users","users.id","providers.user_id")
         ->select("requests.*")
+        ->orderBy("requests.id","DESC")
         ->where("providers.user_id",$user->id)->get()
         ->transform(function($request){
             return $request->data();

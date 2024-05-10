@@ -36,6 +36,10 @@ Broadcast::channel("message.{userId}" , function(User $user  , $userId){
     return (int) $user->id === (int) $userId;
 });
 
+Broadcast::channel("currentRequests.{userId}" , function(User $user  , $userId){
+    return (int) $user->id === (int) $userId;
+});
+
 
 // Broadcast::channel('private-user-channel-{receiverUserId}', function ($user, $receiverUserId) {
 //     return (int) $user->id === (int) $receiverUserId;

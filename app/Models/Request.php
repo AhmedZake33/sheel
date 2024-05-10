@@ -63,7 +63,7 @@ class Request extends Model
         return $this->belongsTo(Service::class)->select('id','name_local','name');
     }
 
-    public function provider()
+    public function providers()
     {
         return $this->hasMany(RequestProvider::class , 'request_id' , 'id')->where('requests_providers.status',1);
     }
@@ -71,6 +71,11 @@ class Request extends Model
     public function CurrentProvider()
     {
         return $this->hasOne(RequestProvider::class , 'request_id' , 'id')->where('requests_providers.status',1);
+    }
+
+    public function provider()
+    {
+        return $this->hasOne(RequestProvider::class , 'request_id' , 'id');
     }
 
     public function payment()
@@ -97,7 +102,7 @@ class Request extends Model
         $data->payment = $this->payment;
         $data->service = $this->service;
         $files = $this->archive->children;
-        $data->provider = $this->CurrentProvider? $this->CurrentProvider->provider->with("user")->first() : null;
+        $data->provider = $this->provider? $this->provider->provider->with("user")->first() : null;
         $data->chats = $this->chats;
         $data->review = $this->review()->select('rate','comment')->first();
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
@@ -191,10 +196,11 @@ class Request extends Model
                 $existProvider = RequestProvider::where('request_id',$this->id)->where('status',RequestProvider::STATUS_PENDING)->first();
                 if(!$existProvider){
                     $providerRequestService->assignProvider($nearestLocation->user_id , $this->id);
+                    event(new \App\Events\CurrentRequests($nearestLocation->user_id , $this));
                 }
                 // notification to provider
-                $title = ['ar' => 'arabic' , 'en' => 'english'];
-                // Notification::createNotification($nearestLocation->user_id , $this->id , $title);
+                $title = ['ar' => 'لقد تم اضافتك الي طلب' , 'en' => 'you have assigned to request'];
+                Notification::createNotification($nearestLocation->user_id , $this->id , $title);
             }
             
         }

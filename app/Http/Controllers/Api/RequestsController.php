@@ -33,44 +33,14 @@ class RequestsController extends Controller
     public function create(requestCreateRequest $request)
     {
         // return $this->locationService->getNearestLocations($request);
-        // if(count($this->locationService->getNearestLocations($request)) == 0){
-        //     $message = ["ar" => "لا يمكنك عمل طلب الان" , "en" => "cannot create request now"];
-        //     return error([],System::HHTP_Unprocessable_Content , $message[app()->getLocale()]);
-        // }
-        return $this->requestService->create($request);
-        // $user =  auth()->user();
-        // $data = $request->validated();
-        // $data['user_id'] = $user->id;
-        // $requestModel = RequestModel::create($data);
-
-        // if(count($data['file']) > 0){
-        //     // create archive 
-        //     foreach($data['file'] as $file){
-        //         $requestModel->archive->addFile($file);
-        //     }
-            
-        // }
-
-        // // service to get nearest locations
-        // $nearestLocations =  $this->locationService->getNearestLocations($requestModel);
-        // // service to get nearest location  
-        // if($nearestLocations){
-        //     $nearestLocation = $this->locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
-
-        //     // assign to provider 
-        //     if($nearestLocation){
-        //         $this->providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
-
-        //         // notification to provider
-        //         $title = ['ar' => 'arabic' , 'en' => 'english'];
-        //         Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
-        //     }
-            
-        // }
+        // check if user has active request
+        $activeRequest = RequestModel::select("requests.*")->leftJoin("requests_providers","requests_providers.request_id","requests.id")->where("user_id",Auth()->id())->where("requests.status","==",RequestModel::STATUS_NEW)->where("requests_providers.status",RequestProvider::STATUS_PENDING)->first();
         
-
-        // // now i have request : 
-        // return success($requestModel->data(),System::HTTP_OK,'SUCCESS CREATE REQUEST');
+        if(count($this->locationService->getNearestLocations($request)) == 0 || $activeRequest){
+            $message = ["ar" => "لا يمكنك عمل طلب الان" , "en" => "cannot create request now"];
+            return error([],System::HHTP_Unprocessable_Content , $message[app()->getLocale()]);
+        }
+        return $this->requestService->create($request);
     }
 
     public function nearestLocations(Request $request)

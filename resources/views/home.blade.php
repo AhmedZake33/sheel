@@ -3,10 +3,67 @@
 <meta charset="utf-8">         
 <meta name="viewport" content="width=device-width, initial-scale=1">          <title>Laravel</title>          
 <!-- Fonts -->         
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">          <style>             
-body {                 
-font-family: 'Nunito', sans-serif;             
-}         
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"> 
+<style>             
+ body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            width: 320px;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn:active {
+            background-color: #004080;
+        }         
 </style>         
 <script src="{{ asset('js/app.js') }}" defer>
 </script>     
@@ -22,16 +79,31 @@ font-family: 'Nunito', sans-serif;
             <input type="submit" value="Logout" class="btn btn-primary">
         </form>
     @else
-        <form action="{{route('login')}}" method="POST"> 
+        {{-- <form action="{{route('login')}}" method="POST"> 
             @csrf
-            <input type="email" name="email">
+            <h4>Login Form</h4>
+            Email : <input type="email"  name="email"><br><br>
+            <input type="number"  name="otp"><br><br>
             <input type="submit" class="btn btn-primary">
+        </form> --}}
+        <form action="{{ route('login') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required><button class="btn">send otp</button>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn">Login</button>
         </form>
 @endauth
 
 
 @php
     $appUrl = env('APP_URL');
+    $userId = auth()->id()
 @endphp
 
 
@@ -54,13 +126,14 @@ font-family: 'Nunito', sans-serif;
     let token = '{{ csrf_token() }}'
     console.log(token); 
     var appUrl = '{{ $appUrl }}';
+    var userId = '{{$userId}}';
     const pusher = new Pusher('e352c1403f81a822031a', {
         cluster: 'eu',
         authEndpoint: appUrl + '/broadcasting/auth',
     });
 
 
-    var channel = pusher.subscribe('private-privateNotification.48');
+    var channel = pusher.subscribe('private-privateNotification.' + userId);
     channel.bind('NotificationEvent', function(data) {
         alert("success");
         console.log("success");
@@ -71,14 +144,20 @@ font-family: 'Nunito', sans-serif;
         alert("success");
     });
 
-    var channel = pusher.subscribe('private-requestChannel.172');
+    var channel = pusher.subscribe('private-requestChannel.' + userId);
     channel.bind('RequestEvent', function(data) {
         alert("success");
     });
 
 
-    var channel = pusher.subscribe('private-message.48');
+    var channel = pusher.subscribe('private-message.' + userId);
     channel.bind('ChatMessageEvent', function(data) {
+        alert("success");
+    });
+
+    var channel = pusher.subscribe('private-currentRequests.' + userId);
+    channel.bind('CurrentRequests', function(data) {
+        console.log(data);
         alert("success");
     });
 

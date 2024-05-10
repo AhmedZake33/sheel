@@ -21,8 +21,6 @@ font-family: 'Nunito', sans-serif;
     </form>
 @else
 
-    {{$token}}
-
     <form action="{{route('loginWithToken')}}" method="POST">
         @csrf
         <input type="hidden" name="token" value="{{$token}}">

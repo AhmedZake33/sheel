@@ -57,6 +57,7 @@ Route::get('/', function () {
 
 Route::get('fire-event', function () {
     $request = Requestmodel::find(172);
+    event(new \App\Events\CurrentRequests(76 , $request));
     // return event(new \App\Events\RequestEvent($request,1));
 
     // event(new \App\Events\PublicEvent());
@@ -66,7 +67,8 @@ Route::get('fire-event', function () {
 
 
     // fire request event
-    event(new \App\Events\RequestEvent($request));
+    // event(new \App\Events\RequestEvent($request));
+    // event(new \App\Events\CurrentRequests($nearestLocation->user_id , $this));
 
     return "success";
 });
