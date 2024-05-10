@@ -54,10 +54,8 @@ class RequestProvider extends Model
     public function data()
     {
         $data = (Object)[];
-        $data->provider = $this->provider ? $this->provider : null;
-        $data->user = $this->provider ? $this->provider->with("user")->first() : null;
+        $data->user = $this->provider ? $this->provider->user : null;
         $data->status = $this->decodeStatus($this->status);
-
         return $data;
     }
 }
