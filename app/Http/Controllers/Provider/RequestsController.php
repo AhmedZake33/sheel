@@ -139,6 +139,7 @@ class RequestsController extends Controller
     public function history()
     {
         $user = User::find(auth()->id());
+        $provider = $user->provider;
         // return $user;
         // $requests = RequestModel::join("requests_providers","requests_providers.request_id","requests.id")
         // ->join("providers","providers.id","requests_providers.provider_id")
@@ -156,7 +157,9 @@ class RequestsController extends Controller
         ->select("requests.*","requests_providers.id as requests_providers_id")
         ->orderBy("requests.id","DESC")
         ->where("providers.user_id",$user->id)
-        ->with(["provider","payment"])
+        ->with(["provider" => function($query) use ($provider){
+            $query->where("provider_id",$provider->id);
+        } , "payment"])
         ->get();
         return success($requests,System::HTTP_OK,'SUCCESS');
     }
