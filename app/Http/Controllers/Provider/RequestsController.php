@@ -153,7 +153,7 @@ class RequestsController extends Controller
         $requests = RequestModel::join("requests_providers","requests_providers.request_id","requests.id")
         ->join("providers","providers.id","requests_providers.provider_id")
         ->join("users","users.id","providers.user_id")
-        ->select("requests.*")
+        ->select("requests.*","requests_providers.id as requests_providers_id")
         ->orderBy("requests.id","DESC")
         ->where("providers.user_id",$user->id)
         ->get();
