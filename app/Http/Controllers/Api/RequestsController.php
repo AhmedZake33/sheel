@@ -34,7 +34,7 @@ class RequestsController extends Controller
     {
         // return $this->locationService->getNearestLocations($request);
         // check if user has active request
-        $activeRequest = RequestModel::select("requests.*")->leftJoin("requests_providers","requests_providers.request_id","requests.id")->where("user_id",Auth()->id())->where("requests.status","==",RequestModel::STATUS_Pending)->where("requests_providers.status",RequestProvider::STATUS_PENDING)->first();
+        $activeRequest = RequestModel::select("requests.*")->leftJoin("requests_providers","requests_providers.request_id","requests.id")->where("user_id",Auth()->id())->where("requests.status","==",RequestModel::STATUS_PENDING)->where("requests_providers.status",RequestProvider::STATUS_PENDING)->first();
         
         if(count($this->locationService->getNearestLocations($request)) == 0 || $activeRequest){
             $message = ["ar" => "لا يمكنك عمل طلب الان" , "en" => "cannot create request now"];
@@ -89,7 +89,7 @@ class RequestsController extends Controller
             return success([],System::HTTP_OK,'SUCCESS CANCEL Your Request');
         }
         $provider = Provider::where('user_id',$user->id)->first();
-        if($provider && $requestModel->status == RequestModel::STATUS_Pending){
+        if($provider && $requestModel->status == RequestModel::STATUS_PENDING){
             // get request provider 
             $requestProvider = RequestProvider::where('request_id',$requestModel->id)->where('provider_id',$provider->id)->where('status',RequestProvider::STATUS_PENDING)->first();
             if($requestProvider){
@@ -128,7 +128,7 @@ class RequestsController extends Controller
 
     public function accept(Request $request)
     {
-        $requestModel = RequestModel::where('id',$request->request_id)->where('status',RequestModel::STATUS_Pending)->first();
+        $requestModel = RequestModel::where('id',$request->request_id)->where('status',RequestModel::STATUS_PENDING)->first();
         $user = auth()->user();
         $provider = Provider::where('user_id',$user->id)->first();
         if($provider){
