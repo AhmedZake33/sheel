@@ -95,7 +95,7 @@
             @csrf
             <div class="form-group">
                 <label for="mobile">Mobile:</label>
-                <input type="text"  id="mobile" name="mobile" placeholder="Enter your mobile" required>
+                <input type="text"  id="email" name="email" placeholder="Enter your email" required>
                 <button class="btn">Verify</button>
             </div>
             <div class="form-group">
