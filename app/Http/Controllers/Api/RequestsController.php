@@ -189,9 +189,10 @@ class RequestsController extends Controller
     {
         $user = User::find(auth()->id());
 
-        $requests = RequestModel::where("user_id",$user->id)->where("requests.status","!=",RequestModel::STATUS_CANCEL)->orderBy("requests.id","DESC")->get()->transform(function($request){
+        $requests = RequestModel::where("user_id",$user->id)->where("requests.status","!=",RequestModel::STATUS_CANCEL)->orderBy("requests.id","DESC")
+        ->get()->transform(function($request){
             return $request->data();
         });
-        return success($requests,System::HTTP_OK,'SUCCESS');
+        return success(["history" => $requests],System::HTTP_OK,'SUCCESS');
     }
 }
