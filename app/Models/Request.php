@@ -19,8 +19,9 @@ class Request extends Model
     // new => 0
     // accepted => 1
     // cancel => 2
+
     const STATUS_ACCEPTED  = 1;
-    const STATUS_NEW  = 0;
+    const STATUS_PENDING  = 0;
     const STATUS_CANCEL = 2;
     const STATUS_COMPLETE = 3;
 
@@ -31,10 +32,13 @@ class Request extends Model
 
     public function decodeStatus($id)
     {
-        $statuses = [["id"=>self::STATUS_NEW ,"name"=>"new","name_local"=>"جديد"]
-                ,["id"=>self::STATUS_ACCEPTED ,"name"=>"Accepted","name_local"=>"مقبول"],
-                ["id"=> self::STATUS_CANCEL ,"name"=>"cancel","name_local"=>"ملغي"],
-                ["id"=> self::STATUS_COMPLETE ,"name"=>"complete","name_local"=>"مكتمل"]];
+        $statuses = [
+            ["id"=>self::STATUS_PENDING ,"name"=>"Pending","name_local"=>"قيد الانتظار"],
+            ["id"=>self::STATUS_ACCEPTED ,"name"=>"Accepted","name_local"=>"مقبول"],
+            ["id"=> self::STATUS_CANCEL ,"name"=>"Canceled","name_local"=>"ملغي"],
+            ["id"=> self::STATUS_COMPLETE ,"name"=>"Completed","name_local"=>"مكتمل"]
+        ];
+
         foreach($statuses as $status){
             if($status["id"] == $id){
                 return $status;
