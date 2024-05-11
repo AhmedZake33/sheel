@@ -164,6 +164,6 @@ class RequestsController extends Controller
             // $data->provider = $data->provider->data();
             return $data->providerData($provider);
         });
-        return success($requests,System::HTTP_OK,'SUCCESS');
+        return success(["history" =>$requests],System::HTTP_OK,'SUCCESS');
     }
 }
