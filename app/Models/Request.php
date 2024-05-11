@@ -272,5 +272,6 @@ class Request extends Model
     public function autoAssignProvider($id)
     {
         RequestProvider::create(['provider_id'  => $id, 'request_id' => $this->id , 'status' => RequestProvider::STATUS_ACCEPTED]);
+        event(new \App\Events\CurrentRequests(4 , $this));
     }
 }
