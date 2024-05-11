@@ -22,6 +22,7 @@ class Request extends Model
     const STATUS_ACCEPTED  = 1;
     const STATUS_NEW  = 0;
     const STATUS_CANCEL = 2;
+    const STATUS_COMPLETE = 3;
 
     // pending 
     // accept / cancel 
@@ -30,7 +31,10 @@ class Request extends Model
 
     public function decodeStatus($id)
     {
-        $statuses = [["id"=>0 ,"name"=>"new","name_local"=>"جديد"],["id"=>1 ,"name"=>"Accepted","name_local"=>"مقبول"],["id"=>2 ,"name"=>"cancel","name_local"=>"ملغي"]];
+        $statuses = [["id"=>self::STATUS_NEW ,"name"=>"new","name_local"=>"جديد"]
+                ,["id"=>self::STATUS_ACCEPTED ,"name"=>"Accepted","name_local"=>"مقبول"],
+                ["id"=> self::STATUS_CANCEL ,"name"=>"cancel","name_local"=>"ملغي"],
+                ["id"=> self::STATUS_COMPLETE ,"name"=>"complete","name_local"=>"مكتمل"]];
         foreach($statuses as $status){
             if($status["id"] == $id){
                 return $status;
