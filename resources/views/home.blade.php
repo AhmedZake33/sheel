@@ -34,16 +34,27 @@
             margin-bottom: 5px;
             color: #666;
         }
-        .form-group input {
-            width: 100%;
+        .form-group input  {
+            width: 50%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
         }
+        .form-group input:nth-of-type(2) {
+            width: 100%;
+        }
+
         .form-group input:focus {
             outline: none;
             border-color: #007bff;
+        }
+        .form-group .btn {
+            width: 30%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
         .btn {
             display: inline-block;
@@ -79,25 +90,21 @@
             <input type="submit" value="Logout" class="btn btn-primary">
         </form>
     @else
-        {{-- <form action="{{route('login')}}" method="POST"> 
-            @csrf
-            <h4>Login Form</h4>
-            Email : <input type="email"  name="email"><br><br>
-            <input type="number"  name="otp"><br><br>
-            <input type="submit" class="btn btn-primary">
-        </form> --}}
+       
         <form action="{{ route('login') }}" method="POST">
             @csrf
             <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email" required><button class="btn">send otp</button>
+                <label for="mobile">Mobile:</label>
+                <input type="text"  id="mobile" name="mobile" placeholder="Enter your mobile" required>
+                <button class="btn">Verify</button>
             </div>
             <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <label for="Otp">OTP:</label>
+                <input type="text" id="otp" name="otp" placeholder="Enter your otp" required>
             </div>
-            <button type="submit" class="btn">Login</button>
+            <button type="submit" class="btn">Submit</button>
         </form>
+
 @endauth
 
 
