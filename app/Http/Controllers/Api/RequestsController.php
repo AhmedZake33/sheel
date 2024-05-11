@@ -36,10 +36,10 @@ class RequestsController extends Controller
         // check if user has active request
         $activeRequest = RequestModel::select("requests.*")->leftJoin("requests_providers","requests_providers.request_id","requests.id")->where("user_id",Auth()->id())->where("requests.status","==",RequestModel::STATUS_PENDING)->where("requests_providers.status",RequestProvider::STATUS_PENDING)->first();
         
-        if(count($this->locationService->getNearestLocations($request)) == 0 || $activeRequest){
-            $message = ["ar" => "لا يمكنك عمل طلب الان" , "en" => "cannot create request now"];
-            return error([],System::HHTP_Unprocessable_Content , $message[app()->getLocale()]);
-        }
+        // if(count($this->locationService->getNearestLocations($request)) == 0 || $activeRequest){
+        //     $message = ["ar" => "لا يمكنك عمل طلب الان" , "en" => "cannot create request now"];
+        //     return error([],System::HHTP_Unprocessable_Content , $message[app()->getLocale()]);
+        // }
         return $this->requestService->create($request);
     }
 
