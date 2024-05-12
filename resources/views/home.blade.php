@@ -94,9 +94,9 @@
         <form action="{{ route('login') }}" method="POST">
             @csrf
             <div class="form-group">
-                <label for="mobile">Mobile:</label>
-                <input type="text"  id="email" name="email" placeholder="Enter your email" required>
-                <button class="btn">Verify</button>
+                <label for="mobile">Email:</label>
+                <input type="email"  id="email" name="email" placeholder="Enter your email" required>
+                <button class="btn" id="verify">Verify</button>
             </div>
             <div class="form-group">
                 <label for="Otp">OTP:</label>
@@ -129,8 +129,25 @@
          
 <script>  
 
+    var token = '{{ csrf_token() }}'
+    $(document).ready(function(){
+        $("#verify").click(function(){
+            $.ajax({
+                url: "{{ route('verify') }}",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({email:$("#email").val() ,"_token": token }),
+                success: function(){
+                    $("#email").prop("disabled", true);
+                },
+                error: function(){
+                    alert("something went wrong");
+                }
+
+            })
+        })
+    });
     
-    let token = '{{ csrf_token() }}'
     console.log(token); 
     var appUrl = '{{ $appUrl }}';
     var userId = '{{$userId}}';

@@ -90,3 +90,6 @@ Route::group(["prefix" => "reviews" , 'middleware' => "auth:api"] , function(){
 Route::group(["prefix" => "lookups" , 'middleware' => "auth:api"] , function(){
     Route::get('','LookupsController@get');
 });
+
+
+Route::get('/broadcasting/auth', 'UsersController@authenticate');

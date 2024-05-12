@@ -97,6 +97,8 @@ Route::get('/home', function () {
     return view('home');
 })->name('home');
 
+
+route::post("verify",[UsersController::class , "verify"])->name("verify");
 route::post('login',[UsersController::class , 'loginWithEmail'])->name('login');
 route::post('loginWithToken',[UsersController::class , 'loginWithToken'])->name('loginWithToken');
 route::post('logout',[UsersController::class , 'logout'])->name('logout');

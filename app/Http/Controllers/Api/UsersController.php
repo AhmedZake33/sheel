@@ -97,15 +97,26 @@ class UsersController extends Controller
         return success([],System::HTTP_OK , $message);
     }
 
-    public function loginWithEmail(Request $request)
+    public function verify(Request $request)
     {
         $user = User::where('email',$request->email)->first();
         if($user){
-            // event(new ChatEvent("welcome here from controller" , 2));
+            User::createOtp($user ,false);
+            return response()->json([],200);
+        }else{
+            return response()->json([],400);
+        }
+
+    }
+
+    public function loginWithEmail(Request $request)
+    {
+        $desiredTime = Carbon::now()->addMinutes(-5);
+        $user = User::where('email',$request->email)->where('otp_code',$request->otp)->where('otp_time', '>=',$desiredTime)->first();
+        if($user){
+            $user->verify('mobile');
             if(Auth::loginUsingId($user->id)){
-                // return redirect()->route('home');
-                return redirect()->back();
-                
+                return redirect()->back();                
             }
         }
     }
@@ -166,7 +177,7 @@ class UsersController extends Controller
     {
         if (Auth::user()) {
             $user = Auth::user();
-            return response()->json(['auth' => $user->createToken('sheel')->accessToken]);
+            return response()->json(['auth' => $user->createToken('sheel')->accessToken] , 200);
         } else {
             return response()->json(['error' => 'Unauthenticated.'], 403);
         }
