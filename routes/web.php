@@ -57,7 +57,8 @@ Route::get('/', function () {
 
 Route::get('fire-event', function () {
     $request = Requestmodel::find(172);
-    event(new \App\Events\CurrentRequests(76 , $request));
+    event(new \App\Events\PublicEvent());
+    // event(new \App\Events\CurrentRequests(76 , $request));
     // return event(new \App\Events\RequestEvent($request,1));
 
     // event(new \App\Events\PublicEvent());
