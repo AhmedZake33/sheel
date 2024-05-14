@@ -192,7 +192,7 @@ class UsersController extends Controller
 
         // Authenticate the user and generate authorization data
         // You may need to replace this logic with your own authentication and authorization logic
-        $userId = auth()->user()->id; // Assuming you're using Laravel's built-in authentication
+        // $userId = auth()->user()->id; // Assuming you're using Laravel's built-in authentication
 
         $pusher = new Pusher(
             env('PUSHER_APP_KEY'),

@@ -92,4 +92,4 @@ Route::group(["prefix" => "lookups" , 'middleware' => "auth:api"] , function(){
 });
 
 
-Route::post('/broadcasting/auth', 'UsersController@authenticate')->middleware("auth:api");
+Route::post('/broadcasting/auth', 'UsersController@authenticate');
