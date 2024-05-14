@@ -14,6 +14,7 @@ use App\Services\ProviderService;
 use App\Services\UserService;
 use App\Http\Requests\ProfileRequest;
 use Illuminate\Support\Arr;
+use Pusher\Pusher;
 
 class UsersController extends Controller 
 {
@@ -115,5 +116,35 @@ class UsersController extends Controller
         }
         
 
+    }
+
+    public function authenticate(Request $request)
+    {
+        // $socketId = '180146.66614478';
+        // $channelName = "privateNotification.4";
+
+        $socketId = $request->input('socket_id');
+        $channelName = $request->input('channel_name');
+
+        
+
+        // Authenticate the user and generate authorization data
+        // You may need to replace this logic with your own authentication and authorization logic
+        // $userId = auth()->user()->id; // Assuming you're using Laravel's built-in authentication
+
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true
+            ]
+        );
+
+        $authData = $pusher->socket_auth($channelName, $socketId);
+        // $authData = $pusher->socket_auth('', '');
+
+        return response()->json(json_decode($authData));
     }
 }

@@ -37,4 +37,8 @@ Route::group(["prefix" => "lookups" , 'middleware' => "auth:api"] , function(){
     Route::get('','LookupsController@get');
 });
 
+
+Route::post('/broadcasting/auth', 'UsersController@authenticate');
+
+
 ?>
