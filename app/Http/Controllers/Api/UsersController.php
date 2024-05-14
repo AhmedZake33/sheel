@@ -173,15 +173,43 @@ class UsersController extends Controller
         return $message;
     }
 
+    // public function authenticate(Request $request)
+    // {
+    //     if (Auth::user()) {
+    //         $user = Auth::user();
+    //         return response()->json(['auth' => $user->createToken('sheel')->accessToken] , 200);
+    //     } else {
+    //         return response()->json(['error' => 'Unauthenticated.'], 403);
+    //     }
+    // }
+
     public function authenticate(Request $request)
     {
-        if (Auth::user()) {
-            $user = Auth::user();
-            return response()->json(['auth' => $user->createToken('sheel')->accessToken] , 200);
-        } else {
-            return response()->json(['error' => 'Unauthenticated.'], 403);
-        }
+        $socketId = '180146.66614478';
+        $channelName = "privateNotification.4";
+
+        
+
+        // Authenticate the user and generate authorization data
+        // You may need to replace this logic with your own authentication and authorization logic
+        $userId = auth()->user()->id; // Assuming you're using Laravel's built-in authentication
+
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true
+            ]
+        );
+
+        $authData = $pusher->socket_auth($channelName, $socketId);
+        // $authData = $pusher->socket_auth('', '');
+
+        return response()->json(json_decode($authData));
     }
+
 
     public function acceptProvider(Request $request , $provider)
     {
