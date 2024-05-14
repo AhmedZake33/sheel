@@ -185,8 +185,11 @@ class UsersController extends Controller
 
     public function authenticate(Request $request)
     {
-        $socketId = '180146.66614478';
-        $channelName = "privateNotification.4";
+        // $socketId = '180146.66614478';
+        // $channelName = "privateNotification.4";
+
+        $socketId = $request->input('socket_id');
+        $channelName = $request->input('channel_name');
 
         
 
