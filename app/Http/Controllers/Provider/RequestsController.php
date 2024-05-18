@@ -65,7 +65,7 @@ class RequestsController extends Controller
                 return success([],System::HTTP_OK,'SUCCESS CANCEL REQUEST');
             }
         }
-        return success(["accepted" => false],System::HTTP_UNAUTHORIZED,'Not Authorized');
+        return success(["refused" => true],System::HTTP_UNAUTHORIZED,'Not Authorized');
        
         
     }
