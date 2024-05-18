@@ -20,5 +20,14 @@ class Provider extends Model
         return $this->belongsTo(Service::class , 'service_id','id');
     }
 
+    public function requestsProviders($status = null)
+    {
+        $query =  $this->hasMany(requestProvider::class);
+        if($status != null){
+            $query->where("status" , $status);
+        }
+        return $query;
+    }
+
 
 }

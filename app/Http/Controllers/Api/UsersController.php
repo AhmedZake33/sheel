@@ -113,6 +113,8 @@ class UsersController extends Controller
     {
         $desiredTime = Carbon::now()->addMinutes(-5);
         $user = User::where('email',$request->email)->where('otp_code',$request->otp)->where('otp_time', '>=',$desiredTime)->first();
+        // $user = User::where('email',$request->email)->where('otp_time', '>=',$desiredTime)->first();
+        // return $user;
         if($user){
             $user->verify('mobile');
             if(Auth::loginUsingId($user->id)){

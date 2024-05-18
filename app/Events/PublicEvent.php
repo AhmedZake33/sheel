@@ -31,6 +31,16 @@ class PublicEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('public-channel');
+        return new Channel('publicChannel');
+    }
+
+    public function broadcastAs()
+    {
+        return "PublicEvent";
+    }
+
+    public function broadcastWith(): array
+    {
+        return ['channel' => '$this->channel' , "message" => '$this->message'];
     }
 }

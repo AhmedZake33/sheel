@@ -163,7 +163,7 @@
         console.log("success");
     });
 
-    var channel = pusher.subscribe('public-channel');
+    var channel = pusher.subscribe('publicChannel');
     channel.bind('PublicEvent', function(data) {
         alert("success");
     });

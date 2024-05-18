@@ -13,8 +13,11 @@ use App\Models\System\System;
 use App\Services\ProviderService;
 use App\Services\UserService;
 use App\Http\Requests\ProfileRequest;
+use App\Models\Notification;
+use App\Models\Request as ModelsRequest;
 use Illuminate\Support\Arr;
 use Pusher\Pusher;
+use Auth;
 
 class UsersController extends Controller 
 {
@@ -146,5 +149,26 @@ class UsersController extends Controller
         // $authData = $pusher->socket_auth('', '');
 
         return response()->json(json_decode($authData));
+    }
+
+    public function changeLocation(Request $request)
+    {
+        $user = Auth::user();
+        $provider =  $user->provider;
+        $provider->lat = $request->lat;
+        $provider->lng = $request->lng;
+        $provider->save();
+
+        $currectAcceptedRequest =  $provider->requestsProviders(1)->first();
+
+        // fire events here
+        if($currectAcceptedRequest){
+            $request = ModelsRequest::find($currectAcceptedRequest->request_id);
+            event(new \App\Events\CurrentRequests($request->user_id , $request));
+            $notification = Notification::find(1);
+            event(new \App\Events\NotificationEvent($notification));
+        }
+
+        return success([],System::HTTP_OK);
     }
 }

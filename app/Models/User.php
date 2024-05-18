@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Models\System\System;
 use App\Models\Payments\Card;
+use DB;
 
 class User extends Authenticatable
 {
@@ -253,6 +254,12 @@ class User extends Authenticatable
        
         return $data;
 
+    }
+
+    public function calculateReview()
+    {
+       $query = DB::table('reviews')->where("reviewable_id",$this->id)->selectRaw("AVG(rate) as rate")->select("rate")->first();
+       return $query->rate;
     }
 
 }

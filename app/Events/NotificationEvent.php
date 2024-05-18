@@ -33,6 +33,6 @@ class NotificationEvent implements ShouldBroadcast
 
     public function broadcastWith()
     {
-        return ['notification' => $this->notification];
+        return ['notification' => $this->notification->data()];
     }
 }

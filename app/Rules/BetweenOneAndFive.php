@@ -9,11 +9,6 @@ class BetweenOneAndFive implements Rule
 
     protected $lang = 'en';
 
-    public function __construct()
-    {
-        app()->getLocale() = request()->header('lang')?request()->header('lang') : 'en';
-    }
-
     public function passes($attribute, $value)
     {
         return $value >= 1 && $value <= 5;

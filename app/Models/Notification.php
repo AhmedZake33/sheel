@@ -11,6 +11,7 @@ use App\Events\NotificationEvent;
 class Notification extends Model
 {
     protected $table = "notifications";
+
     protected static function booted(): void
     {
         static::addGlobalScope(new ActiveScope);
@@ -35,6 +36,11 @@ class Notification extends Model
         NotificationEvent::dispatch($notification);
     }
 
+    public function request()
+    {
+        return $this->belongsto(Request::class);
+    }
+
     public static function seen($notification)
     {
         $user = auth()->user();
@@ -42,5 +48,14 @@ class Notification extends Model
             $notification->update(['seen' => Notification::SEEN]);
         }
         return true;
+    }
+
+    public function data()
+    {
+        $data = (object)[];
+        $data->title = $this->title;
+        $data->seen = $this->seen;
+        $data->requestData = $this->request->notificationData();
+        return $data;
     }
 }

@@ -25,6 +25,11 @@ class Request extends Model
     const STATUS_CANCEL = 2;
     const STATUS_COMPLETE = 3;
 
+
+    // IMAGE_ON_GROUND
+    // IMAGE_IN_DESTINATION
+
+
     // pending 
     // accept / cancel 
     // time out 
@@ -98,7 +103,7 @@ class Request extends Model
 
     public function user()
     {
-        return $this->belongsto(User::class)->select('id','name','email');
+        return $this->belongsto(User::class)->select('id','name','email',"mobile","mobile_code");
     }
 
     public function data($type = System::DATA_BRIEF)
@@ -116,27 +121,43 @@ class Request extends Model
         $data->service = $this->service;
         $files = $this->archive->children;
         $data->provider = $this->CurrentProvider? $this->CurrentProvider->provider->with("user")->first() : null;
-        $data->chats = $this->chats;
-        $data->review = $this->review()->select('rate','comment')->first();
+        // $data->review = $this->review()->select('rate','comment')->first();
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
-        $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
+        $data->estimatedCost = number_format($locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo') , 2);
         // $data->estimatedCost = 100;
         $temp_files = [];
         foreach($files as $file){
             array_push($temp_files , route('download_file',$file));
         }
         // $data->pay = $this->payment ? route('buy',[$this->id,'otfff']) : null;  
-        $data->files = $temp_files;
         // $data->file = 
         if($type == System::DATA_BRIEF){
 
         }elseif($type == System::DATA_DETAILS){
             $data->created_at = $this->created_at;
             $data->updated_at = $this->updated_at; 
+            $data->chats = $this->chats;
+        }
+        $data->files = $temp_files;
+        $data->allowDestinationButton = $this->ifProviderNearset();
+        $data->userReview = $this->user->calculateReview();
+        return $data;
+    }
+
+    public function ifProviderNearset()
+    {
+        $locationProvider = new LocationService();
+        $currentProviderData =  $this->CurrentProvider->provider;
+        if($currentProviderData){
+            $distanceInKilos =  $locationProvider->calcDistance($this->destination_lat , $this->destination_lng , $currentProviderData->lat , $currentProviderData->lng);
+            if($distanceInKilos * 1000 < 150){
+                return true;
+            }
+            // return $distanceInKilos * 1000;
             
         }
-
-        return $data;
+        return false;
+        
     }
 
     public function providerData($provider = null)
@@ -155,7 +176,32 @@ class Request extends Model
         $data->service = $this->service;
         $files = $this->archive->children;
         $data->chats = $this->chats;
-        $data->review = $this->review()->select('rate','comment')->first();
+        $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
+        $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
+        // $data->estimatedCost = 100;
+        $temp_files = [];
+        foreach($files as $file){
+            array_push($temp_files , route('download_file',$file));
+        }
+        $data->files = $temp_files;        
+        $data->created_at = $this->created_at;
+        $data->updated_at = $this->updated_at; 
+
+        return $data;   
+    }
+
+    public function notificationData()
+    {
+        $locationProvider = new LocationService();
+        $data = (object)[];
+        $data->id = $this->id;
+        $data->user = $this->user;
+        $data->current_latituide = $this->current_lat;
+        $data->current_lngituide = $this->current_lng;
+        $data->destination_latituide = $this->destination_lat;
+        $data->destination_lngituide = $this->destination_lng;
+        $files = $this->archive->children;
+        $data->chats = $this->chats;
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
         $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
         // $data->estimatedCost = 100;
@@ -194,6 +240,21 @@ class Request extends Model
         return false;
     }
 
+    public static function isProvider($requestModel,$user)
+    {
+        
+        $requestModel = Request::find($requestModel);
+        if(!$requestModel->CurrentProvider){
+            return false;
+        }
+
+        if(  ($requestModel->CurrentProvider  && $requestModel->CurrentProvider->provider->user->is($user))){
+            return true;
+        }
+
+        return false;
+    }
+
     public static function canReview($requestModel,$user)
     {
         
@@ -202,8 +263,8 @@ class Request extends Model
         if(!$requestModel->CurrentProvider){
             return false;
         }
-
-        if( $requestModel->CurrentProvider  && $requestModel->user->is($user)){
+        // return $requestModel->CurrentProvider->provider->user->is($user);
+        if( ($requestModel->CurrentProvider)  && (($requestModel->user->is($user)) || ($requestModel->CurrentProvider->provider->user->is($user)))  ){
             return true;
         }
 
@@ -264,9 +325,9 @@ class Request extends Model
         }
     }
 
-    public function review()
+    public function reviews()
     {
-        return $this->hasOne(Review::class);
+        return $this->hasMany(Review::class);
     }
 
     public function autoAssignProvider($id)

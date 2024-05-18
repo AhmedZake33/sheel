@@ -228,3 +228,9 @@ Route::post("accept-provider/{provider}","UsersController@acceptProvider")->name
 Route::post("refuse-provider/{provider}","UsersController@refuseProvider")->name("refuse-provider");
 
 Route::get('/broadcasting/auth', 'UsersController@authenticate');
+
+
+Route::get("check-time",function(){
+    $notification = Notification::find(1);
+    return $notification->data();
+});

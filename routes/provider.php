@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Provider\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,7 @@ Route::group(["prefix" => "user" , "middleware" => "auth:api"], function(){
     Route::get('profile','UsersController@profile');
     Route::post('/update','UsersController@update');
     Route::post("activate",'UsersController@activeNow');
+    Route::post("change-location","UsersController@changeLocation");
 });
 Route::get('user/activate/{userSecret}','UsersController@activate');
 
@@ -29,12 +31,19 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
     Route::post('accept','RequestsController@accept');
     Route::post("current",'RequestsController@current');
     Route::get("history","RequestsController@history");
+    Route::post("{id}/pick-up","RequestsController@pickUp");
+    Route::post("{id}/arrived","RequestsController@arrived");
  });
 
 
 // lookups api
 Route::group(["prefix" => "lookups" , 'middleware' => "auth:api"] , function(){
     Route::get('','LookupsController@get');
+});
+
+// reviews api
+Route::group(["prefix" => "reviews" , 'middleware' => "auth:api"] , function(){
+    Route::post('/{id}','ReviewsController@add');
 });
 
 

@@ -65,7 +65,7 @@ class RequestsController extends Controller
                 return success([],System::HTTP_OK,'SUCCESS CANCEL REQUEST');
             }
         }
-        return success([],System::HTTP_UNAUTHORIZED,'Not Authorized');
+        return success(["accepted" => false],System::HTTP_UNAUTHORIZED,'Not Authorized');
        
         
     }
@@ -98,7 +98,7 @@ class RequestsController extends Controller
             }
 
         }
-        return success([],System::HTTP_OK,'SUCCESS Accept REQUEST');
+        return success(["accepted" => true],System::HTTP_OK,'SUCCESS Accept REQUEST');
     }
 
     public function show(Request $request)
@@ -165,5 +165,35 @@ class RequestsController extends Controller
             return $data->providerData($provider);
         });
         return success(["history" =>$requests],System::HTTP_OK,'SUCCESS');
+    }
+
+    public function pickUp(Request $request , $id)
+    {
+        //IMAGE_ON_GROUND
+        $requestData = requestModel::findOrFail($id);
+        if(RequestModel::isProvider($requestData->id , auth()->user())){
+            // upload image
+            if($request->file && !$requestData->archive->findChildByShortName("IMAGE_ON_GROUND")){
+                $requestData->archive->addDocumentWithShortName($request->file , "IMAGE_ON_GROUND","IMAGE_ON_GROUND","IMAGE_ON_GROUND");
+                // action to start request
+                return success([],System::HTTP_OK , "SUCCESS");
+            }
+        }
+        return success([],System::HHTP_Unprocessable_Content , "CANNOT UPLOAD IMAGE");
+    }
+
+    public function arrived(Request $request , $id)
+    {
+        //IMAGE_IN_DESTINATION
+        $requestData = requestModel::findOrFail($id);
+        if(RequestModel::isProvider($requestData->id , auth()->user())){
+            // upload image
+            if($request->file && $requestData->ifProviderNearset() && !$requestData->archive->findChildByShortName("IMAGE_IN_DESTINATION")){
+                $requestData->archive->addDocumentWithShortName($request->file , "IMAGE_IN_DESTINATION","IMAGE_IN_DESTINATION","IMAGE_IN_DESTINATION");
+                // action to start request
+                return success([],System::HTTP_OK , "SUCCESS");
+            }
+        }
+        return success([],System::HHTP_Unprocessable_Content , "CANNOT UPLOAD IMAGE");
     }
 }
