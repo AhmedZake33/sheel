@@ -15,6 +15,7 @@ use App\Services\UserService;
 use App\Http\Requests\ProfileRequest;
 use App\Models\Notification;
 use App\Models\Request as ModelsRequest;
+use App\Models\RequestProvider;
 use Illuminate\Support\Arr;
 use Pusher\Pusher;
 use Auth;
@@ -159,14 +160,14 @@ class UsersController extends Controller
         $provider->lng = $request->lng;
         $provider->save();
 
-        $currectAcceptedRequest =  $provider->requestsProviders(1)->first();
+        $currectAcceptedRequest =  $provider->requestsProviders(RequestProvider::STATUS_ACCEPTED)->first();
 
         // fire events here
         if($currectAcceptedRequest){
             $request = ModelsRequest::find($currectAcceptedRequest->request_id);
             event(new \App\Events\CurrentRequests($request->user_id , $request));
-            $notification = Notification::find(1);
-            event(new \App\Events\NotificationEvent($notification));
+            // $notification = Notification::find(1);
+            // event(new \App\Events\NotificationEvent($notification));
         }
 
         return success([],System::HTTP_OK);
