@@ -140,7 +140,6 @@ class Request extends Model
         }
         $data->files = $temp_files;
         $data->allowDestinationButton = $this->ifProviderNearset();
-        $data->userReview = $this->user->calculateReview();
         return $data;
     }
 
@@ -212,6 +211,7 @@ class Request extends Model
         $data->files = $temp_files;        
         $data->created_at = $this->created_at;
         $data->updated_at = $this->updated_at; 
+        $data->userReview = $this->user->calculateReview();
 
         return $data;   
     }
