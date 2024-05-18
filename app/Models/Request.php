@@ -147,7 +147,7 @@ class Request extends Model
     public function ifProviderNearset()
     {
         $locationProvider = new LocationService();
-        $currentProviderData =  $this->CurrentProvider->provider;
+        $currentProviderData =  $this->CurrentProvider?$this->CurrentProvider->provider : null;
         if($currentProviderData){
             $distanceInKilos =  $locationProvider->calcDistance($this->destination_lat , $this->destination_lng , $currentProviderData->lat , $currentProviderData->lng);
             if($distanceInKilos * 1000 < 150){
@@ -296,6 +296,7 @@ class Request extends Model
         // service to get nearest location  
         if($nearestLocations){
             $nearestLocation = $locationService->getNearestLocation($this->current_lat , $this->current_lng , $nearestLocations);
+        // return $nearestLocation;
             // assign to provider 
             if($nearestLocation){
                 $existProvider = RequestProvider::where('request_id',$this->id)->where('status',RequestProvider::STATUS_PENDING)->first();

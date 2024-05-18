@@ -259,7 +259,7 @@ class User extends Authenticatable
     public function calculateReview()
     {
        $query = DB::table('reviews')->where("reviewable_id",$this->id)->selectRaw("AVG(rate) as rate")->select("rate")->first();
-       return $query->rate;
+       return $query ? $query->rate : null;
     }
 
 }

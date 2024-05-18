@@ -26,6 +26,7 @@ class RequestService extends Base
         }else{
             $requestModel = RequestModel::create($data);
         }
+
         // return $request->all();
         if($request->file && count($data['file']) > 0){
             // create archive 
@@ -34,6 +35,7 @@ class RequestService extends Base
             }
             
         }
+
         // return $requestModel->payment;
         if($request->with_payment && $requestModel->payment_id == null){
             // create payment 
@@ -44,6 +46,7 @@ class RequestService extends Base
             $requestModel->payment_id = $payment->id;
             $requestModel->save();
         }
+        // return $data;
 
         $requestModel->startFindProvider();
 
