@@ -302,7 +302,7 @@ class Request extends Model
                 $existProvider = RequestProvider::where('request_id',$this->id)->where('status',RequestProvider::STATUS_PENDING)->first();
                 if(!$existProvider){
                     $providerRequestService->assignProvider($nearestLocation->user_id , $this->id);
-                    event(new \App\Events\CurrentRequests($nearestLocation->user_id , $this));
+                    // event(new \App\Events\CurrentRequests($nearestLocation->user_id , $this));
                 }
                 // notification to provider
                 $title = ['ar' => 'لقد تم اضافتك الي طلب' , 'en' => 'you have assigned to request'];
