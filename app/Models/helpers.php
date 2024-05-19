@@ -1659,3 +1659,18 @@ if(!function_exists('fetchTransaction')){
         }
     }
 }
+
+if(!function_exists("toRawSql")){
+    function toRawSql($query) {
+        $sql = $query->toSql();
+        $bindings = $query->getBindings();
+        
+        // Replace bindings in the query
+        foreach ($bindings as $binding) {
+            $value = is_numeric($binding) ? $binding : "'$binding'";
+            $sql = preg_replace('/\?/', $value, 1);
+        }
+        
+        return $sql;
+    }
+}
