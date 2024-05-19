@@ -62,12 +62,10 @@ class RequestsController extends Controller
                 $requestModel->startFindProvider();
                 $title = ['ar' => 'provider refuse request' , 'en' => 'provider refuse request'];
                 Notification::createNotification($requestModel->user_id , $requestModel->id , $title);
-                return success([],System::HTTP_OK,'SUCCESS CANCEL REQUEST');
+                return success(["refused" => true],System::HTTP_OK,'SUCCESS CANCEL REQUEST');
             }
         }
-        return success(["refused" => true],System::HTTP_UNAUTHORIZED,'Not Authorized');
-       
-        
+        return success([],System::HTTP_UNAUTHORIZED,'Not Authorized');        
     }
 
     public function accept(Request $request)
@@ -75,7 +73,6 @@ class RequestsController extends Controller
         $requestModel = RequestModel::findOrFail($request->request_id);
         $user = auth()->user();
         $provider = Provider::where('user_id',$user->id)->first();
-        // return $provider;
         if($provider){
             // get request provider 
             $requestProvider = RequestProvider::where('request_id',$requestModel->id)->where('provider_id',$provider->id)->where('status',RequestProvider::STATUS_PENDING)->first();
@@ -92,13 +89,15 @@ class RequestsController extends Controller
                 // notification to request user that provider is comming
                 $title = ['ar' => 'provider is comming' , 'en' => 'provider is comming'];
                 Notification::createNotification($requestModel->user_id , $requestModel->id , $title);
+
+                return success(["accepted" => true],System::HTTP_OK,'SUCCESS Accept REQUEST');
                     
             }else{
                 return success([] ,System::HTTP_UNAUTHORIZED , 'Not Authorized');
             }
 
         }
-        return success(["accepted" => true],System::HTTP_OK,'SUCCESS Accept REQUEST');
+        return success([],System::HHTP_Unprocessable_Content,'error');
     }
 
     public function show(Request $request)
