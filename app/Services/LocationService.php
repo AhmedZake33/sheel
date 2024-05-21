@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 use App\Models\Provider;
+use App\Models\RequestProvider;
 use App\Models\User;
 
 
@@ -19,23 +20,23 @@ class LocationService
         $locations = Provider::with('user:id,name,email,mobile')
         ->join("users","users.id","providers.user_id")
         ->join("requests_providers","requests_providers.provider_id","providers.id")
-        ->where("requests_providers.status","!=",1)
+        ->where("requests_providers.status","!=",RequestProvider::STATUS_ACCEPTED)
         ->where("users.status","!=",User::STATUS_PENDING_PROVIDER)
         ->where('service_id',$requestModel->service_id)
         ->where('active',1)
         ->whereBetween('lat', [$minLat, $maxLat])
-        ->whereBetween('lng', [$minLng, $maxLng])
-        ->where('user_id','!=',$requestModel->user_id);
+        ->whereBetween('lng', [$minLng, $maxLng]);
+        // ->where('user_id','!=',$requestModel->user_id);
         // return $maxLat;
         if(count($providers) > 0){
             $locations = $locations->whereNotIn('user_id',$providers);
         }
-        echo "minlat".$minLat."<br/>";
-        echo "maxLat".$maxLat."<br>";
-        echo "minLng".$minLng."<br>";
-        echo "maxLng".$maxLng."<br>";
-        // return ;
-        return $locations->toSql();
+        // echo "minlat".$minLat."<br/>";
+        // echo "maxLat".$maxLat."<br>";
+        // echo "minLng".$minLng."<br>";
+        // echo "maxLng".$maxLng."<br>";
+        // // return ;
+        // return $locations->toSql();
         $locations = $locations->get()->transform(function($location) use ($requestModel){
             $location->distance = $this->calcDistance($requestModel->current_lat , $requestModel->current_lng , $location->lat , $location->lng);
             return $location;
