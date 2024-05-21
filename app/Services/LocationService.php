@@ -30,12 +30,12 @@ class LocationService
         if(count($providers) > 0){
             $locations = $locations->whereNotIn('user_id',$providers);
         }
-        // echo "minlat".$minLat."<br/>";
-        // echo "maxLat".$maxLat."<br>";
-        // echo "minLng".$minLng."<br>";
-        // echo "maxLng".$maxLng."<br>";
+        echo "minlat".$minLat."<br/>";
+        echo "maxLat".$maxLat."<br>";
+        echo "minLng".$minLng."<br>";
+        echo "maxLng".$maxLng."<br>";
         // return ;
-        // return $locations->toSql();
+        return $locations->toSql();
         $locations = $locations->get()->transform(function($location) use ($requestModel){
             $location->distance = $this->calcDistance($requestModel->current_lat , $requestModel->current_lng , $location->lat , $location->lng);
             return $location;

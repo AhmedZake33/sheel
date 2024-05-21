@@ -175,6 +175,9 @@ class RequestsController extends Controller
             if($request->file && !$requestData->archive->findChildByShortName("IMAGE_ON_GROUND")){
                 $requestData->archive->addDocumentWithShortName($request->file , "IMAGE_ON_GROUND","IMAGE_ON_GROUND","IMAGE_ON_GROUND");
                 // action to start request
+
+                // fire event 
+                event(new \App\Events\CurrentRequests($requestData->user_id , $requestData));
                 return success([],System::HTTP_OK , "SUCCESS");
             }
         }
@@ -198,6 +201,10 @@ class RequestsController extends Controller
                 if($requestProvider){
                     $requestProvider->update(["status" => RequestProvider::STATUS_COMPLETE]);
                 }
+
+                // fire event 
+                event(new \App\Events\CurrentRequests($requestData->user_id , $requestData));
+                
                 return success([],System::HTTP_OK , "SUCCESS");
             }
         }
