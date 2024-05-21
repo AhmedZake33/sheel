@@ -270,4 +270,75 @@ class PaymentService extends Base {
 
         // echo $response->getBody();
     }
+
+    public function authorize($transaction , $card , $saveCard = false)
+    {
+        $payment = $transaction->payment;
+        // return $payment;
+        $request = Request::where('payment_id',$payment->id)->first();
+        // return $request;
+        $user = $request->user;
+        $secret = env('TEST_TAP_SECRET_KEY');
+        $client = new \GuzzleHttp\Client();
+        $data = json_encode(array(
+            'amount' => $payment->amount , 
+            'currency' => 'AED', 
+            "threeDSecure"=>true ,
+            "save_card"=>$saveCard, 
+            "customer_initiated"=>true,
+            "description"=>"Test Description",
+            "payment_agreement"=> [
+                "id"=> "$card->payment_agreement_id",
+                "contract"=>[
+                "id"=> "$card->card_id"
+            ]],
+            "customer"=>[
+                "first_name"=>$user->name,
+                "middle_name"=>$user->name,
+                "last_name"=>$user->name,
+                "email"=>$user->email,
+                "id" => $card->customer_id,
+                "phone"=>[
+                    "country_code"=>"965",
+                    "number"=>"51234567"
+                ]
+            ] , 
+            "source"=>[
+                "id"=>$card->token
+            ],
+            "post"=>[
+                "url"=>"http://your_website.com/post_url"
+            ],
+            "redirect"=>[
+                "url"=> domain() .  "/callback/$transaction->id"
+            ],
+            "auto" => [
+                "type" => "VOID",
+                "time" => 1
+            ]
+        ));
+        
+        // $response = $client->request('POST', 'https://api.tap.company/v2/authorize/', [
+        //   'body' => '{"amount":1,"currency":"KWD","customer_initiated":"true","threeDSecure":true,"save_card":false,"statement_descriptor":"sample","metadata":{"udf1":"test_data_1","udf2":"test_data_2","udf3":"test_data_3"},"reference":{"transaction":"txn_0001","order":"ord_0001"},"receipt":{"email":true,"sms":true},"customer":{"first_name":"Test","middle_name":"Test","last_name":"Test","email":"test@test.com","phone":{"country_code":"965","number":"50000000"}},"merchant":{"id":"1234"},"source":{"id":"src_card"},"authorize_debit":false,"auto":{"type":"VOID","time":100},"post":{"url":"http://your_website.com/posturl"},"redirect":{"url":"http://your_website.com/redirecturl"}}',
+        //   'headers' => [
+        //     'Authorization' => 'Bearer sk_test_XKokBfNWv6FIYuTMg5sLPjhJ',
+        //     'accept' => 'application/json',
+        //     'content-type' => 'application/json',
+        //   ],
+        // ]);
+
+        $response = $client->request('POST', 'https://api.tap.company/v2/authorize', [
+            'body' => $data,
+            'headers' => [
+              'Authorization' => "Bearer $secret",
+              'accept' => 'application/json',
+              'content-type' => 'application/json',
+            ],
+          ]);
+        $result = $response->getBody(); 
+        $data =  json_decode($result, true);
+        return $data;
+        
+        echo $response->getBody();
+    }
 }

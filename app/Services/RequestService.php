@@ -94,7 +94,9 @@ class RequestService extends Base
     {
         if($request->card_id){
             $card = Card::find($request->card_id);
+            // return $card;
             if($card->user_id == auth()->id()){
+                // return $card;
                 $transaction = Transaction::find($request->transaction_id);
                 // api to complete pay and update request ....
                 $paymentService = new PaymentService();
@@ -102,7 +104,8 @@ class RequestService extends Base
                     $paymentService->createTokenFromCard($card->id);
                 }     
                 $card = $card->fresh();
-                // return $card->token;           
+                // return $card->token; 
+                // return $card;          
                 return $paymentService->buy($transaction ,$card);
                 // service to get nearest locations
                 // $locationService = new LocationService();

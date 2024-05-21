@@ -19,6 +19,7 @@ class Request extends Model
     // new => 0
     // accepted => 1
     // cancel => 2
+    // complete = 3
 
     const STATUS_ACCEPTED  = 1;
     const STATUS_PENDING  = 0;
@@ -195,10 +196,10 @@ class Request extends Model
         $data = (object)[];
         $data->id = $this->id;
         $data->user = $this->user;
-        $data->current_latituide = $this->current_lat;
-        $data->current_lngituide = $this->current_lng;
-        $data->destination_latituide = $this->destination_lat;
-        $data->destination_lngituide = $this->destination_lng;
+        $data->current_latituide = (double)$this->current_lat;
+        $data->current_lngituide = (double)$this->current_lng;
+        $data->destination_latituide = (double)$this->destination_lat;
+        $data->destination_lngituide = (double)$this->destination_lng;
         $files = $this->archive->children;
         $data->chats = $this->chats;
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
