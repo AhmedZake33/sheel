@@ -25,8 +25,8 @@ class LocationService
         ->where('active',1)
         ->whereBetween('lat', [$minLat, $maxLat])
         ->whereBetween('lng', [$minLng, $maxLng])
-        ->select("providers.*")
-        ->groupBy("providers");
+        ->groupBy("providers")
+        ->select("providers.*");
         // ->where('user_id','!=',$requestModel->user_id);
         // return $maxLat;
         if(count($providers) > 0){
