@@ -190,6 +190,14 @@ class RequestsController extends Controller
             if($request->file && $requestData->ifProviderNearset() && !$requestData->archive->findChildByShortName("IMAGE_IN_DESTINATION")){
                 $requestData->archive->addDocumentWithShortName($request->file , "IMAGE_IN_DESTINATION","IMAGE_IN_DESTINATION","IMAGE_IN_DESTINATION");
                 // action to start request
+
+                // update request and update request provider
+                $requestData->update(["status" => RequestModel::STATUS_COMPLETE]);
+
+                $requestProvider=  RequestProvider::where(["request_id" => $requestData->id , "provider_id" => auth()->user()->provider->id])->first();
+                if($requestProvider){
+                    $requestProvider->update(["status" => RequestProvider::STATUS_COMPLETE]);
+                }
                 return success([],System::HTTP_OK , "SUCCESS");
             }
         }

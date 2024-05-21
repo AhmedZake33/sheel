@@ -18,6 +18,8 @@ class LocationService
         // return $minLat;
         $locations = Provider::with('user:id,name,email,mobile')
         ->join("users","users.id","providers.user_id")
+        ->join("requests_providers","requests_providers.provider_id","providers.id")
+        ->where("requests_providers.status","!=",1)
         ->where("users.status","!=",User::STATUS_PENDING_PROVIDER)
         ->where('service_id',$requestModel->service_id)
         ->where('active',1)
