@@ -203,7 +203,7 @@ class Request extends Model
         $files = $this->archive->children;
         $data->chats = $this->chats;
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
-        $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
+        $data->estimatedCost = number_format($locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo') , 2);
         // $data->estimatedCost = 100;
         $temp_files = [];
         foreach($files as $file){
