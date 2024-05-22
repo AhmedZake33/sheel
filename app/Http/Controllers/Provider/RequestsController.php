@@ -180,7 +180,6 @@ class RequestsController extends Controller
                 event(new \App\Events\CurrentRequests($requestData->user_id , $requestData));
                 return success([],System::HTTP_OK , "SUCCESS");
             }else{
-                return $requestData->archive->findChildByShortName("IMAGE_ON_GROUND");
                 return success([],System::HHTP_Unprocessable_Content , "IMAGE UPLOADED BEFORE");
             }
         }
