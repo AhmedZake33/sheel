@@ -31,8 +31,8 @@ class LocationService
             ->whereColumn('requests_providers.provider_id', 'providers.id')
             ->where('requests_providers.status', RequestProvider::STATUS_ACCEPTED);
         })
-        ->groupBy('providers.id', 'providers.lat', 'providers.lng')
-        ->select('providers.id', 'providers.lat', 'providers.lng');
+        ->groupBy('providers.id', 'providers.lat', 'providers.lng','providers.user_id')
+        ->select('providers.id', 'providers.lat', 'providers.lng','providers.user_id');
         // ->where('user_id','!=',$requestModel->user_id);
         // return $maxLat;
         if(count($providers) > 0){
