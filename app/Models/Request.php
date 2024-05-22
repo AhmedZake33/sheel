@@ -196,6 +196,7 @@ class Request extends Model
         $data = (object)[];
         $data->id = $this->id;
         $data->user = $this->user;
+        $data->provider = $this->CurrentProvider;
         $data->current_latituide = (double)$this->current_lat;
         $data->current_lngituide = (double)$this->current_lng;
         $data->destination_latituide = (double)$this->destination_lat;
@@ -204,7 +205,6 @@ class Request extends Model
         $data->chats = $this->chats;
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
         $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
-        // $data->estimatedCost = 100;
         $temp_files = [];
         foreach($files as $file){
             array_push($temp_files , route('download_file',$file));
