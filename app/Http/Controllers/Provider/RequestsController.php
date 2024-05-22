@@ -192,7 +192,8 @@ class RequestsController extends Controller
         $requestData = requestModel::findOrFail($id);
         if(RequestModel::isProvider($requestData->id , auth()->user())){
             // upload image
-            if($request->file && $requestData->ifProviderNearset() && !$requestData->archive->findChildByShortName("IMAGE_IN_DESTINATION")){
+            // if($request->file && $requestData->ifProviderNearset() && !$requestData->archive->findChildByShortName("IMAGE_IN_DESTINATION")){
+            if($request->file && !$requestData->archive->findChildByShortName("IMAGE_IN_DESTINATION")){
                 $requestData->archive->addDocumentWithShortName($request->file , "IMAGE_IN_DESTINATION","IMAGE_IN_DESTINATION","IMAGE_IN_DESTINATION");
                 // action to start request
 
