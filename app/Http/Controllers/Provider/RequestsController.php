@@ -169,6 +169,7 @@ class RequestsController extends Controller
     public function pickUp(Request $request , $id)
     {
         //IMAGE_ON_GROUND
+        return $request->all();
         $requestData = requestModel::findOrFail($id);
         if(RequestModel::isProvider($requestData->id , auth()->user())){
             // upload image
