@@ -249,7 +249,7 @@ class Request extends Model
             return false;
         }
 
-        if(  ($requestModel->CurrentProvider  && $requestModel->CurrentProvider->provider->user->is($user))){
+        if(($requestModel->CurrentProvider  && $requestModel->CurrentProvider->provider->user->is($user))){
             return true;
         }
 

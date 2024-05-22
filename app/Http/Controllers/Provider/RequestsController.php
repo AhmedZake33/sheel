@@ -171,6 +171,7 @@ class RequestsController extends Controller
         //IMAGE_ON_GROUND
         $requestData = requestModel::findOrFail($id);
         if(RequestModel::isProvider($requestData->id , auth()->user())){
+            return "fffff";
             // upload image
             if($request->file && !$requestData->archive->findChildByShortName("IMAGE_ON_GROUND")){
                 $requestData->archive->addDocumentWithShortName($request->file , "IMAGE_ON_GROUND","IMAGE_ON_GROUND","IMAGE_ON_GROUND");
