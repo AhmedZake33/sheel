@@ -31,10 +31,10 @@ class requestCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'current_lat' => 'regex:/^[0-9 .]+$/',
-            'current_lng' => 'regex:/^[0-9 .]+$/',
-            'destination_lat' => 'regex:/^[0-9 .]+$/',
-            'destination_lng' => 'regex:/^[0-9 .]+$/',
+            'current_lat' => 'regex:/^[0-9 - .]+$/',
+            'current_lng' => 'regex:/^[0-9 - .]+$/',
+            'destination_lat' => 'regex:/^[0-9 - .]+$/',
+            'destination_lng' => 'regex:/^[0-9 - .]+$/',
             'service_id' => 'exists:services,id',
             'description' => 'nullable|regex:/^[A-Za-z ]+$/',
             'file.*' => 'nullable|image',
