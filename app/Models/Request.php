@@ -194,16 +194,16 @@ class Request extends Model
     
     public function isPickedUp()
     {
-        $pickupArchive = $this->archive->where("short_name","IMAGE_ON_GROUND")->first();
+        $pickupArchive = $this->archive->children->where("short_name","IMAGE_ON_GROUND")->first();
         if($pickupArchive){
-            return $pickupArchive;
+            return true;
         }   
         return false;
     }
 
     public function isArrivedUp()
     {
-        $pickupArchive = $this->archive->where("short_name","IMAGE_IN_DESTINATION")->first();
+        $pickupArchive = $this->archive->children->where("short_name","IMAGE_IN_DESTINATION")->first();
         if($pickupArchive){
             return true;
         }   
