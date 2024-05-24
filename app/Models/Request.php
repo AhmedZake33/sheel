@@ -189,6 +189,24 @@ class Request extends Model
 
         return $data;   
     }
+    
+    public function isPickedUp()
+    {
+        $pickupArchive = $this->archive->where("short_name","IMAGE_ON_GROUND")->first();
+        if($pickupArchive){
+            return true;
+        }   
+        return false;
+    }
+
+    public function isArrivedUp()
+    {
+        $pickupArchive = $this->archive->where("short_name","IMAGE_IN_DESTINATION")->first();
+        if($pickupArchive){
+            return true;
+        }   
+        return false;
+    }
 
     public function notificationData()
     {
@@ -209,10 +227,12 @@ class Request extends Model
         foreach($files as $file){
             array_push($temp_files , route('download_file',$file));
         }
-        $data->files = $temp_files;        
+        $data->files = $temp_files;
         $data->created_at = $this->created_at;
         $data->updated_at = $this->updated_at; 
         $data->userReview = $this->user->calculateReview();
+        $data->isPickedUp = $this->isPickedUp();
+        $data->isArrivedUp = $this->isArrivedUp();
 
         return $data;   
     }

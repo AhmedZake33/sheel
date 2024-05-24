@@ -178,6 +178,8 @@ class RequestsController extends Controller
 
                 // fire event 
                 event(new \App\Events\CurrentRequests($requestData->user_id , $requestData));
+                event(new \App\Events\CurrentRequests(auth()->id() , $requestData));
+
                 return success([],System::HTTP_OK , "SUCCESS");
             }else{
                 return success([],System::HHTP_Unprocessable_Content , "IMAGE UPLOADED BEFORE");
@@ -207,6 +209,8 @@ class RequestsController extends Controller
 
                 // fire event 
                 event(new \App\Events\CurrentRequests($requestData->user_id , $requestData));
+                event(new \App\Events\CurrentRequests(auth()->id() , $requestData));
+
                 
                 return success([],System::HTTP_OK , "SUCCESS");
             }else{
