@@ -124,7 +124,7 @@ class Request extends Model
         $data->provider = $this->CurrentProvider? $this->CurrentProvider->provider->with("user")->first() : null;
         // $data->review = $this->review()->select('rate','comment')->first();
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
-        $data->estimatedCost = number_format($locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo') , 2);
+        $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
         // $data->estimatedCost = 100;
         $temp_files = [];
         foreach($files as $file){
@@ -141,6 +141,8 @@ class Request extends Model
         }
         $data->files = $temp_files;
         $data->allowDestinationButton = $this->ifProviderNearset();
+        $data->isPickedUp = $this->isPickedUp();
+        $data->isArrivedUp = $this->isArrivedUp();
         return $data;
     }
 
@@ -231,8 +233,6 @@ class Request extends Model
         $data->created_at = $this->created_at;
         $data->updated_at = $this->updated_at; 
         $data->userReview = $this->user->calculateReview();
-        $data->isPickedUp = $this->isPickedUp();
-        $data->isArrivedUp = $this->isArrivedUp();
 
         return $data;   
     }
