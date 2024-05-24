@@ -119,6 +119,7 @@ class Request extends Model
         $data->destination_latituide = (double)$this->destination_lat;
         $data->destination_lngituide = (double)$this->destination_lng;
         $data->payment = $this->payment;
+        $data->discount = ($this->payment && $this->payment->promoCode)? $this->payment->promoCode : null ;
         $data->service = $this->service;
         $files = $this->archive->children;
         $data->provider = $this->CurrentProvider? $this->CurrentProvider->provider->with("user")->first() : null;
