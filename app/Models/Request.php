@@ -196,7 +196,7 @@ class Request extends Model
     {
         $pickupArchive = $this->archive->where("short_name","IMAGE_ON_GROUND")->first();
         if($pickupArchive){
-            return pickupArchive;
+            return $pickupArchive;
         }   
         return false;
     }
