@@ -12,7 +12,6 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = ['payment_provider_id','amount','user_id','promo_code_id'];
-    protected $with = ["promoCode"];
 
     public function user()
     {
@@ -26,7 +25,7 @@ class Payment extends Model
 
     public function promoCode()
     {
-        return $this->belongsTo(PromoCode::class , "promo_code_id","id");
+        return $this->hasOne(PromoCode::class , "promo_code_id","id");
     }
 
     public static function createAndUpdate($data)
