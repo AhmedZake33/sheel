@@ -176,6 +176,7 @@ class Request extends Model
         $data->destination_lngituide = (double)$this->destination_lng;
         $data->provider = $this->provider($provider->id) ? $this->provider($provider->id)->first()->data() : null;
         $data->payment = $this->payment;
+        $data->discount = ($this->payment && $this->payment->promoCode)? $this->payment->promoCode : null;
         $data->service = $this->service;
         $files = $this->archive->children;
         $data->chats = $this->chats;
