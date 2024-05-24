@@ -2,6 +2,7 @@
 
 namespace App\Models\Payments;
 
+use App\Models\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
@@ -11,6 +12,7 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = ['payment_provider_id','amount','user_id','promo_code_id'];
+    protected $with = ["promoCode"];
 
     public function user()
     {
@@ -20,6 +22,11 @@ class Payment extends Model
     public function request()
     {
         return $this->hasOne(Request::class);
+    }
+
+    public function promoCode()
+    {
+        return $this->belongsTo(PromoCode::class);
     }
 
     public static function createAndUpdate($data)
