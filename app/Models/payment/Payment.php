@@ -26,7 +26,7 @@ class Payment extends Model
 
     public function promoCode()
     {
-        return $this->belongsTo(PromoCode::class);
+        return $this->hasOne(PromoCode::class);
     }
 
     public static function createAndUpdate($data)
