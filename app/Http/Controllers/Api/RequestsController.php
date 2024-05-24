@@ -169,10 +169,9 @@ class RequestsController extends Controller
     public function pay(Request $request , $requestModel)
     {
         $requestModel = RequestModel::findOrFail($requestModel);
-        
-        // if(!($requestModel && $requestModel->currentProvider)){
-        //     return error([],System::HHTP_Unprocessable_Content);
-        // }
+        if(!($requestModel && $requestModel->currentProvider)){
+            return error([],System::HHTP_Unprocessable_Content);
+        }
 
         if(count(auth()->user()->cards)){
             auth()->user()->cards()->update(['token' => null]);
