@@ -10,6 +10,8 @@ use App\Models\User;
 class Payment extends Model
 {
     use HasFactory;
+    
+    protected $hidden = ['promoCode'];
 
     protected $fillable = ['payment_provider_id','amount','user_id','promo_code_id'];
 
