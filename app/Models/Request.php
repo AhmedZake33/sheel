@@ -142,7 +142,7 @@ class Request extends Model
         $data->files = $temp_files;
         $data->allowDestinationButton = $this->ifProviderNearset();
         $data->isPickedUp = $this->isPickedUp();
-        $data->isArrivedUp = $this->isArrivedUp();
+        $data->isArrived = $this->isArrived();
         return $data;
     }
 
@@ -201,7 +201,7 @@ class Request extends Model
         return false;
     }
 
-    public function isArrivedUp()
+    public function isArrived()
     {
         $pickupArchive = $this->archive->children->where("short_name","IMAGE_IN_DESTINATION")->first();
         if($pickupArchive){
