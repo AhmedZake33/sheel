@@ -130,10 +130,10 @@ class Request extends Model
         // $data->estimatedCost = 100;
         $temp_files = [];
         foreach($files as $file){
-            array_push($temp_files , route('download_file',$file));
+            if(!in_array( $file->short_name, ["IMAGE_IN_DESTINATION","IMAGE_ON_GROUND"])){
+                array_push($temp_files , route('download_file',$file));
+            }
         }
-        // $data->pay = $this->payment ? route('buy',[$this->id,'otfff']) : null;  
-        // $data->file = 
         if($type == System::DATA_BRIEF){
 
         }elseif($type == System::DATA_DETAILS){
@@ -186,7 +186,9 @@ class Request extends Model
         // $data->estimatedCost = 100;
         $temp_files = [];
         foreach($files as $file){
-            array_push($temp_files , route('download_file',$file));
+            if(!in_array( $file->short_name, ["IMAGE_IN_DESTINATION","IMAGE_ON_GROUND"])){
+                array_push($temp_files , route('download_file',$file));
+            }
         }
         $data->files = $temp_files;        
         $data->created_at = $this->created_at;
@@ -230,7 +232,9 @@ class Request extends Model
         $data->estimatedCost = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo');
         $temp_files = [];
         foreach($files as $file){
-            array_push($temp_files , route('download_file',$file));
+            if(!in_array( $file->short_name, ["IMAGE_IN_DESTINATION","IMAGE_ON_GROUND"])){
+                array_push($temp_files , route('download_file',$file));
+            }
         }
         $data->files = $temp_files;
         $data->created_at = $this->created_at;
