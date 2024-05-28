@@ -140,9 +140,11 @@ class User extends Authenticatable
 
     public function profilePicture()
     {
-        if($this->archive_id){
-            return count($this->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
+        if($this->archive){
+            return route('download_file', $this->archive->children()->where('short_name','profile_photo')->pluck('id')[0]);
+            // return count($this->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
         }
+        return null;
     }
 
    public static function createOtp($user,$slug = false)
