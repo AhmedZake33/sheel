@@ -166,6 +166,7 @@ class UsersController extends Controller
         if($currectAcceptedRequest){
             $request = ModelsRequest::find($currectAcceptedRequest->request_id);
             event(new \App\Events\CurrentRequests($request->user_id , $request));
+            event(new \App\Events\CurrentRequests(Auth::id(), $request));
             // $notification = Notification::find(1);
             // event(new \App\Events\NotificationEvent($notification));
         }
