@@ -145,6 +145,7 @@ class Request extends Model
         $data->allowDestinationButton = $this->ifProviderNearset();
         $data->isPickedUp = $this->isPickedUp();
         $data->isArrived = $this->isArrived();
+        $data->userReview = $this->user->calculateReview();
         $data->providerReview = $this->CurrentProvider?$this->CurrentProvider->provider->user->calculateReview(): null;
         return $data;
     }
