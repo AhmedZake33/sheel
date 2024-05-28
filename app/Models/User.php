@@ -141,7 +141,7 @@ class User extends Authenticatable
     public function profilePicture()
     {
         if($this->archive_id){
-            count($this->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
+            return count($this->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $this->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
         }
     }
 
