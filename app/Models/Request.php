@@ -145,6 +145,7 @@ class Request extends Model
         $data->allowDestinationButton = $this->ifProviderNearset();
         $data->isPickedUp = $this->isPickedUp();
         $data->isArrived = $this->isArrived();
+        $data->providerReview = $this->CurrentProvider?$this->CurrentProvider->provider->user->calculateReview(): null;
         return $data;
     }
 
@@ -169,7 +170,7 @@ class Request extends Model
         $locationProvider = new LocationService();
         $data = (object)[];
         $data->id = $this->id;
-        $data->user = $this->user;
+        $data->user = $this->user->data(System::DATA_ORIGINAL);
         $data->status = $this->decodeStatus($this->status);
         $data->current_latituide = (double)$this->current_lat;
         $data->current_lngituide = (double)$this->current_lng;
@@ -193,7 +194,7 @@ class Request extends Model
         $data->files = $temp_files;        
         $data->created_at = $this->created_at;
         $data->updated_at = $this->updated_at; 
-
+        $data->userReview = $this->user->calculateReview();
         return $data;   
     }
     
@@ -220,8 +221,8 @@ class Request extends Model
         $locationProvider = new LocationService();
         $data = (object)[];
         $data->id = $this->id;
-        $data->user = $this->user;
-        $data->provider = $this->CurrentProvider;
+        $data->user = $this->user->data(System::DATA_ORIGINAL);
+        $data->provider = $this->CurrentProvider? $this->CurrentProvider->provider->data() : null;
         $data->current_latituide = (double)$this->current_lat;
         $data->current_lngituide = (double)$this->current_lng;
         $data->destination_latituide = (double)$this->destination_lat;
@@ -240,6 +241,7 @@ class Request extends Model
         $data->created_at = $this->created_at;
         $data->updated_at = $this->updated_at; 
         $data->userReview = $this->user->calculateReview();
+        $data->providerReview = $this->CurrentProvider?$this->CurrentProvider->provider->user->calculateReview(): null;
 
         return $data;   
     }

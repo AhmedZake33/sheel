@@ -7,6 +7,7 @@ class System {
     const DATA_BRIEF = 0;
     const DATA_LIST = 1;
     const DATA_DETAILS = 2;
+    const DATA_ORIGINAL = 3;
 
     const HTTP_OK = 200;
     const HTTP_UNAUTHORIZED = 401;

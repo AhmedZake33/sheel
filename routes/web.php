@@ -234,3 +234,8 @@ Route::get("check-time",function(){
     $notification = Notification::find(1);
     return $notification->data();
 });
+
+Route::get("stripe",function(){
+    $stripe = new StripeService();
+    return $stripe->createCharge();
+});

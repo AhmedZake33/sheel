@@ -126,9 +126,21 @@ class User extends Authenticatable
             $data->mobile_code = $this->mobile_code;
         }else if ($type == System::DATA_LIST){
             $data->provider = $this->provider;
+        }else if($type == system::DATA_ORIGINAL){
+            $data->id = $this->id;
+            $data->name = $this->name;
+            $data->email = $this->email;
+            $data->mobile = $this->mobile;
+            $data->mobile_code = $this->mobile_code;
+            $data->profile_picture = $this->profilePicture();
         }
 
         return $data;
+    }
+
+    public function profilePicture()
+    {
+        return $this->id;
     }
 
    public static function createOtp($user,$slug = false)

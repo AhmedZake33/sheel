@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\requestProvider;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\System\System;
 
 class Provider extends Model
 {
@@ -28,6 +29,21 @@ class Provider extends Model
             $query->where("status" , $status);
         }
         return $query;
+    }
+
+    public function data($type = 0)
+    {
+        $data = (object)[];
+        if($type = System::DATA_ORIGINAL){
+            $data->id = $this->id;
+            $data->service_id = $this->service_id;
+            $data->lat = $this->lat;
+            $data->lng = $this->lng;
+            $data->user_id = $this->user_id;
+            $data->user = $this->user->data(System::DATA_ORIGINAL);
+        }
+
+        return $data;
     }
 
 
