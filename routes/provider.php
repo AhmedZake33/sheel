@@ -36,6 +36,13 @@ Route::group(['middleware' => 'auth:api' , 'prefix' => 'request'] , function(){
  });
 
 
+//  chats
+Route::group(["prefix" => 'chats','middleware' => 'auth:api'] , function(){
+    Route::post('{request}','ChatsController@get');
+    Route::post('/send/{request}','ChatsController@send');
+});
+
+
 // lookups api
 Route::group(["prefix" => "lookups" , 'middleware' => "auth:api"] , function(){
     Route::get('','LookupsController@get');

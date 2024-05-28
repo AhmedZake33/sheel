@@ -25,7 +25,7 @@ class ChatService extends Base {
 
 
         if($chat){
-            return success([] , System::HTTP_OK , 'success');
+            return success(["sent" => true] , System::HTTP_OK , 'success');
         }
         return false;
     }
