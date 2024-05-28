@@ -10,6 +10,10 @@ use App\Models\User;
 class Payment extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'amount' => 'integer',
+    ];
     
     protected $hidden = ['promoCode'];
 
@@ -30,23 +34,28 @@ class Payment extends Model
         return $this->belongsTo(PromoCode::class);
     }
 
-    public static function createAndUpdate($data)
+    public static function createAndUpdate($data , $estimate = false)
     {
         $payment = new Payment();
-        $payment->amount = $data['amount'];
+        $payment->amount = number_format($data['amount'] , 2);
         $payment->user_id = $data['user_id'];
         $payment->promo_code_id = $data['promo_code_id'];
-        $payment->save();
-        
+        // $payment->save();
+        // return $payment;
         // send if valid
         if($data['promo_code_id']){
             $promocode = PromoCode::find($data['promo_code_id']);
             $discount = $promocode->discount;
             if($discount){
                 $payment->amount = $payment->amount - $discount;
-                $payment->save();
+                // $payment->save();
             }
         }
+        // return $payment;
+        if($estimate){
+            return $payment;
+        }
+        $payment->save();
         return $payment;
 
     }

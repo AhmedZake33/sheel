@@ -15,6 +15,16 @@ class RequestService extends Base
 {
     public static function create($request)
     {
+        if($request->estimate){
+            $locationProvider = new LocationService();
+            $data = (object)[];
+            $requestModel = new requestModel();
+            $amount = $locationProvider->calcDistance($request->current_lat , $request->current_lng , $request->destination_lat , $request->destination_lng)*env('costPerKilo');
+            // return number_format($amount , 2);
+            $payment = Payment::createAndUpdate(['amount' => $amount, 'user_id' => auth()->id() , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id] , true);
+            // $data->cost =  $locationProvider->calcDistance($request->current_lat , $request->current_lng , $request->destination_lat , $request->destination_lng)*env('costPerKilo');
+            return success($payment , 200);
+        }
         $user =  auth()->user();
         $data = $request->validated();
         $data['user_id'] = $user->id;
@@ -22,12 +32,10 @@ class RequestService extends Base
         if($request->request_id){
             $requestModel = RequestModel::find($request->request_id);
             $requestModel->fill($data);
-            // return response()->json('update');
         }else{
             $requestModel = RequestModel::create($data);
         }
 
-        // return $request->all();
         if($request->file && count($data['file']) > 0){
             // create archive 
             foreach($data['file'] as $file){
@@ -43,6 +51,7 @@ class RequestService extends Base
             $locationProvider = new LocationService();
             $amount = $locationProvider->calcDistance($request->current_lat , $request->current_lng , $request->destination_lat , $request->destination_lng)*env('costPerKilo');
             $payment = Payment::createAndUpdate(['amount' => $amount, 'user_id' => $requestModel->user_id , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id]);
+            
             $requestModel->payment_id = $payment->id;
             $requestModel->save();
         }
@@ -89,6 +98,11 @@ class RequestService extends Base
             return success($requestModel->data(),System::HTTP_OK,'SUCCESS CREATE REQUEST');
         }
     } 
+
+    public function estimateCost($request)
+    {
+        return $request->estimate;
+    }
     
     public function pay($request , $requestModel)
     {
