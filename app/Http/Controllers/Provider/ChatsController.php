@@ -33,6 +33,6 @@ class ChatsController extends Controller
         $requestModel = RequestModel::where('requests.id',$requestModel)
         ->join('chats','chats.request_id','requests.id')->select('chats.*')
         ->orderBy('chats.created_at','DESC')->limit($limit);
-        return success($requestModel->get() , System::HTTP_OK , 'success');
+        return success(["messages"=>$requestModel->get()] , System::HTTP_OK , 'success');
     }
 }
