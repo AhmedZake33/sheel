@@ -10,7 +10,7 @@ class LocationService
     public function getNearestLocations($requestModel , $providers = [])
     {
         // return $requestModel;
-        $distance = env('distance'); 
+        $distance = env('distance');
         $minLat = $requestModel->current_lat - rad2deg($distance / 6371);
        
         $maxLat = $requestModel->current_lat + rad2deg($distance / 6371);

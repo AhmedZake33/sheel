@@ -50,7 +50,7 @@ class RequestService extends Base
             // $payment = new Payment();
             $locationProvider = new LocationService();
             $amount = $locationProvider->calcDistance($request->current_lat , $request->current_lng , $request->destination_lat , $request->destination_lng)*env('costPerKilo');
-            $payment = Payment::createAndUpdate(['amount' => $amount, 'user_id' => $requestModel->user_id , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id]);
+            $payment = Payment::createAndUpdate(['amount' => $amount, 'user_id' => $requestModel->user_id , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id , "card_id" =>$request->card_id??null , "provider_id" => $request->provider_id??null]);
             
             $requestModel->payment_id = $payment->id;
             $requestModel->save();
@@ -118,26 +118,9 @@ class RequestService extends Base
                     $paymentService->createTokenFromCard($card->id);
                 }     
                 $card = $card->fresh();
-                // return $card->token; 
-                // return $card;          
+                       
                 return $paymentService->buy($transaction ,$card);
-                // service to get nearest locations
-                // $locationService = new LocationService();
-                // $providerRequestService = new providerRequestService();
-                // $nearestLocations =  $locationService->getNearestLocations($requestModel);
-                // // service to get nearest location  
-                // if($nearestLocations){
-                //     $nearestLocation = $locationService->getNearestLocation($requestModel->current_lat , $requestModel->current_lng , $nearestLocations);
-                //     // assign to provider 
-                //     if($nearestLocation){
-                //         $providerRequestService->assignProvider($nearestLocation->user_id , $requestModel->id);
-
-                //         // notification to provider
-                //         $title = ['ar' => 'arabic' , 'en' => 'english'];
-                //         Notification::createNotification($nearestLocation->user_id , $requestModel->id , $title);
-                //     }
-                    
-                // }
+                
             }else{
                 $message = (app()->getLocale() == 'en') ? 'something went wrong' : 'حدث خطأ ما';
             return success([],System::HHTP_Unprocessable_Content,$message);
