@@ -14,6 +14,7 @@ use App\Models\RequestProvider;
 use App\Models\Notification;
 use DB;
 use App\Services\RequestService;
+use App\Services\StripeService;
 use App\Models\User;
 
 
@@ -22,12 +23,14 @@ class RequestsController extends Controller
     protected $locationService = null;
     protected $providerRequestService = null;
     protected $requestService = null;
+    protected $StripeService = null;
 
-    public function __construct(LocationService $locationService, ProviderRequestService $providerRequestService , RequestService $requestService)
+    public function __construct(LocationService $locationService, ProviderRequestService $providerRequestService , RequestService $requestService , StripeService $stripeService)
     {
         $this->locationService = $locationService;
         $this->providerRequestService = $providerRequestService;
         $this->requestService = $requestService;
+        $this->StripeService = $stripeService;
     }
 
     public function create(requestCreateRequest $request)
@@ -170,7 +173,8 @@ class RequestsController extends Controller
     {
         $requestModel = RequestModel::findOrFail($requestModel);
         if(!($requestModel && $requestModel->currentProvider)){
-            return error([],System::HHTP_Unprocessable_Content);
+            // return error([],System::HHTP_Unprocessable_Content);
+            return $this->StripeService->pay();
         }
 
         if(count(auth()->user()->cards)){

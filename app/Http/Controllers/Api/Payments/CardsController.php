@@ -9,14 +9,17 @@ use Illuminate\Http\Request;
 use App\Models\System\System;
 use App\Services\TapService;
 use App\Services\PaymentService;
+use App\Services\StripeService;
 use Auth;
 class CardsController extends Controller
 {
     protected  $paymentService = null;
+    protected $StripeService = null;
 
-    public function __construct(PaymentService $paymentService)
+    public function __construct(PaymentService $paymentService  , StripeService $stripeService)
     {
         $this->paymentService = $paymentService;
+        $this->StripeService = $stripeService;
     }
 
     public function cards()
@@ -29,11 +32,14 @@ class CardsController extends Controller
 
     public function addCard(CardRequest $request)
     {
-        $user = auth()->user();
-        $response = $this->paymentService->createToken($request);
-        if($response){
-            return $this->paymentService->saveCard($user , $response);
-        }       
+        // $user = auth()->user();
+        // // return $request->all();
+        // $response = $this->paymentService->createToken($request);
+        // if($response){
+        //     return $this->paymentService->saveCard($user , $response);
+        // }     
+        
+        return $this->StripeService->saveCard($request);
     }
 
     public function deleteCard(Request $request)

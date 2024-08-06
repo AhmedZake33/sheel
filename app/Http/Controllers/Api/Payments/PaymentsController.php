@@ -86,30 +86,41 @@ class PaymentsController extends Controller
 
     }
 
-    public function callBack($transaction)
-    {
-        // dd(request()->all());
-        $charge_id =  $_GET['tap_id'];
+    // public function callBack($transaction)
+    // {
+    //     // dd(request()->all());
+    //     $charge_id =  $_GET['tap_id'];
 
-        // DB::table('testcallback')->insert(['data' => 'test data']);
-        $response = $this->tapService->getCharge($charge_id);
-        $result = json_decode($response);
-        // return $result;
-        if($result->status == "CAPTURED"){
+    //     // DB::table('testcallback')->insert(['data' => 'test data']);
+    //     $response = $this->tapService->getCharge($charge_id);
+    //     $result = json_decode($response);
+    //     // return $result;
+    //     if($result->status == "CAPTURED"){
+    //        // update transaction and payment and request
+    //         $transaction = Transaction::find($transaction);
+    //         $transaction->updateStatus($result);
+    //         $payment = $transaction->payment;
+    //         $requestModel = RequestModel::where('payment_id',$payment->id)->first();
+    //         $requestModel->startFindProvider();
+            
+    //         return Redirect::to(domain() .  '/success');
+    //     }else{
+    //         return Redirect::to(domain() .  '/fail');
+    //     }
+    // }
+
+    public function callBack(Request $request)
+    {
+        $transaction = $request->query('transaction');
+        $additionalData = $request->query('additional');
+        
+        if($additionalData['status'] == "succeeded"){
            // update transaction and payment and request
             $transaction = Transaction::find($transaction);
-            $transaction->updateStatus($result);
-            $payment = $transaction->payment;
-            $requestModel = RequestModel::where('payment_id',$payment->id)->first();
-            $requestModel->startFindProvider();
-            // $provider = ($requestModel->CurrentProvider && $requestModel->CurrentProvider->provider->user) ? $requestModel->CurrentProvider->provider->user : null;
-            // if($provider){
-            //     $title = ['ar' => 'User was Paid the amount' , 'en' => 'User was Paid the amount'];
-            //     Notification::createNotification($provider->id , $requestModel->id , $title);
-            // }
-            return Redirect::to(domain() .  '/success');
+            $transaction->updateStatus($additionalData);            
+            // return Redirect::to(domain() .  '/success');
         }else{
-            return Redirect::to(domain() .  '/fail');
+            // return Redirect::to(domain() .  '/fail');
         }
     }
 
