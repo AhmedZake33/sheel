@@ -238,4 +238,5 @@ Route::get("check-time",function(){
 Route::get("stripe",function(){
     $stripe = new StripeService();
     return $stripe->createCharge();
+    
 });
