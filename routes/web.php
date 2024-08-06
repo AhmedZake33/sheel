@@ -4,11 +4,15 @@ use App\Http\Controllers\Api\Chat\PusherController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Payments\PaymentsController;
 use App\Http\Controllers\Api\UsersController;
+use App\Mail\ExampleMail;
 use App\Models\Notification;
+use App\Models\Payments\Payment;
 use App\Models\Payments\Transaction;
 use App\Services\StripeService;
 use Illuminate\Http\Request;
-use App\models\Request as Requestmodel;  
+use App\models\Request as Requestmodel;
+use App\Services\TwilioService;
+use Illuminate\Support\Facades\Mail;
 
 /*
 |--------------------------------------------------------------------------
@@ -134,7 +138,7 @@ Route::get('send',[PusherController::class , "send"]);
 
 // Route::get('buy',[PaymentsController::class,'buy'])->name('buy');
 
-Route::get('callback/{transaction}',[PaymentsController::class , 'callBack'])->name('callback');
+Route::get('callback',[PaymentsController::class , 'callBack'])->name('callback');
 Route::get('callbackSavedCard/{transaction}',[PaymentsController::class , 'callbackSavedCard'])->name('callbackSavedCard');
 Route::get('success',function(){
     return view("success_payment");
@@ -160,8 +164,8 @@ Route::get('sendEvent/{requestId}',function($requestId){
 });
 
 Route::get('createToken',function(){
-    $card = \App\Models\Payments\Card::find(28); 
-    return \App\Services\TapService::createTokenFromCard($card->id);
+    // $card = \App\Models\Payments\Card::find(28); 
+    // return \App\Services\TapService::createTokenFromCard($card->id);
     // return $card;
    return domain();
 });
@@ -238,5 +242,44 @@ Route::get("check-time",function(){
 Route::get("stripe",function(){
     $stripe = new StripeService();
     return $stripe->createCharge();
-    
+});
+
+
+Route::get("payment",function(){
+    return view('payment');
+});
+
+Route::get("stripe",function(){
+    $payment= Payment::find(149);
+    // return $payment->amount;
+    return StripeService::pay($payment);
+});
+
+Route::get("/sms",function(){
+    $message = "hello";
+    $number = +201116028622;
+
+    try {
+        $twilio = new TwilioService();
+        // $twilio->sendSms($number , $message);
+        return $twilio->send();
+        return "success sent message";
+    } catch(\Exception $ex){
+        return $ex->getMessage();
+    }
+
+    return "success";
+});
+
+Route::get("send-mail",function(){
+    $details = [
+        'title' => 'Mail from My Laravel App',
+        'body' => 'This is a test email sent using Gmail SMTP in Laravel.'
+    ];
+
+    try{
+        Mail::to('ahmed.zake333@gmail.com')->send(new ExampleMail($details));
+    }catch(\Exception $ex){
+        return $ex->getMessage();
+    }
 });

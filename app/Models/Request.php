@@ -9,6 +9,7 @@ use App\Models\System\System;
 use App\Services\LocationService;
 use App\Services\ProviderRequestService;
 use App\Models\Payments\Payment;
+use App\Services\StripeService;
 
 class Request extends Model
 {
@@ -154,10 +155,20 @@ class Request extends Model
     {
         $locationProvider = new LocationService();
         $currentProviderData =  $this->CurrentProvider?$this->CurrentProvider->provider : null;
+        // return $currentProviderData;
         if($currentProviderData){
             $distanceInKilos =  $locationProvider->calcDistance($this->destination_lat , $this->destination_lng , $currentProviderData->lat , $currentProviderData->lng);
+            // return $distanceInKilos * 1000;
             if($distanceInKilos * 1000 < 150){
+                // pay requst
+                try{
+                    StripeService::pay($this->payment);
+                }catch(\Exception $ex){
+                    return $ex->getMessage();
+                }
+                
                 return true;
+                
             }
             // return $distanceInKilos * 1000;
             
@@ -243,6 +254,7 @@ class Request extends Model
         $data->updated_at = $this->updated_at; 
         $data->userReview = $this->user->calculateReview();
         $data->providerReview = $this->CurrentProvider?$this->CurrentProvider->provider->user->calculateReview(): null;
+        $data->allowDestinationButton = $this->ifProviderNearset();
 
         return $data;   
     }

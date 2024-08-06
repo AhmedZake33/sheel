@@ -11,6 +11,11 @@ class Transaction extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'paid' => 'decimal:2',
+    ];
+
     public function payment()
     {
         return $this->belongsTo(Payment::class);
@@ -23,20 +28,19 @@ class Transaction extends Model
     public function updateStatus($result) {
         $transaction = Transaction::find($this->id);
         if($transaction){
-            $transaction->status = 1;
-            $transaction->data =json_encode(fetchTransaction($result));
-            $transaction->paid = $result->amount;
-            $transaction->save();
+            $transaction->data = $result;
+            $transaction->paid = $result['amount'];
             $payment = $transaction->payment;
+            $transaction->save();
             if($transaction->paid >= $transaction->amount){
+                $transaction->status = 1;
                 $payment->status = 1;
                 $payment->paid =  self::where('payment_id', $this->payment->id)->where('status', 1)->sum('paid');
+                $payment->card_id = null;
                 $payment->save();
-
-                // start show near By locations to Providers 
-                $request = Request::where('payment_id',$payment->id)->firstOrFail();
-                $request->startFindProvider();
             }
+            $transaction->save();
+
         }
     }
 }
