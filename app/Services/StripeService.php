@@ -192,13 +192,13 @@ class StripeService extends Base {
             }
         } catch (\Stripe\Exception\CardException $e) {
             // Handle card errors
-            return "Card Error: " . $e->getError()->message;
+            return success([],System::HHTP_Unprocessable_Content , "Card Error: " . $e->getError()->message);
         } catch (\Stripe\Exception\InvalidRequestException $e) {
             // Handle invalid requests
-            return "Invalid Request: " . $e->getError()->message;
+            return success([],System::HHTP_Unprocessable_Content , "Invalid Request: " . $e->getError()->message);
         } catch (\Exception $e) {
             // Handle other errors
-            return "Error: " . $e->getMessage();
+            return success([],System::HHTP_Unprocessable_Content , "Error: " . $e->getMessage());
         }
     }
 

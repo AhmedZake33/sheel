@@ -31,16 +31,17 @@ class Transaction extends Model
             $transaction->data = $result;
             $transaction->paid = $result['amount'];
             $payment = $transaction->payment;
-            $transaction->save();
             if($transaction->paid >= $transaction->amount){
                 $transaction->status = 1;
+            }
+            $transaction->save();
+
+            if($transaction->status == 1){
                 $payment->status = 1;
                 $payment->paid =  self::where('payment_id', $this->payment->id)->where('status', 1)->sum('paid');
                 $payment->card_id = null;
                 $payment->save();
             }
-            $transaction->save();
-
         }
     }
 }
