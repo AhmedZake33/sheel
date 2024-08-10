@@ -44,9 +44,16 @@ class Payment extends Model
     public static function createAndUpdate($data , $estimate = false)
     {
         $carbon  = Carbon::now();
-        return $carbon->toDateTimeString();
+        $time =  $carbon->format('H:i:s');
+        // return $time;
+        // $time = Carbon::createFromTimeString('08:19:00');
+        $amount = $data['amount'];
+        if(isTimeInRange($time)){
+            $amount = $amount * 1.25;
+        }
+        isTimeInRange($time);
         $payment = new Payment();
-        $payment->amount = number_format($data['amount'] , 3);
+        $payment->amount = number_format($amount , 3);
         $payment->user_id = $data['user_id'];
         $payment->promo_code_id = $data['promo_code_id'];
         $payment->card_id = $data['card_id']??null;
@@ -71,7 +78,7 @@ class Payment extends Model
         if($data["provider_id"]){
             $transaction = new Transaction();
             $transaction->payment_id = $payment->id;
-            $transaction->amount = number_format($data['amount'] , 3);
+            $transaction->amount = number_format($amount , 3);
             $transaction->provider_id =$data['provider_id']??null;;
             $transaction->save();
         }   

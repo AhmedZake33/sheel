@@ -1674,3 +1674,25 @@ if(!function_exists("toRawSql")){
         return $sql;
     }
 }
+
+if(!function_exists("isTimeInRange"))
+{
+    function isTimeInRange($timeToCheck)
+    {
+        // Create Carbon instances for the start and end of the range
+        $startOne = Carbon::createFromTimeString('08:15:00');
+        $endOne = Carbon::createFromTimeString('10:00:00');
+
+        $startTwo = Carbon::createFromTimeString('16:30:00');
+        $endTwo = Carbon::createFromTimeString('18:00:00');
+
+        // Create a Carbon instance for the time to check
+        $time = Carbon::createFromTimeString($timeToCheck);
+
+        // Check if the time is within the range
+        $rangeOne =  $time->between($startOne, $endOne);
+        $rangeTwo =  $time->between($startTwo, $endTwo);
+
+        return $rangeOne || $rangeTwo;
+    }
+}
