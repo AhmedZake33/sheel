@@ -6,6 +6,7 @@ use App\Models\Request;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use Carbon\Carbon;
 
 class Payment extends Model
 {
@@ -42,6 +43,8 @@ class Payment extends Model
 
     public static function createAndUpdate($data , $estimate = false)
     {
+        $carbon  = Carbon::now();
+        return $carbon->toDateTimeString();
         $payment = new Payment();
         $payment->amount = number_format($data['amount'] , 3);
         $payment->user_id = $data['user_id'];

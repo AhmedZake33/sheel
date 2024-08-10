@@ -283,3 +283,7 @@ Route::get("send-mail",function(){
         return $ex->getMessage();
     }
 });
+
+Route::get("test-payment",function(){
+    return Payment::createAndUpdate([]);
+});

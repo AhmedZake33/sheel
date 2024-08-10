@@ -186,19 +186,19 @@ class StripeService extends Base {
                 // then refund the amount 
                 $stripe->refunds->create(['payment_intent' => $paymentIntent->id]);
 
-                return success([],System::HTTP_OK , "success add card");
+                return success(["addedSuccessfully" => true],System::HTTP_OK , "success add card");
             } else {
                 return "Payment failed: " . $paymentIntent->status;
             }
         } catch (\Stripe\Exception\CardException $e) {
             // Handle card errors
-            return success([],System::HHTP_Unprocessable_Content , "Card Error: " . $e->getError()->message);
+            return success(["addedSuccessfully"=>false],System::HHTP_Unprocessable_Content , "Card Error: " . $e->getError()->message);
         } catch (\Stripe\Exception\InvalidRequestException $e) {
             // Handle invalid requests
-            return success([],System::HHTP_Unprocessable_Content , "Invalid Request: " . $e->getError()->message);
+            return success(["addedSuccessfully"=>false],System::HHTP_Unprocessable_Content , "Invalid Request: " . $e->getError()->message);
         } catch (\Exception $e) {
             // Handle other errors
-            return success([],System::HHTP_Unprocessable_Content , "Error: " . $e->getMessage());
+            return success(["addedSuccessfully"=>false],System::HHTP_Unprocessable_Content , "Error: " . $e->getMessage());
         }
     }
 
