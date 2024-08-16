@@ -11,6 +11,7 @@ use App\Models\Payments\Transaction;
 use App\Services\StripeService;
 use Illuminate\Http\Request;
 use App\models\Request as Requestmodel;
+use App\Services\LocationService;
 use App\Services\TwilioService;
 use Illuminate\Support\Facades\Mail;
 
@@ -286,4 +287,20 @@ Route::get("send-mail",function(){
 
 Route::get("test-payment",function(){
     return Payment::createAndUpdate([]);
+});
+
+Route::get("assign-requests",function(){
+    $requestsNotAssignProvider = Requestmodel::select("requests.*")
+    ->leftJoin("requests_providers","requests_providers.request_id","requests.id")
+    ->whereNull("requests_providers.request_id")
+    ->get();
+
+    return ($requestsNotAssignProvider);
+
+    foreach($requestsNotAssignProvider as $requestNotAssignProvider){
+        $startTime = microtime(true);
+        $requestNotAssignProvider->startFindProvider();
+        $endTime = microtime(true);
+        d($endTime - $startTime);
+    }
 });

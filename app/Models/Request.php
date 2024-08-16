@@ -336,8 +336,9 @@ class Request extends Model
         $locationService = new LocationService();
         $providerRequestService = new providerRequestService();
         $nearestLocations =  $locationService->getNearestLocations($this , $this->refusedProviders());
+
         // service to get nearest location  
-        if($nearestLocations){
+        if(count($nearestLocations)){
             $nearestLocation = $locationService->getNearestLocation($this->current_lat , $this->current_lng , $nearestLocations);
         // return $nearestLocation;
             // assign to provider 
@@ -348,8 +349,8 @@ class Request extends Model
                     // event(new \App\Events\CurrentRequests($nearestLocation->user_id , $this));
                 }
                 // notification to provider
-                $title = ['ar' => 'لقد تم اضافتك الي طلب' , 'en' => 'you have assigned to request'];
-                Notification::createNotification($nearestLocation->user_id , $this->id , $title);
+                // $title = ['ar' => 'لقد تم اضافتك الي طلب' , 'en' => 'you have assigned to request'];
+                // Notification::createNotification($nearestLocation->user_id , $this->id , $title);
             }
             
         }

@@ -57,8 +57,6 @@ class Payment extends Model
         $payment->user_id = $data['user_id'];
         $payment->promo_code_id = $data['promo_code_id'];
         $payment->card_id = $data['card_id']??null;
-        // $payment->save();
-        // return $payment;
         // send if valid
         if($data['promo_code_id']){
             $promocode = PromoCode::find($data['promo_code_id']);
