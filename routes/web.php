@@ -10,7 +10,7 @@ use App\Models\Payments\Payment;
 use App\Models\Payments\Transaction;
 use App\Services\StripeService;
 use Illuminate\Http\Request;
-use App\models\Request as Requestmodel;
+use App\Models\Request as Requestmodel;
 use App\Services\LocationService;
 use App\Services\TwilioService;
 use Illuminate\Support\Facades\Mail;
