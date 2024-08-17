@@ -79,12 +79,13 @@ class RequestsController extends Controller
             if($requestProvider){
                 $requestProvider->update(['status' => RequestProvider::STATUS_ACCEPTED]);
 
+                event(new \App\Events\CurrentRequests($requestModel->user_id , $requestModel));
+
                 // seen notification
                 $notification = Notification::where(['user_id' => auth()->user()->id , 'request_id' => $requestModel->id , 'seen' => Notification::UNSEEN])->first();
                 if($notification){
                     Notification::seen($notification);
                 }
-                
                 
                 // notification to request user that provider is comming
                 $title = ['ar' => 'provider is comming' , 'en' => 'provider is comming'];
