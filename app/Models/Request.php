@@ -85,7 +85,7 @@ class Request extends Model
 
     public function CurrentProvider()
     {
-        return $this->hasOne(RequestProvider::class , 'request_id' , 'id')->where('requests_providers.status',1);
+        return $this->hasOne(RequestProvider::class , 'request_id' , 'id')->whereIn('requests_providers.status',[1,4]);
     }
 
     public function provider($provider_id = null)
