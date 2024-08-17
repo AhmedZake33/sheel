@@ -229,8 +229,9 @@ class StripeService extends Base {
             //  return $paymentIntent;
             if($transaction && $paymentIntent->status == "succeeded"){
                
-              $data = ["transaction_id" => $transaction->id,"id" => $paymentIntent->id , "amount" => $paymentIntent->amount / 100 , "client_secret" => $paymentIntent->client_secret , "status" => $paymentIntent->status];
-                
+                $data = ["transaction_id" => $transaction->id,"id" => $paymentIntent->id , "amount" => $paymentIntent->amount / 100 , "client_secret" => $paymentIntent->client_secret , "status" => $paymentIntent->status];
+                $payment->card_id = null;
+                $payment->save();
                 self::callBack($data);
     
             }
