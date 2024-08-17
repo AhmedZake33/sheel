@@ -21,6 +21,11 @@ class Payment extends Model
 
     protected $fillable = ['payment_provider_id','amount','user_id','promo_code_id','card_id'];
 
+    public function getAmountAttribute($value)
+    {
+        return (float) $value;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

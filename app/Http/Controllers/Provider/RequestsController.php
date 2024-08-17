@@ -79,6 +79,7 @@ class RequestsController extends Controller
             if($requestProvider){
                 $requestProvider->update(['status' => RequestProvider::STATUS_ACCEPTED]);
 
+                // fire wevent for request user
                 event(new \App\Events\CurrentRequests($requestModel->user_id , $requestModel));
 
                 // seen notification
