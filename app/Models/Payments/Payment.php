@@ -26,6 +26,11 @@ class Payment extends Model
         return (float) $value;
     }
 
+    public function getPaidAttribute($value)
+    {
+        return (float) $value;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
