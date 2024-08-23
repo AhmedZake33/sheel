@@ -17,9 +17,8 @@ class LocationService
         $maxLat = $requestModel->current_lat + rad2deg($distance / 6371);
         $minLng = $requestModel->current_lng - rad2deg(asin($distance / (6371 * cos(deg2rad($requestModel->current_lat)))));
         $maxLng = $requestModel->current_lng + rad2deg(asin($distance / (6371 * cos(deg2rad($requestModel->current_lat)))));
-        // return $minLat;
         $locations = Provider::join("users","users.id","providers.user_id")
-        ->join("requests_providers","requests_providers.provider_id","providers.id")
+        ->leftJoin("requests_providers","requests_providers.provider_id","providers.id")
         ->where("requests_providers.status","!=",RequestProvider::STATUS_ACCEPTED)
         ->where("users.status","!=",User::STATUS_PENDING_PROVIDER)
         ->where('service_id',$requestModel->service_id)
@@ -34,17 +33,9 @@ class LocationService
         })
         ->groupBy('providers.id', 'providers.lat', 'providers.lng','providers.user_id')
         ->select('providers.id', 'providers.lat', 'providers.lng','providers.user_id');
-        // ->where('user_id','!=',$requestModel->user_id);
-        // return $maxLat;
         if(count($providers) > 0){
             $locations = $locations->whereNotIn('user_id',$providers);
         }
-        // echo "minlat".$minLat."<br/>";
-        // echo "maxLat".$maxLat."<br>";
-        // echo "minLng".$minLng."<br>";
-        // echo "maxLng".$maxLng."<br>";
-        // // return ;
-        // return $locations->toSql();
         $locations = $locations->get()->transform(function($location) use ($requestModel){
             $location->distance = $this->calcDistance($requestModel->current_lat , $requestModel->current_lng , $location->lat , $location->lng);
             return $location;
