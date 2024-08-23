@@ -340,7 +340,7 @@ class Request extends Model
         // service to get nearest location  
         if(count($nearestLocations)){
             $nearestLocation = $locationService->getNearestLocation($this->current_lat , $this->current_lng , $nearestLocations);
-        // return $nearestLocation;
+        // return $nearestLocation; 
             // assign to provider 
             if($nearestLocation){
                 $existProvider = RequestProvider::where('request_id',$this->id)->where('status',RequestProvider::STATUS_PENDING)->first();

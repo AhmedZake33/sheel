@@ -11,6 +11,7 @@ class LocationService
     {
         // return $requestModel;
         $distance = env('distance');
+        $distance = (int)$distance;
         $minLat = $requestModel->current_lat - rad2deg($distance / 6371);
        
         $maxLat = $requestModel->current_lat + rad2deg($distance / 6371);
