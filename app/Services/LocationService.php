@@ -19,7 +19,9 @@ class LocationService
         $maxLng = $requestModel->current_lng + rad2deg(asin($distance / (6371 * cos(deg2rad($requestModel->current_lat)))));
         $locations = Provider::join("users","users.id","providers.user_id")
         ->leftJoin("requests_providers","requests_providers.provider_id","providers.id")
-        ->where("requests_providers.status","!=",RequestProvider::STATUS_ACCEPTED)
+        ->where(function($q){
+            $q->where("requests_providers.status","!=",RequestProvider::STATUS_ACCEPTED)->orWhereNull("requests_providers.status");
+        })
         ->where("users.status","!=",User::STATUS_PENDING_PROVIDER)
         ->where('service_id',$requestModel->service_id)
         ->where('active',1)
