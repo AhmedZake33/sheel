@@ -349,8 +349,8 @@ class Request extends Model
                     // event(new \App\Events\CurrentRequests($nearestLocation->user_id , $this));
                 }
                 // notification to provider
-                // $title = ['ar' => 'لقد تم اضافتك الي طلب' , 'en' => 'you have assigned to request'];
-                // Notification::createNotification($nearestLocation->user_id , $this->id , $title);
+                $title = ['ar' => 'لقد تم اضافتك الي طلب' , 'en' => 'you have assigned to request'];
+                Notification::createNotification($nearestLocation->user_id , $this->id , $title);
             }
             
         }
