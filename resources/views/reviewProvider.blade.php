@@ -45,7 +45,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>files</th>
-                        {{-- <th>Action</th> --}}
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,7 +58,7 @@
                                     Show Files for {{$provider->name}}
                                 </button>
                             </td>
-                            {{-- <td>
+                            <td>
                                 <form method="POST" action="{{ route('accept-provider', $provider->id) }}" style="display: inline;">
                                     @csrf
                                     <button type="submit" class="btn btn-primary">Accept</button>
@@ -67,7 +67,7 @@
                                     @csrf
                                     <button type="submit" class="btn btn-danger">Refuse</button>
                                 </form>
-                            </td> --}}
+                            </td>
 
                         </tr>
                         <div class="modal fade" id="userFilesModal{{$provider->id}}" tabindex="-1" role="dialog" aria-labelledby="userFilesModalLabel{{$provider->id}}" aria-hidden="true">
@@ -94,14 +94,14 @@
                                     </div>
                                     <div class="modal-footer">
                                         {{-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> --}}
-                                         <form method="POST" action="{{ route('accept-provider', $provider->id) }}" style="display: inline;">
+                                         {{-- <form method="POST" action="{{ route('accept-provider', $provider->id) }}" style="display: inline;">
                                             @csrf
                                             <button type="submit" class="btn btn-primary">Accept</button>
                                         </form>
                                         <form method="POST" action="{{ route('refuse-provider', $provider->id) }}" style="display: inline;">
                                             @csrf
                                             <button type="submit" class="btn btn-danger">Refuse</button>
-                                        </form>
+                                        </form> --}}
                                     </div>
                                 </div>
                             </div>

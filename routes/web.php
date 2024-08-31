@@ -217,7 +217,12 @@ Route::get("send-chat",function(){
 });
 
 Route::get("review-provider",function(){
-    $providers = \App\Models\User::where("type",\App\Models\User::TYPE_PROVIDER)->where("status",\App\Models\User::STATUS_INCOMPLETE)->get()->transform(function($provider){
+    if(!Auth::user()){
+        return view('home');
+    }
+    $providers = \App\Models\User::where("type",\App\Models\User::TYPE_PROVIDER)
+    ->where("status",\App\Models\User::STATUS_PENDING_PROVIDER)
+    ->get()->transform(function($provider){
         $data = $provider; 
         $data->profile = $provider->files(\App\Models\User::TYPE_PROVIDER);
         return $data;
@@ -227,7 +232,7 @@ Route::get("review-provider",function(){
     // dd(get_object_vars(($providers[0]->profile)[0]));
 
     return view("reviewProvider")->with(["providers" => $providers]);
-});
+})->name('review-provider');
 
 Route::post("accept-provider/{provider}","UsersController@acceptProvider")->name("accept-provider");
 Route::post("refuse-provider/{provider}","UsersController@refuseProvider")->name("refuse-provider");

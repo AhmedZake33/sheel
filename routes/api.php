@@ -93,3 +93,9 @@ Route::group(["prefix" => "lookups" , 'middleware' => "auth:api"] , function(){
 
 
 Route::post('/broadcasting/auth', 'UsersController@authenticate');
+
+
+// support
+Route::group(["prefix" => "support" , "middleware" => "auth:api"] , function(){
+    Route::post("/create","SupportsController@create");
+});

@@ -19,18 +19,18 @@
             text-align: center;
         }
         h1 {
-            color: #008000;
+            color: red;
         }
     </style>
 </head>
 <body>
     <div class="container">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50" height="50" fill="#008000">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="50" height="50" fill="#FF0000">
         <path d="M0 0h24v24H0z" fill="none"/>
-        <path d="M9 16.2l-3.5-3.5-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
     </svg>
 
-    <h1>Provider Approved</h1>
+    <h1>Provider Refused</h1>
     </div>
 
 

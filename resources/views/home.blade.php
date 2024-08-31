@@ -74,7 +74,20 @@
         }
         .btn:active {
             background-color: #004080;
-        }         
+        }       
+        .link-container {
+            display: flex;
+            gap: 10px; /* Adjust the spacing between links */
+        }
+
+        .link-container a {
+            text-decoration: underline;
+            color: #26dd71; /* Link color */
+        }
+
+        .link-container a:hover {
+            text-decoration: underline; /* Underline on hover */
+        }  
 </style>         
 <script src="{{ asset('js/app.js') }}" defer>
 </script>     
@@ -82,13 +95,23 @@
 <body class="antialiased">    
 
     @auth
-        <p>Welcome, {{ auth()->user()->name }}! {{ auth()->id() }}</p>
+        {{-- <p>Welcome, {{ auth()->user()->name }}! {{ auth()->id() }}</p>
 
         Active Users <span id="length"></span>
         <form action="{{route('logout')}}" method="POST"> 
             @csrf
             <input type="submit" value="Logout" class="btn btn-primary">
-        </form>
+        </form> --}}
+
+        <div class="link-container">
+            <a href="{{route('review-provider')}}">Review Provider</a>
+            <a href="#">Support</a>
+            {{-- <a href="#">Contact</a>
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Contact</a> --}}
+        </div>
+
     @else
        
         <form action="{{ route('login') }}" method="POST">
@@ -137,9 +160,7 @@
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({email:$("#email").val() ,"_token": token }),
-                success: function(){
-                    $("#email").prop("disabled", true);
-                },
+                
                 error: function(){
                     alert("something went wrong");
                 }

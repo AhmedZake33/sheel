@@ -42,7 +42,7 @@ class ProviderService extends Base
         // create opt 
         User::createOtp($user ,true);
         
-        $message =  (app()->getLocale() == 'ar')? 'تم التسجيل بنجاح'  : "Register Complete Successfully";
+        $message =  (app()->getLocale() == 'ar')? ' تم التسجيل بنجاح برجاء الانتظار حتي يتم التفعيل'  : "Register Complete Successfuly Please Wait to complete Activation";
         return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
     }
 

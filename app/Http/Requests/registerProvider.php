@@ -41,7 +41,7 @@ class registerProvider extends FormRequest
                 })
             ],
             'mobile' => ['required','regex:/^(\+?\d{1,3}[- ]?)?\d{10}$/' , Rule::unique('users')->where(function($q){
-                return $q->where('status' , 0);
+                return $q->whereIn('status' , [0]);
             })],
             'emairate_id_front' => 'required|max:2000|mimes:jpeg,png,doc,docs,pdf',
             'emairate_id_back' => 'required|max:2000|mimes:jpeg,png,doc,docs,pdf',

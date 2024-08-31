@@ -19,6 +19,7 @@ class User extends Authenticatable
     const STATUS_ACTIVE = 0;
     const STATUS_REMOVED = 1;
     const STATUS_PENDING_PROVIDER = 3;
+    const STATUS_REFUSED = 4;
 
     const TYPE_USER = 1;
     const TYPE_PROVIDER = 2;
@@ -86,6 +87,11 @@ class User extends Authenticatable
         $this->archive_id = $archive->id;
         $this->save();
         return $this->archive_id;
+    }
+
+    public function supports()
+    {
+        return $this->hasMany(Support::class);
     }
 
     public function provider()

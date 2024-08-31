@@ -220,7 +220,17 @@ class UsersController extends Controller
     {
         $provider = User::findOrFail($provider);
         $provider->update(["status" => User::STATUS_ACTIVE]);
-        return view("success_provider");
+
+        // email user or send message to inform him that account was active
+        return view("success_provider")->with('redirectTo', url()->previous());
+    }
+
+    public function refuseProvider(Request $request , $provider)
+    {
+        $provider = User::findOrFail($provider);
+        $provider->update(["status" => User::STATUS_REFUSED]);
+        // email user or send message to inform him that account was refussed
+        return view("fail_provider")->with('redirectTo', url()->previous());
     }
 
 }   
