@@ -127,7 +127,7 @@ class Request extends Model
         $data->canPay = $this->CurrentProvider? true : false;
         // $data->review = $this->review()->select('rate','comment')->first();
         $data->distance = $locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng);
-        $data->estimatedCost = intval(number_format($locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo') , 3));
+        $data->estimatedCost = (float)number_format($locationProvider->calcDistance($this->current_lat , $this->current_lng , $this->destination_lat , $this->destination_lng)*env('costPerKilo') , 3);
         // $data->estimatedCost = 100;
         $temp_files = [];
         foreach($files as $file){
