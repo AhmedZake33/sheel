@@ -309,3 +309,37 @@ Route::get("assign-requests",function(){
         d($endTime - $startTime);
     }
 });
+
+
+Route::get('test-php',function(){
+    $string = "ahmed zaki abolela";
+    // return strlen($string);
+    $pos = strpos($string , "zaki");
+    // return $pos;
+    $newString =  str_replace('ahmed','medo',$string);
+    // return $newString;
+    $newSubStr =  substr($string , 5 , 4);
+    // return strlen($newSubStr);
+    // return strtoupper($string);
+    // return ucfirst($string);
+    // return ucwords($string);
+    // return trim(" ahmed zake ");
+    // return explode(' ',  $string);
+    // return join(' ',["ahmed","zaki"]);
+    $safe_string = htmlspecialchars("<div>Hello, world!</div>"); // &lt;div&gt;Hello, world!&lt;/div&gt;
+    // return $safe_string;
+    // return md5("password");
+
+    // return str_repeat("zaki",5);
+    // return str_shuffle($string);
+    // return strrev($string);
+    // return strncmp("Hello","aella");
+    // return substr_count("ahmed zaki ahmed zaki mohamed ahmed zaki" , "ahmed");
+    // return strstr("he is Ahmed zaki ahmed" , 'ahmed');
+    // return stripos("ahmed zake elsaid Zzz fgfg" , "zz");
+    // return str_split("ahmedzakielsaidmahmoudablole",'3');
+    $padded = str_pad("Hello", 8, "*"); // "Hello*****"
+
+    return $padded;
+
+});
