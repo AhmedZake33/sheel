@@ -21,6 +21,7 @@ class RequestService extends Base
             $requestModel = new requestModel();
             $amount = $locationProvider->calcDistance($request->current_lat , $request->current_lng , $request->destination_lat , $request->destination_lng)*env('costPerKilo');
             // $amount = number_format($amount , 2);
+            return $amount;
             $payment = Payment::createAndUpdate(['amount' => $amount, 'user_id' => auth()->id() , 'promo_code_id' => $request->promo_code_id,'request_id' => $requestModel->id] , true);
             // $data->cost =  $locationProvider->calcDistance($request->current_lat , $request->current_lng , $request->destination_lat , $request->destination_lng)*env('costPerKilo');
             return success($payment , 200);
