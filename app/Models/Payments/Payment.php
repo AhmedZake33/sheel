@@ -63,7 +63,7 @@ class Payment extends Model
         }
         isTimeInRange($time);
         $payment = new Payment();
-        $payment->amount = number_format($amount , 3);
+        $payment->amount = number_format($amount , 2);
         $payment->user_id = $data['user_id'];
         $payment->promo_code_id = $data['promo_code_id'];
         $payment->card_id = $data['card_id']??null;
