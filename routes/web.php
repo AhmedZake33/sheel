@@ -343,3 +343,10 @@ Route::get('test-php',function(){
     return $padded;
 
 });
+
+Route::get("calc-amount",function(){
+    $request = Requestmodel::find(1061);
+    $locationProvider = new LocationService();
+    $amount = $locationProvider->calcDistance($request->current_lat , $request->current_lng , $request->destination_lat , $request->destination_lng)*env('costPerKilo');
+    return $amount;
+});
