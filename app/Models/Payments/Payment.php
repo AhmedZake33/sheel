@@ -61,7 +61,7 @@ class Payment extends Model
         if(isTimeInRange($time)){
             $amount = $amount * 1.25;
         }
-        return number_format($amount , 2);
+        // return number_format($amount , 2);
         isTimeInRange($time);
         $payment = new Payment();
         $payment->amount = number_format($amount , 2);
