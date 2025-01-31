@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Provider;
+use App\Models\User;
+use Illuminate\Support\Str;
+use App\Models\System\System;
+use Carbon\Carbon;
+
+class ProviderService extends Base
+{
+    public function createProvider($request)
+    {
+         // after validate all data filter data only 
+        $user = User::create($request->except(['emairate_id_front','emairate_id_back','drive_photo','RTA_card_front','RTA_card_back','vehicle_registration_form']));
+        $user->type = User::TYPE_PROVIDER;
+        $user->secret = Str::random(50);
+        $user->status = User::STATUS_PENDING_PROVIDER;
+        $user->save();
+         // add files
+         $user->archive->addDocumentWithShortName($request->emairate_id_front , null , 'emairate_id_front' , 'emairate_id_front');
+         $user->archive->addDocumentWithShortName($request->emairate_id_back , null , 'emairate_id_back' , 'emairate_id_back');
+         $user->archive->addDocumentWithShortName($request->drive_photo , null , 'drive_photo' , 'drive_photo');
+         $user->archive->addDocumentWithShortName($request->RTA_card_front , null , 'RTA_card_front' , 'RTA_card_front');
+         $user->archive->addDocumentWithShortName($request->RTA_card_back , null , 'RTA_card_back' , 'RTA_card_back');
+         $user->archive->addDocumentWithShortName($request->vehicle_registration_form , null , 'vehicle_registration_form' , 'vehicle_registration_form');
+         
+         // draft data
+         $user->draft();
+         // activiate  for test only
+        //  $user->status = User::STATUS_ACTIVE;
+        //  $user->save();
+         
+        // create provider record 
+        $provider = new Provider();
+        $provider->user_id = $user->id;
+        $provider->service_id = $request->service_id;
+        // $provider->lat = $request->lat;
+        // $provider->lng = $request->lng;
+        $provider->save();
+        // create opt 
+        User::createOtp($user ,true);
+        
+        $message =  (app()->getLocale() == 'ar')? ' تم التسجيل بنجاح برجاء الانتظار حتي يتم التفعيل'  : "Register Complete Successfuly Please Wait to complete Activation";
+        return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
+    }
+
+    public function verifyCode($request)
+    {
+        
+        $validated = $request->validated();
+        $message = null;
+        $otp_code = $validated['otp_code'];
+        $secret = $validated['secret'];
+        if($secret && $otp_code){
+            // current time 
+            $desiredTime = Carbon::now()->addMinutes(-5);
+            $user = User::where('secret',$secret)->where('otp_code',$otp_code)->where('otp_time', '>=',$desiredTime)->first();
+            //  dd(Carbon::now()->addMinutes(5)->diffInMinutes(carbon::parse('2023-08-07 21:07:49')));
+            if($user){
+                // return gettype($user->status);
+                if(in_array($user->status , [User::STATUS_ACTIVE , User::STATUS_PENDING_PROVIDER , User::STATUS_INCOMPLETE])){
+
+                    // create token and become provider in system
+                    $data = $user->data(System::DATA_DETAILS);
+                    $token = $user->createToken('My Token')->accessToken;
+                    $data->token = $token;
+                    if($user->status == User::STATUS_ACTIVE){
+                        $user->verify('mobile');
+                    }else if($user->status == User::STATUS_PENDING_PROVIDER){
+                        $user->verify('mobile' , User::STATUS_PENDING_PROVIDER);     
+                    }
+                    $message = (app()->getLocale() == 'en')? 'successfully completed ' : ' مكتملة بنجاح ' ;
+                    return success($data,System::HTTP_OK ,$message);   
+                }
+                // $user->verify('mobile' , User::STATUS_PENDING_PROVIDER);
+                // $message = (app()->getLocale() == 'en')? 'successfully completed Please wait to Activate Your Account' : ' مكتملة بنجاح برجاء الانتظار حتي تفعيل الحساب' ;
+                // return success([],System::HTTP_OK ,$message);
+            }else{
+                $message = (app()->getLocale() == 'en')? 'Data Is invalid':'الكود خاطئ';
+                return success([],System::HHTP_Unprocessable_Content , $message);
+            }
+        }
+        $message = (app()->getLocale() == 'en')? 'Invalid Inputs' :  'البياتات المدخلة غير صحيحة';
+        return success(System::ERROR_INVALID_INPUT,$message , []) ;
+    }
+
+    public function acceptProvider(Provider $provider)
+    {
+        // verify user mobile
+        $user_id = $provider->user_id;
+        $user = User::find($user_id);
+        $user->verify('mobile');
+        
+    }
+}

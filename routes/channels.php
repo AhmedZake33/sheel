@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use App\Models\User;
+use App\Models\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,29 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+Broadcast::channel('channel.{requestId}', function (User $user, int $requestId) {
+   return Request::canAccess($requestId,$user);
+});
+
+
+Broadcast::channel('privateNotification.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
+});
+
+Broadcast::channel("requestChannel.{requestId}" , function(User $user , $requestId){
+   return Request::canAccess($requestId,$user);
+});
+
+Broadcast::channel("message.{userId}" , function(User $user  , $userId){
+    return (int) $user->id === (int) $userId;
+});
+
+Broadcast::channel("currentRequests.{userId}" , function(User $user  , $userId){
+    return (int) $user->id === (int) $userId;
+});
+
+
+// Broadcast::channel('private-user-channel-{receiverUserId}', function ($user, $receiverUserId) {
+//     return (int) $user->id === (int) $receiverUserId;
+// });

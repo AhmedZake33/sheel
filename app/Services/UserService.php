@@ -1,0 +1,217 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\User;
+use Illuminate\Support\Str;
+use App\Models\System\System;
+use Carbon\Carbon;
+
+class UserService extends Base
+{
+
+    public function register($request)
+    {
+        // validate the data 
+        $validated = $request->validated();
+        $message = (app()->getLocale() == 'en')? "Successfully Please Check Your Mobile Phone To Complete Registeration" : "تم بنجاح , يرجى التحقق من هاتفك المحمول لإكمال التسجيل";
+        
+        // return $validated['email'];
+        // check if not complete registeration cycle 
+
+        if($this->checkIncomplelteUserFound($validated)){
+            $user = $this->checkIncomplelteUserFound($validated);
+            User::createOtp($user);
+            return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
+        }
+
+        if($this->checkUserFound($validated)){
+            $message = (app()->getLocale() == 'en') ? 'User Already found Please Login' : '  المستخدم موجود بالفعل برجاء تسجيل الدخول' ;
+            return success([],System::HHTP_Unprocessable_Content,$message);
+        }
+       
+         // register user and create otp 
+        $user = $this->createUser($validated);
+ 
+        $user->draft();
+
+        // return response
+        return success($user->data(System::DATA_BRIEF) , System::HTTP_OK , $message);
+    }
+
+    public function checkUserFound($data)
+    {
+        // check if user found 
+        $user = User::where('email',$data['email'])->orWhere('mobile',$data['mobile'])->first();
+        if($user){
+            return $user;
+        }
+        return false;
+    }
+
+    public function checkIncomplelteUserFound($data)
+    {
+        // check if user found 
+        $user = User::Where('email', $data['email'])->where('mobile',$data['mobile'])->where('status',User::STATUS_INCOMPLETE)->first();
+        if($user){
+            return $user;
+        }
+        return false;
+    }
+
+
+    public function profile($type = User::TYPE_USER)
+    {
+        // $user =  auth()->user();
+        $user = User::find(auth()->id());
+        $data = (object)[];
+        $data->name = $user->name;
+        $data->id = $user->id;
+        $data->active = ($user->status == User::STATUS_PENDING_PROVIDER)? false : true;
+        $data->mobile = $user->mobile;
+        $data->mobile_code = $user->mobile_code;
+        $data->email = $user->email;
+        $data->secret = $user->secret;
+        $data->email_verification = $user->email_verification;
+        $data->status = $user->status;
+        if($type == User::TYPE_USER){
+            // $data->photo = count($user->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
+        }else if($type == User::TYPE_PROVIDER){
+            // PHOTOS 
+            $data->isOnline = $user->provider->active;
+
+            // 1- vehicle_registration_form
+            $data->vehicle_registration_form = count($user->archive->children()->where('short_name','vehicle_registration_form')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','vehicle_registration_form')->pluck('id')[0]) : null;
+
+            // 1- RTA_card_back
+            $data->RTA_card_back = count($user->archive->children()->where('short_name','RTA_card_back')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','RTA_card_back')->pluck('id')[0]) : null;
+
+            // 1- RTA_card_front
+            $data->RTA_card_front = count($user->archive->children()->where('short_name','RTA_card_front')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','RTA_card_front')->pluck('id')[0]) : null;
+
+            // 1- drive_photo
+            $data->drive_photo = count($user->archive->children()->where('short_name','drive_photo')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','drive_photo')->pluck('id')[0]) : null;
+
+            // 1- emairate_id_back
+            $data->emairate_id_back = count($user->archive->children()->where('short_name','emairate_id_back')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','emairate_id_back')->pluck('id')[0]) : null;
+
+            // 1- emairate_id_front
+            $data->emairate_id_front = count($user->archive->children()->where('short_name','emairate_id_front')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','emairate_id_front')->pluck('id')[0]) : null;
+
+        }
+        
+        $data->photo = count($user->archive->children()->where('short_name','profile_photo')->pluck('id')) ? route('download_file', $user->archive->children()->where('short_name','profile_photo')->pluck('id')[0]) : null;
+
+        return success($data , System::HTTP_OK , 'success');
+
+    }
+
+    public function createUser($validated)
+    {
+        $user = User::create($validated);
+        $user->secret = Str::random(50);
+        $user->type = User::TYPE_USER;
+        $user->save();
+        User::createOtp($user , true);
+        return $user;
+    }
+
+    public function login($request , $type = User::TYPE_USER)
+    {
+        // validate data
+       $mobile =  $request->validated()['mobile'];
+       $mobile_code =  $request->validated()['mobile_code'];
+       $message = null;
+        // try find user by phone 
+        $user = User::where('mobile',$mobile)->where('mobile_code' , $mobile_code)->where("type",$type)->first();
+        // create otp code
+        if($user && $user->status == User::STATUS_ACTIVE){
+            User::createOtp($user);
+        }elseif($user && $user->status == User::STATUS_PENDING_PROVIDER){
+            User::createOtp($user);
+            // $message = (app()->getLocale() == 'en') ? 'Please Wait to review Your Data' : ' برجاء الانتظار لمراجعة البيانات';
+            // return success([],System::HHTP_Unprocessable_Content,$message);
+        }else{
+            // $message = (app()->getLocale() == 'en') ? 'Please Complete Verification' : '  برجاء اكمال التحقق من البيانات  ';
+            $message = (app()->getLocale() == 'en')? "Data is Invalid" : "البيانات خاطة" ;
+            return success([],System::HHTP_Unprocessable_Content,$message);
+        }
+
+        // send otp to user mobile phone
+        $message = (app()->getLocale() == 'en')?  'Success Check Your mobile Phone To Complete Login' : 'تم بنجاح , تحقق من هاتفك المحمول لإكمال تسجيل الدخول';
+        // return response
+        return success(['secret' => $user->secret , 'opt_code' => $user->otp_code],System::HTTP_OK,$message);
+    }
+
+    public function resendCode($request)
+    {
+        // validate data
+       $mobile =  $request->validated()['mobile'];
+       $mobile_code =  $request->validated()['mobile_code'];
+
+       // try find user by phone 
+       $user = User::where('mobile',$mobile)->where('mobile_code',$mobile_code)->orWhere('draft_mobile',$mobile)->first();
+        
+       // if not found user in DB
+       if(!$user){
+        $message = (app()->getLocale() == 'en')?  'Phone number is incorrect':'رقم الموبايل غير صحيح' ;
+        return success([],System::HHTP_Unprocessable_Content,$message);
+       }
+       // create otp code
+       User::createOtp($user);
+
+        $message = (app()->getLocale() == 'en')?  'Success resend Code Again':'تم إرسال الكود بنجاح مرة اخري' ;
+       // return response
+       return success(['secret' => $user->secret],System::HTTP_OK,$message);
+    }
+
+    public function verifyCode($request)
+    {
+        $validated = $request->validated();
+        $message = null;
+        $otp_code = $validated['otp_code'];
+        $secret = $validated['secret'];
+        if($secret && $otp_code){
+            // current time 
+            $desiredTime = Carbon::now()->addMinutes(-5);
+            $user = User::where('secret',$secret)->where('otp_code',$otp_code)->where('otp_time', '>=',$desiredTime)->first();
+            //  dd(Carbon::now()->addMinutes(5)->diffInMinutes(carbon::parse('2023-08-07 21:07:49')));
+            if($user){
+                $mobile = 'mobile';
+                $user->verify($mobile);
+                $data = $user->data(System::DATA_DETAILS);
+                $token = $user->createToken('My Token')->accessToken;
+                $data->token = $token;
+                $message = (app()->getLocale() == 'en')? 'successfully completed ' : 'مكتملة بنجاح' ;
+                return success($data,System::HTTP_OK ,$message);
+            }else{
+                $message = (app()->getLocale() == 'en')? 'Otp Is Expired Or Incorrect':'كود التفعيل منتهي او خاطئ';
+                return success([],System::HHTP_Unprocessable_Content , $message);
+            }
+        }
+        $message = (app()->getLocale() == 'en')? 'Invalid Inputs' :  'البياتات المدخلة غير صحيحة';
+        return success(System::ERROR_INVALID_INPUT,$message , []) ;
+    }
+
+    public function verifyEmail($secret , $slug)
+    {
+        $message = null;
+        if($secret &&  $slug){
+            $user = User::where('secret',$secret)->where('slug' , $slug)->first();
+        
+            if($user){
+                $email = 'email';
+                $user->verify($email);
+                $message = (app()->getLocale() == 'en') ? 'Successfully Verify Email' : 'تم التحقق من البريد الالكتروني بنجاح';
+                return success([],System::HTTP_OK , $message);
+            }
+            $message = (app()->getLocale() == 'en') ? 'Not Found Data' : 'البيانات غير موجودة';
+            return success([],System::HHTP_Unprocessable_Content , $message);
+            
+        }
+        $message = (app()->getLocale() == 'en') ? 'Not Found Data' : 'البيانات غير موجودة';
+        return success([],System::HHTP_Unprocessable_Content , $message);
+    }
+}   
+
+?>

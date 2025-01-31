@@ -1,0 +1,237 @@
+<?php
+
+namespace App\Http\Controllers\api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
+use Auth;
+use App\Http\Requests\registerRequest;
+use App\Http\Requests\verifyRequest;
+use App\Http\Requests\loginRequest;
+use App\Http\Requests\ResendCodeRequest;
+use App\Models\System\System;
+use App\Services\UserService;
+use Carbon\Carbon;
+use App\Http\Requests\ProfileRequest;
+use Exception;
+use Illuminate\Support\Arr;
+use App\Models\Request as RequestModel;
+use App\Models\Chat;
+use App\Events\ChatEvent;
+use Pusher\Pusher;
+use Illuminate\Support\Facades\Broadcast;
+use Laravel\Passport\Token;
+
+
+
+class UsersController extends Controller
+{
+    protected $service;
+ 
+    public function __construct(UserService $service)
+    {
+        $this->service = $service;
+    }
+
+    public function register(registerRequest $request)
+    {
+        return $this->service->register($request);
+    }   
+
+    public function login(loginRequest $request)
+    {
+        return $this->service->login($request);
+    } 
+    
+    public function resendCode(ResendCodeRequest $request)
+    {
+       return $this->service->resendCode($request);
+    }
+
+    public function verifyCode(verifyRequest $request)
+    {
+        return  $this->service->verifyCode($request);
+    }
+
+    public function verifyEmail($secret , $slug)
+    {  
+        return $this->service->verifyEmail($secret , $slug);
+    }
+
+    public function profile()
+    {
+        return $this->service->profile();
+    }
+
+    public function update(ProfileRequest $request , $user)
+    {
+        // return $user;
+        $user = User::find($user);
+        if(!$user){
+            return error([],404,"user Not Found");
+        }
+        $validated = $request->validated();
+        $user = auth()->user();
+        // return $user;
+        if($request->profile_photo){
+            if($user->archive->findChildByShortName('profile_photo')){
+                $user->archive->findChildByShortName('profile_photo')->delete();
+                $user->archive->addDocumentWithShortName($request->profile_photo , null , 'profile_photo' , 'profile_photo');
+            }else{
+                $user->archive->addDocumentWithShortName($request->profile_photo , null , 'profile_photo' , 'profile_photo');
+            }
+        }
+
+        $user->update(Arr::except($validated , ['email','profile_photo']));
+        if(array_key_exists('email',$validated) && $user->email != $validated['email']){
+            $user->email = $validated['email'];
+            $user->email_verification =  User::STATUS_INCOMPLETE;
+            $user->save();
+
+            // send email by mail server
+        }
+        $message = ['ar' => 'تم التعديل بنجاح' , 'en' => 'profile updated successfully'][app()->getLocale()];
+        return success([],System::HTTP_OK , $message);
+    }
+
+    public function verify(Request $request)
+    {
+        $user = User::where('email',$request->email)->first();
+        if($user){
+            User::createOtp($user ,false);
+            return response()->json([],200);
+        }else{
+            return response()->json([],400);
+        }
+
+    }
+
+    public function loginWithEmail(Request $request)
+    {
+        $desiredTime = Carbon::now()->addMinutes(-5);
+        $user = User::where('email',$request->email)->where('otp_code',$request->otp)->where('otp_time', '>=',$desiredTime)->first();
+        // $user = User::where('email',$request->email)->where('otp_time', '>=',$desiredTime)->first();
+        // return $user;
+        if($user){
+            $user->verify('mobile');
+            if(Auth::loginUsingId($user->id)){
+                return redirect()->back();                
+            }
+        }
+    }
+
+    public function loginWithToken(Request $request)
+    {
+        $token = $request->token;
+        // return $token;
+        if ($token) {
+            // Retrieve the access token
+            return Token::WhereId('Bearer ' +$token)->get();
+            $accessToken = Token::where('id', $token)->first();
+
+            if ($accessToken) {
+                // Retrieve the associated user
+                $user = $accessToken->user;
+                if ($user) {
+                    // Authenticate the user
+                    Auth::login($user);
+
+                    // Generate and return a bearer token
+                    $bearerToken = $user->createToken('AccessToken')->accessToken;
+
+                    return response()->json(['token' => $bearerToken]);
+                }
+            }
+        }
+
+        return response()->json(['error' => 'Unauthorized'], 401);
+    
+    }
+    
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        return redirect()->route('login');
+    }
+
+    public function sendMessage(Request $request , $id)
+    {
+        // return "auth()->user()";
+        $ReceivingUser = RequestModel::find($id)->getReceivingUser();
+        // return $ReceivingUser;
+        $message = new Chat();
+        $message->request_id = $id;
+        $message->received_id = $ReceivingUser;
+        $message->user_id = Auth::id();
+        $message->message = $request->message;
+        $message->save();
+
+        // \App\Events\testEvent::dispatch(RequestModel::find($id) ,$request->message);
+        broadcast(new \App\Events\testEvent(RequestModel::find($id) ,$request->message))->toOthers();
+
+        return $message;
+    }
+
+    // public function authenticate(Request $request)
+    // {
+    //     if (Auth::user()) {
+    //         $user = Auth::user();
+    //         return response()->json(['auth' => $user->createToken('sheel')->accessToken] , 200);
+    //     } else {
+    //         return response()->json(['error' => 'Unauthenticated.'], 403);
+    //     }
+    // }
+
+    public function authenticate(Request $request)
+    {
+        // $socketId = '180146.66614478';
+        // $channelName = "privateNotification.4";
+
+        $socketId = $request->input('socket_id');
+        $channelName = $request->input('channel_name');
+
+        
+
+        // Authenticate the user and generate authorization data
+        // You may need to replace this logic with your own authentication and authorization logic
+        // $userId = auth()->user()->id; // Assuming you're using Laravel's built-in authentication
+
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true
+            ]
+        );
+
+        $authData = $pusher->socket_auth($channelName, $socketId);
+        // $authData = $pusher->socket_auth('', '');
+
+        return response()->json(json_decode($authData));
+    }
+
+
+    public function acceptProvider(Request $request , $provider)
+    {
+        $provider = User::findOrFail($provider);
+        $provider->update(["status" => User::STATUS_ACTIVE]);
+
+        // email user or send message to inform him that account was active
+        return view("success_provider")->with('redirectTo', url()->previous());
+    }
+
+    public function refuseProvider(Request $request , $provider)
+    {
+        $provider = User::findOrFail($provider);
+        $provider->update(["status" => User::STATUS_REFUSED]);
+        // email user or send message to inform him that account was refussed
+        return view("fail_provider")->with('redirectTo', url()->previous());
+    }
+
+}   
+
