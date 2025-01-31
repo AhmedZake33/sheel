@@ -1,7 +1,8 @@
 <!DOCTYPE html> 
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">     <head>         
 <meta charset="utf-8">         
-<meta name="viewport" content="width=device-width, initial-scale=1">          <title>Laravel</title>          
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+<title>Laravel</title>          
 <!-- Fonts -->         
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"> 
 <style>             
@@ -82,6 +83,9 @@
 
         .link-container a {
             text-decoration: underline;
+            border: 1px solid #26dd71; /* Border color */
+            padding: 5px 10px;
+            text-decoration: none;
             color: #26dd71; /* Link color */
         }
 
@@ -105,7 +109,7 @@
 
         <div class="link-container">
             <a href="{{route('review-provider')}}">Review Provider</a>
-            <a href="#">Support</a>
+            {{-- <a href="#">Support</a> --}}
             {{-- <a href="#">Contact</a>
             <a href="#">Home</a>
             <a href="#">About</a>
@@ -116,16 +120,16 @@
        
         <form action="{{ route('login') }}" method="POST">
             @csrf
-            <div class="form-group">
+            <div id="emailField" class="form-group">
                 <label for="mobile">Email:</label>
                 <input type="email"  id="email" name="email" placeholder="Enter your email" required>
                 <button class="btn" id="verify">Verify</button>
             </div>
-            <div class="form-group">
+            <div id="otpField" style="display: none;" class="form-group">
                 <label for="Otp">OTP:</label>
-                <input type="text" id="otp" name="otp" placeholder="Enter your otp" required>
+                <input class="form-control" type="text" id="otp" name="otp" placeholder="Enter your otp" required>
+                <button type="submit" class="btn">Submit</button>
             </div>
-            <button type="submit" class="btn">Submit</button>
         </form>
 
 @endauth
@@ -153,8 +157,11 @@
 <script>  
 
     var token = '{{ csrf_token() }}'
+
     $(document).ready(function(){
         $("#verify").click(function(){
+            document.getElementById('emailField').style.display = 'none';
+            document.getElementById('otpField').style.display = 'block';
             $.ajax({
                 url: "{{ route('verify') }}",
                 method: "POST",
@@ -164,7 +171,6 @@
                 error: function(){
                     alert("something went wrong");
                 }
-
             })
         })
     });

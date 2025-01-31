@@ -32,12 +32,37 @@
     .action-column {
         width: 100px; /* Adjust the width as needed */
     }
+
+    .link-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* Adjust the spacing between links */
+        }
+
+        .link-container a {
+            text-decoration: underline;
+            border: 1px solid #26dd71; /* Border color */
+            padding: 5px 10px;
+            text-decoration: none;
+            color: #26dd71; /* Link color */
+        }
+
+        .link-container a:hover {
+            text-decoration: underline; /* Underline on hover */
+        }
     </style>
     </head>
     <body>
     <div class="container">
         @auth
             @if(auth()->user()->type == 3)
+            <div class="link-container">
+            {{-- <a href="{{route('review-provider')}}">Review Provider</a> --}}
+            {{-- <a href="#">Support</a> --}}
+            <a href={{route('home')}}>Home</a>
+            {{--<a href="#">About</a>
+            <a href="#">Contact</a> --}}
+            </div>
             <div class="container">
             <table style="margin-top:25px">
                 <thead>

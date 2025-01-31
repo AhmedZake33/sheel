@@ -11,8 +11,10 @@ use App\Models\Payments\Transaction;
 use App\Services\StripeService;
 use Illuminate\Http\Request;
 use App\Models\Request as Requestmodel;
+use App\Models\User;
 use App\Services\LocationService;
 use App\Services\TwilioService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 
 /*
@@ -55,6 +57,13 @@ use Illuminate\Support\Facades\Mail;
 
 
 Route::get('/', function () {
+    // return domain(); 
+    // return ENV("MIX_PUSHER_APP_CLUSTER");
+    return view('home');
+});
+
+
+Route::get('/home', function () {
     // return domain(); 
     // return ENV("MIX_PUSHER_APP_CLUSTER");
     return view('home');
@@ -349,4 +358,17 @@ Route::get("calc-amount",function(){
     $locationProvider = new LocationService();
     $amount = $locationProvider->calcDistance($request->current_lat , $request->current_lng , $request->destination_lat , $request->destination_lng);
     return $amount;
+});
+
+Route::get("test",function(){
+    echo lowercase('ahmed ZAki');
+    echo "<br>";
+    // // $user = User::find(2);
+    // // // return $user;
+    // // Cache::put("user",$user);
+    // echo uppercase('ahmed ZAki');
+    // echo Cache::get("user");
+    // echo App::make('TextHelper')(uppercase('fff'));
+    // echo Textheuppercase("test");
+    return TextHelper::uppercase("zakivvvvv");
 });
